@@ -1,0 +1,333 @@
+/* sigmaboyhujyiyuy76hy Importar Poppins do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Fonte global */
+body {
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Layout de duas colunas */
+.main-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+.left-panel {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 5%;
+    position: relative;
+    background: #fff;
+    text-align: center;
+}
+
+.right-panel {
+    width: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Navegação */
+.nav-links {
+    position: absolute;
+    top: 30px;
+    margin-left: 635px;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-link {
+    color: #4a0f81;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    border-bottom-color: #4a0f81;
+}
+
+/* Cabeçalho e Títulos */
+.header-logo {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+}
+
+.main-login-title {
+    font-size: 3rem;
+    color: #4a0f81;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.main-login-title::after {
+    content: none;
+}
+
+.login-slogan {
+    color: #888;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+}
+
+/* Grupos de formulário */
+.form-row-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.inputBox {
+    position: relative;
+}
+
+/* Formulário e Campos de Entrada */
+.login-content {
+    text-align: left;
+    width: 80%;
+    max-width: 400px;
+}
+
+.loginForm {
+    width: 100%;
+}
+
+.inputLogin {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-group .icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8e24aa;
+}
+
+/* Campos com efeito igual ao cadastro */
+.inputLogin input {
+    width: 100%;
+    padding: 15px 15px 15px 50px;
+    background: #f3e8ff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #4a0f81;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.inputLogin input:focus {
+    background: #fff;
+    box-shadow: 0 0 8px rgba(142, 12, 202, 0.5);
+    border: 2px solid #8e24aa;
+}
+
+.inputLogin input::placeholder {
+    color: #8e24aa;
+    transition: color 0.3s ease;
+}
+
+.inputLogin input:focus::placeholder {
+    color: #b85cff;
+}
+
+/* Botão de login alinhado com os campos */
+.inputSubmit {
+    background: linear-gradient(to right, #6a1b9a, #4a148c);
+    color: #fff;
+    font-weight: 600;
+    display: flex;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    margin-right: 300px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 115%;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(74, 20, 140, 0.3);
+}
+
+.inputSubmit:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(74, 20, 140, 0.5);
+    background: linear-gradient(to right, #7b1fa2, #5e35b1);
+}
+
+.login-links-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    align-items: center;
+}
+
+.forgot {
+    color: #4a0f81;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s, background 0.3s;
+    border-radius: 3px;
+    padding: 2px 8px;
+    line-height: 1.5;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.forgot:hover {
+    color: #fff;
+    background: rgba(106, 27, 154, 0.7);
+    text-decoration: none;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+}
+
+img {
+    width: 900px;
+}
+
+.logo {
+    width: 300px;
+    margin-top: -35px;
+}
+
+/* --- Media Queries para Responsividade --- */
+
+/* Telas até 768px (tablets grandes / celulares pequenos) */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .left-panel,
+    .right-panel {
+        width: 100%;
+        height: auto;
+    }
+
+    .left-panel {
+        padding: 40px 20px;
+    }
+
+    .right-panel {
+        display: none;
+    }
+
+    .login-content {
+        width: 100%;
+        max-width: none;
+        text-align: center;
+    }
+
+    .main-login-title {
+        font-size: 2.5rem;
+    }
+
+    .login-slogan {
+        font-size: 1rem;
+    }
+
+    .header-logo,
+    .nav-links {
+        position: static;
+        width: auto;
+        margin: 0 auto;
+        padding: 0;
+        top: auto;
+        left: auto;
+        right: auto;
+        justify-content: center;
+    }
+
+    .header-logo {
+        margin-bottom: 20px;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .inputSubmit {
+        width: 100%;
+        margin-top: 25px;
+    }
+
+    /* Alinha o contêiner de links do formulário no mobile */
+    .login-links-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+/* Telas até 576px (celulares pequenos) */
+@media (max-width: 576px) {
+    .header-logo {
+        width: 220px;
+    }
+
+    .main-login-title {
+        font-size: 2rem;
+    }
+
+    .login-slogan {
+        font-size: 0.9rem;
+    }
+
+    .inputSubmit {
+        margin-right: 0;
+        /* Remove o excesso de margem à direita */
+        width: 100%;
+        /* Ajusta a largura do botão */
+    }
+
+    .nav-links {
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .login-content {
+        width: 90%;
+        /* Reduz a largura do formulário */
+    }
+}

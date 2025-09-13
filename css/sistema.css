@@ -1,0 +1,317 @@
+:root {
+            --primary-bg: #F8F7FF;
+            --sidebar-bg: #FFFFFF;
+            --accent-color: #6D28D9;
+            /* Um tom de roxo forte */
+            --accent-color-dark: #4C1D95;
+            --text-color: #1F2937;
+            --text-light: #6B7280;
+            --border-color: #E5E7EB;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .sidebar-logo img {
+            width: 50px;
+            /* Ajuste o tamanho da sua logo */
+        }
+
+        .menu-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .menu-section h6 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            padding: 0 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-list {
+            list-style: none;
+        }
+
+        .menu-list a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-list a i {
+            width: 20px;
+            margin-right: 1rem;
+            color: var(--text-light);
+            transition: color 0.2s ease;
+        }
+
+        .menu-list a:hover {
+            background-color: #F3F4F6;
+        }
+
+        .menu-list a.active {
+            background-color: var(--accent-color);
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+
+        .menu-list a.active i {
+            color: #FFFFFF;
+        }
+
+        .sidebar .outros {
+            margin-top: auto;
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem 3rem;
+            overflow-y: auto;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .main-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .user-profile span {
+            font-weight: 500;
+        }
+
+        .user-profile .avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        /* --- Welcome Section --- */
+        .welcome-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .welcome-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-section p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        /* --- Action Cards --- */
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .action-card {
+            background-color: var(--sidebar-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .action-card i {
+            font-size: 2rem;
+            padding: 1rem;
+            background-color: #F3E8FF;
+            /* Roxo bem claro */
+            color: var(--accent-color);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .action-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* --- Pricing Plans --- */
+        .pricing-plans {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .plan-card {
+            background-color: #F9FAFB;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .plan-card.pro {
+            background-color: var(--accent-color-dark);
+            color: white;
+            border: none;
+        }
+
+        .recommended-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #F59E0B;
+            /* Laranja/Amarelo */
+            color: var(--text-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .plan-card h4 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-card p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .plan-card.pro p {
+            color: #D1D5DB;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .price-free {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .price span {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .plan-card.pro .price span {
+            color: #D1D5DB;
+        }
+
+        .plan-button {
+            width: 100%;
+            padding: 0.85rem;
+            border-radius: 8px;
+            border: 1px solid var(--accent-color);
+            background-color: transparent;
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            margin-top: 1rem; /* Ajustado para alinhar melhor com o form */
+        }
+        
+        .plan-card form {
+            margin-top: auto; /* Empurra o botão para o final do card */
+        }
+
+        .plan-button.primary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .plan-button.primary:hover {
+            background-color: var(--accent-color-dark);
+            border-color: var(--accent-color-dark);
+        }
+
+        .plan-card.pro .plan-button {
+            background-color: white;
+            color: var(--accent-color);
+            border: none;
+        }
+
+        .plan-card.pro .plan-button:hover {
+            background-color: #F3F4F6;
+        }

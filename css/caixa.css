@@ -1,0 +1,180 @@
+/* css/caixa.css */
+
+.caixa-container {
+    display: flex;
+    gap: 2rem;
+}
+
+.caixa-painel-venda {
+    flex-basis: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.caixa-painel-lista {
+    flex-basis: 60%;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+}
+
+.caixa-logo {
+    width: 120px;
+    margin: 0 auto 1rem auto;
+}
+
+.form-group-caixa input,
+.info-box {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    background-color: #EFE6FD; /* Roxo clarinho */
+    color: #4C1D95; /* Roxo escuro */
+}
+
+.form-group-caixa input::placeholder {
+    color: #A78BFA;
+}
+
+.info-group-caixa {
+    display: flex;
+    gap: 1rem;
+}
+
+.info-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0.75rem;
+}
+
+.info-box label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #6D28D9;
+}
+
+.info-box span {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.btn-caixa {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+}
+
+.btn-lancamento {
+    background-color: #6D28D9;
+    color: white;
+}
+
+.btn-finalizar {
+    background-color: #4C1D95; /* Roxo mais escuro */
+    color: white;
+    margin-top: auto; /* Empurra para o final */
+}
+
+.caixa-acoes-secundarias {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin: 1rem 0;
+}
+
+.btn-secundario {
+    background-color: #fff;
+    color: #6D28D9;
+    border: 2px solid #EFE6FD;
+    font-size: 0.85rem;
+    padding: 0.8rem;
+}
+.btn-secundario:hover {
+    background-color: #EFE6FD;
+}
+
+.lista-header {
+    background-color: #4C1D95;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 16px 16px 0 0;
+}
+
+.lista-header h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.lista-produtos-venda {
+    flex-grow: 1;
+    padding: 1.5rem;
+}
+
+.lista-vazia {
+    text-align: center;
+    color: var(--text-light);
+    margin-top: 2rem;
+}
+
+.caixa-totais {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.caixa-totais div {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-light);
+}
+
+.caixa-totais .total-geral span {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.lista-produtos-venda table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.lista-produtos-venda th,
+.lista-produtos-venda td {
+    padding: 0.8rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.lista-produtos-venda th {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+
+.lista-produtos-venda th:nth-child(2), /* Coluna Qtd. */
+.lista-produtos-venda td:nth-child(2),
+.lista-produtos-venda th:nth-child(3), /* Coluna V. Unit. */
+.lista-produtos-venda td:nth-child(3),
+.lista-produtos-venda th:nth-child(4), /* Coluna V. Total */
+.lista-produtos-venda td:nth-child(4) {
+    text-align: right;
+}
