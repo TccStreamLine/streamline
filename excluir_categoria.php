@@ -11,7 +11,6 @@ if (isset($_GET['id'])) {
     $id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
     if ($id) {
         try {
-            // Adicionamos uma verificação: não permitir excluir categoria se ela estiver em uso
             $check_sql = "SELECT COUNT(*) FROM produtos WHERE categoria_id = :id";
             $check_stmt = $pdo->prepare($check_sql);
             $check_stmt->bindParam(':id', $id, PDO::PARAM_INT);

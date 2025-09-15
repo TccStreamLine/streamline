@@ -1,22 +1,18 @@
 <?php
 session_start();
 include_once('config.php');
-
 if (empty($_SESSION['id'])) {
     header('Location: login.php');
     exit;
 }
-
 $sql = "SELECT * FROM categorias ORDER BY nome ASC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,7 +21,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
     <link rel="stylesheet" href="css/sistema.css">
     <link rel="stylesheet" href="css/estoque.css">
 </head>
-
 <body>
     <nav class="sidebar">
         <div class="sidebar-logo"><img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;"></div>
@@ -51,7 +46,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             </ul>
         </div>
     </nav>
-
     <main class="main-content">
         <header class="main-header">
             <h2>Gerenciamento de Categorias</h2>
@@ -59,19 +53,14 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 <div class="avatar"><i class="fas fa-user"></i></div>
             </div>
         </header>
-
         <div class="message-container">
-            <?php if (isset($_SESSION['msg_sucesso'])): ?><div class="alert alert-success"><?= $_SESSION['msg_sucesso'];
-                                                                                            unset($_SESSION['msg_sucesso']); ?></div><?php endif; ?>
-            <?php if (isset($_SESSION['msg_erro'])): ?><div class="alert alert-danger"><?= $_SESSION['msg_erro'];
-                                                                                        unset($_SESSION['msg_erro']); ?></div><?php endif; ?>
+            <?php if (isset($_SESSION['msg_sucesso'])): ?><div class="alert alert-success"><?= $_SESSION['msg_sucesso']; unset($_SESSION['msg_sucesso']); ?></div><?php endif; ?>
+            <?php if (isset($_SESSION['msg_erro'])): ?><div class="alert alert-danger"><?= $_SESSION['msg_erro']; unset($_SESSION['msg_erro']); ?></div><?php endif; ?>
         </div>
-
         <div class="actions-container">
             <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Pesquisar Categoria..."></div>
             <a href="categoria_formulario.php" class="btn-primary"><i class="fas fa-plus"></i> Cadastrar Categoria</a>
         </div>
-
         <div class="table-container">
             <table>
                 <thead>
@@ -103,5 +92,4 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         </div>
     </main>
 </body>
-
 </html>

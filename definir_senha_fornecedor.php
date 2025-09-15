@@ -2,7 +2,6 @@
 session_start();
 require 'config.php';
 
-// A lógica PHP continua a mesma
 $token = $_GET['token'] ?? $_POST['token'] ?? '';
 $token_valido = false;
 $mensagem_erro = '';
@@ -50,10 +49,8 @@ if ($token_valido && $_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  
   <link rel="stylesheet" href="css/stylelogin.css">
   <link rel="stylesheet" href="css/imagem.css">
-
 </head>
 <body>
   <div class="main-container">
@@ -64,11 +61,9 @@ if ($token_valido && $_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="login-content">
             <h1 class="main-login-title">CRIE SUA SENHA</h1>
             <p class="login-slogan">Defina uma senha segura para acessar o portal.</p>
-            
             <?php if ($mensagem_erro): ?>
               <p class="error-message"><?= htmlspecialchars($mensagem_erro) ?></p>
             <?php endif; ?>
-
             <?php if ($token_valido): ?>
               <form method="POST" action="" class="loginForm">
                 <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
@@ -87,7 +82,6 @@ if ($token_valido && $_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php else: ?>
                 <p>O link utilizado é inválido ou expirou. Por favor, entre em contato com a empresa para um novo convite.</p>
             <?php endif; ?>
-
         </div>
     </div>
     <div class="right-panel">

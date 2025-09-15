@@ -1,5 +1,4 @@
 <?php 
-// Inicia a sessão para podermos exibir mensagens de sucesso ou erro
 session_start(); 
 ?>
 <!DOCTYPE html>
@@ -24,7 +23,6 @@ session_start();
 <body>
     <div class="main-container">
         <div class="left-panel">
-
             <div class="header-logo">
                 <img class="logo" src="img/relplogo.png" alt="Relp! Logo">
             </div>
@@ -33,11 +31,9 @@ session_start();
                 <a href="login.php" class="nav-link">Login</a>
                 <a href="formulario.php" class="nav-link">Cadastro</a>
             </nav>
-
             <div class="login-content">
                 <h1 class="main-login-title">ACESSO DO FORNECEDOR</h1>
                 <p class="login-slogan">Bem-vindo! Faça login para continuar.</p>
-                
                 <?php
                     if (!empty($_SESSION['msg_login'])) {
                         echo "<p class='success-message'>" . htmlspecialchars($_SESSION['msg_login']) . "</p>";
@@ -48,7 +44,6 @@ session_start();
                         unset($_SESSION['erro_login']);
                     }
                 ?>
-
                 <form action="testa_login_fornecedor.php" method="POST" class="loginForm">
                     <div class="inputLogin">
                         <div class="input-group">

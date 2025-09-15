@@ -1,25 +1,20 @@
 <?php
 session_start();
 include_once('config.php');
-
 if (empty($_SESSION['id'])) {
     header('Location: login.php');
     exit;
 }
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $acao = $_POST['acao'] ?? '';
     $nome = trim($_POST['nome'] ?? '');
-
     if (empty($nome)) {
         $_SESSION['msg_erro'] = "O nome da categoria é obrigatório.";
         header('Location: categorias.php');
         exit;
     }
-
     try {
         if ($acao === 'cadastrar') {
-            // Lógica para cadastrar uma nova categoria
             $check_sql = "SELECT id FROM categorias WHERE nome = :nome";
             $check_stmt = $pdo->prepare($check_sql);
             $check_stmt->execute([':nome' => $nome]);
@@ -31,14 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([':nome' => $nome]);
                 $_SESSION['msg_sucesso'] = "Categoria cadastrada com sucesso!";
             }
-        } 
-        elseif ($acao === 'editar') {
-            // Lógica para editar uma categoria existente
+        } elseif ($acao === 'editar') {
             $id = filter_var($_POST['categoria_id'] ?? 0, FILTER_VALIDATE_INT);
             if (!$id) {
                 $_SESSION['msg_erro'] = "ID da categoria inválido para edição.";
             } else {
-                // Verifica se o novo nome já pertence a outra categoria
                 $check_sql = "SELECT id FROM categorias WHERE nome = :nome AND id != :id";
                 $check_stmt = $pdo->prepare($check_sql);
                 $check_stmt->execute([':nome' => $nome, ':id' => $id]);
@@ -56,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['msg_erro'] = "Erro de banco de dados: " . $e->getMessage();
     }
 }
-
 header('Location: categorias.php');
 exit;
 ?>

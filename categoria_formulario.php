@@ -1,7 +1,6 @@
 <?php
 session_start();
 include_once('config.php');
-
 if (empty($_SESSION['id'])) {
     header('Location: login.php');
     exit;
@@ -21,13 +20,11 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 <body>
     <nav class="sidebar">
         </nav>
-
     <main class="main-content">
         <header class="main-header">
             <h2>Estoque > Cadastro de Categoria</h2>
             <div class="user-profile"><span><?= htmlspecialchars($nome_empresa) ?></span><div class="avatar"><i class="fas fa-user"></i></div></div>
         </header>
-
         <div class="form-container">
             <h3>CADASTRO DE CATEGORIA</h3>
             <form action="processa_categoria.php" method="POST">

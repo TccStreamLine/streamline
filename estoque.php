@@ -13,17 +13,14 @@ $fornecedores = [];
 $erro_busca = null;
 
 try {
-    // Busca os produtos
     $stmt_produtos = $pdo->prepare("SELECT p.*, c.nome as categoria_nome FROM produtos p LEFT JOIN categorias c ON p.categoria_id = c.id ORDER BY p.nome ASC");
     $stmt_produtos->execute();
     $produtos = $stmt_produtos->fetchAll(PDO::FETCH_ASSOC);
 
-    // Busca as categorias para o formulário
     $stmt_categorias = $pdo->prepare("SELECT * FROM categorias ORDER BY nome ASC");
     $stmt_categorias->execute();
     $categorias = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
 
-    // Busca os fornecedores para o formulário
     $stmt_fornecedores = $pdo->prepare("SELECT * FROM fornecedores ORDER BY razao_social ASC");
     $stmt_fornecedores->execute();
     $fornecedores = $stmt_fornecedores->fetchAll(PDO::FETCH_ASSOC);
@@ -164,16 +161,13 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
     </main>
 
     <script>
-        // --- LÓGICA PARA ABRIR/FECHAR O MODAL (JÁ EXISTENTE) ---
         const modalContainer = document.getElementById('modalCadastro');
         const openModalBtn = document.getElementById('btnCadastrarProduto');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const cancelModalBtn = document.getElementById('cancelModalBtn');
-
         const closeModal = () => {
             modalContainer.style.display = 'none';
         };
-
         closeModalBtn.addEventListener('click', closeModal);
         cancelModalBtn.addEventListener('click', closeModal);
         modalContainer.addEventListener('click', (e) => {
@@ -181,25 +175,18 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 closeModal();
             }
         });
-
-        // --- LÓGICA PARA ABRIR O MODAL PARA CADASTRO ---
         openModalBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            // Limpa o formulário e prepara para um novo cadastro
             document.querySelector('.modal-form').reset();
             document.getElementById('modalTitle').innerText = 'Cadastrar Novo Produto';
             document.getElementById('formAcao').value = 'cadastrar';
             document.getElementById('produto_id').value = '';
             modalContainer.style.display = 'flex';
         });
-
-        // --- NOVA LÓGICA PARA ABRIR O MODAL PARA EDIÇÃO ---
         const editButtons = document.querySelectorAll('.btn-edit');
         editButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
-
-                // Pega todos os dados dos atributos data-* do botão
                 const id = button.dataset.id;
                 const nome = button.dataset.nome;
                 const especificacao = button.dataset.especificacao;
@@ -209,8 +196,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 const valorVenda = button.dataset.valor_venda;
                 const categoriaId = button.dataset.categoria_id;
                 const fornecedorId = button.dataset.fornecedor_id;
-
-                // Preenche o formulário do modal com os dados do produto
                 document.getElementById('modalTitle').innerText = 'Editar Produto';
                 document.getElementById('formAcao').value = 'editar';
                 document.getElementById('produto_id').value = id;
@@ -222,8 +207,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 document.getElementById('valor_venda').value = valorVenda.replace('.', ',');
                 document.getElementById('categoria_id').value = categoriaId;
                 document.getElementById('fornecedor_id').value = fornecedorId;
-
-                // Mostra o modal
                 modalContainer.style.display = 'flex';
             });
         });

@@ -43,8 +43,6 @@
                     </div>
                     <input class="inputSubmit" type="submit" name="submit" value="Login">
                     <a href="formulario.php" class="forgot cadastro-link">Ou cadastre-se</a>
-                
-                </form>
                 </form>
                 <?php
                     session_start();
@@ -54,14 +52,10 @@
                         unset($_SESSION['erro_login']);
                     }
                 ?>
-
             </div>
         </div>
-
-        
         <div class="right-panel">
             <img src=img/imagemtela.png>
-            
         </div>
     </div>
 </body>

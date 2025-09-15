@@ -68,7 +68,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         <header class="main-header">
             <h2>Início</h2>
             <div class="user-profile">
-                <!-- CÓDIGO DO SINO INSERIDO AQUI -->
                 <div class="notification-icon">
                     <i class="fas fa-bell"></i>
                 </div>

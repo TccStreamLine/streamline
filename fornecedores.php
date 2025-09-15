@@ -1,22 +1,18 @@
 <?php
 session_start();
 include_once('config.php');
-
 if (empty($_SESSION['id'])) {
     header('Location: login.php');
     exit;
 }
-
 $sql = "SELECT * FROM fornecedores ORDER BY razao_social ASC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $fornecedores = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,7 +21,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
     <link rel="stylesheet" href="css/sistema.css">
     <link rel="stylesheet" href="css/estoque.css">
 </head>
-
 <body>
     <nav class="sidebar">
         <div class="sidebar-logo">
@@ -40,7 +35,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 <li><a href="fornecedores.php" class="active"><i class="fas fa-truck"></i> Fornecimento</a></li>
                 <li><a href="#"><i class="fas fa-chart-bar"></i> Vendas</a></li>
                 <li><a href="caixa.php"><i class="fas fa-cash-register"></i> Caixa</a></li>
-                <li><a href="#"><i class="fas fa-cash-register"></i> Caixa</a></li>
                 <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
                 <li><a href="#"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
@@ -54,7 +48,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             </ul>
         </div>
     </nav>
-
     <main class="main-content">
         <header class="main-header">
             <h2>Gerenciamento de Fornecedores</h2>
@@ -62,19 +55,14 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 <div class="avatar"><i class="fas fa-user"></i></div>
             </div>
         </header>
-
         <div class="message-container">
-            <?php if (isset($_SESSION['msg_sucesso'])): ?><div class="alert alert-success"><?= $_SESSION['msg_sucesso'];
-                                                                                            unset($_SESSION['msg_sucesso']); ?></div><?php endif; ?>
-            <?php if (isset($_SESSION['msg_erro'])): ?><div class="alert alert-danger"><?= $_SESSION['msg_erro'];
-                                                                                        unset($_SESSION['msg_erro']); ?></div><?php endif; ?>
+            <?php if (isset($_SESSION['msg_sucesso'])): ?><div class="alert alert-success"><?= $_SESSION['msg_sucesso']; unset($_SESSION['msg_sucesso']); ?></div><?php endif; ?>
+            <?php if (isset($_SESSION['msg_erro'])): ?><div class="alert alert-danger"><?= $_SESSION['msg_erro']; unset($_SESSION['msg_erro']); ?></div><?php endif; ?>
         </div>
-
         <div class="actions-container">
             <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Pesquisar Fornecedor..."></div>
             <a href="fornecedor_formulario.php" class="btn-primary"><i class="fas fa-plus"></i> Cadastrar Fornecedor</a>
         </div>
-
         <div class="table-container">
             <table>
                 <thead>
@@ -112,5 +100,4 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         </div>
     </main>
 </body>
-
 </html>

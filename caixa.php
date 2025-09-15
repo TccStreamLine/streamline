@@ -122,13 +122,18 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         const listaProdutosDiv = document.getElementById('lista-produtos');
         const subtotalDisplay = document.getElementById('subtotal');
         const totalGeralDisplay = document.getElementById('total_geral');
+        const inputValorPago = document.getElementById('valor_pago');
+        const trocoDisplay = document.getElementById('troco');
         let produtoAtual = null;
+        let totalVendaAtual = 0;
 
         function formatarMoeda(valor) {
-            return parseFloat(valor).toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            });
+            return parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function parseMoeda(valorString) {
+            if (typeof valorString !== 'string') return 0;
+            return parseFloat(valorString.replace('R$', '').trim().replace(/\./g, '').replace(',', '.')) || 0;
         }
 
         function calcularTotalItem() {
@@ -166,7 +171,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         function atualizarCarrinhoNaTela(carrinho) {
             listaProdutosDiv.innerHTML = '';
             let subtotal = 0;
-
             if (carrinho.length === 0) {
                 listaProdutosDiv.innerHTML = '<p class="lista-vazia">Nenhum produto lançado.</p>';
             } else {
@@ -188,8 +192,10 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 table.appendChild(tbody);
                 listaProdutosDiv.appendChild(table);
             }
+            totalVendaAtual = subtotal;
             subtotalDisplay.innerText = formatarMoeda(subtotal);
             totalGeralDisplay.innerText = formatarMoeda(subtotal);
+            calcularTroco();
         }
 
         async function lancarProduto() {
@@ -204,14 +210,11 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             };
             const response = await fetch('gerenciar_carrinho.php', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados)
             });
             const carrinhoAtualizado = await response.json();
             atualizarCarrinhoNaTela(carrinhoAtualizado);
-
             inputCodigoBarras.value = '';
             displayValorUnitario.innerText = 'R$ 0,00';
             inputQuantidade.value = '1';
@@ -225,11 +228,8 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 return;
             }
             try {
-                const response = await fetch('finalizar_venda.php', {
-                    method: 'POST',
-                });
+                const response = await fetch('finalizar_venda.php', { method: 'POST' });
                 const data = await response.json();
-
                 if (data.error) {
                     alert(data.error);
                 } else if (data.success) {
@@ -238,6 +238,15 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             } catch (error) {
                 alert('Ocorreu um erro ao finalizar a venda.');
             }
+        }
+
+        function calcularTroco() {
+            const valorPago = parseMoeda(inputValorPago.value);
+            let troco = 0;
+            if (valorPago > 0 && valorPago >= totalVendaAtual) {
+                troco = valorPago - totalVendaAtual;
+            }
+            trocoDisplay.innerText = formatarMoeda(troco);
         }
 
         inputCodigoBarras.addEventListener('keypress', e => {
@@ -250,6 +259,8 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         inputQuantidade.addEventListener('input', calcularTotalItem);
         btnLancarProduto.addEventListener('click', lancarProduto);
         btnFinalizarCompra.addEventListener('click', finalizarVenda);
+        inputValorPago.addEventListener('input', calcularTroco);
+
     </script>
 </body>
 

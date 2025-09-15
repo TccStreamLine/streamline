@@ -1,12 +1,10 @@
 <?php
 session_start();
 include_once('config.php');
-
 if (empty($_SESSION['id'])) {
     header('Location: login.php');
     exit;
 }
-
 $usuario_id = $_SESSION['id'];
 $hoje = date('Y-m-d');
 $stmt = $pdo->prepare("SELECT titulo, inicio FROM eventos WHERE usuario_id = ? AND inicio = ?");

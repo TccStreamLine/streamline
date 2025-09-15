@@ -47,37 +47,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro | GN</title>
-    <!-- CSS -->
     <link rel="stylesheet" href="css/stylecadastro.css">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
     <div class="main-container">
-
-        <!-- Painel Esquerdo (formulário) -->
         <div class="left-panel">
-
-            <!-- Logo -->
             <header class="header-logo">
                 <img src="img/relplogo.png" alt="Logo" class="logo">
             </header>
-
-            <!-- Navegação -->
             <nav class="nav-links">
                 <a href="home.php" class="nav-link">Início</a>
                 <a href="login.php" class="nav-link">Login</a>
                 <a href="formulario.php" class="nav-link active">Cadastro</a>
             </nav>
-
-            <!-- Formulário -->
             <div class="login-content">
                 <form action="formulario.php" method="POST">
                     <fieldset>
                         <legend><b>FAÇA SEU CADASTRO</b></legend>
                         <p class="cadastro-slogan">Está pronto para começar?</p>
-
                         <div class="form-row-group">
                             <div class="form-row">
                                 <div class="form-group inputBox">
@@ -96,7 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </select>
                                 </div>
                             </div>
-
                             <div class="form-row">
                                 <div class="form-group inputBox">
                                     <i class="fa fa-envelope icon"></i>
@@ -114,7 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </select>
                                 </div>
                             </div>
-
                             <div class="form-row">
                                 <div class="form-group inputBox">
                                     <i class="fa fa-phone icon"></i>
@@ -125,7 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <input type="text" name="natureza_juridica" id="natureza_juridica" class="inputUser" placeholder="Natureza Jurídica" required>
                                 </div>
                             </div>
-
                             <div class="form-row">
                                 <div class="form-group inputBox">
                                     <i class="fa fa-id-card icon"></i>
@@ -137,19 +123,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                             </div>
                         </div>
-
                         <input type="submit" name="submit" id="submit" value="Cadastrar">
                         <a href="login.php" class="makelogin">Ou faça login</a>
                     </fieldset>
                 </form>
             </div>
         </div>
-
-        <!-- Painel Direito (imagem/fundo roxo) -->
         <div class="right-panel">
             <img src="img/imagemtela.png" alt="Imagem ilustrativa">
         </div>
-
     </div>
 </body>
 

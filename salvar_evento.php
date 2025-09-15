@@ -24,4 +24,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['status' => 'success', 'message' => 'Evento salvo com sucesso!']);
     exit;
 }
+
 echo json_encode(['status' => 'error', 'message' => 'Método inválido']);
