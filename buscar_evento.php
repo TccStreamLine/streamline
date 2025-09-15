@@ -3,14 +3,18 @@ session_start();
 include_once('config.php');
 
 if (empty($_SESSION['id'])) {
-    http_response_code(401);
-    echo json_encode([]);
-    exit;
+    http_response_code(403);
+    exit('Não autorizado');
 }
 
 $usuario_id = $_SESSION['id'];
-$stmt = $pdo->prepare("SELECT id, titulo, inicio AS data_evento FROM eventos WHERE usuario_id = ?");
-$stmt->execute([$usuario_id]);
-$eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$data = $_GET['data'] ?? '';
 
-echo json_encode($eventos);
+
+if ($data) {
+    $stmt = $pdo->prepare("SELECT id, titulo, inicio, horario, descricao FROM eventos WHERE usuario_id = ? AND inicio = ?");
+    $stmt->execute([$usuario_id, $data]);
+    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+} else {
+    echo json_encode([]);
+}

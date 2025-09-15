@@ -22,14 +22,35 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 </head>
 
 <body>
-<?php if (isset($_GET['msg']) && $_GET['msg'] === 'notificacao'): ?>
-    <div class="alerta" style="background:#ffeeba; color:#856404; padding:10px; margin-bottom:10px; border-radius:5px;">
-        Você tem eventos importantes, verifique sua agenda.
-    </div>
-<?php endif; ?>
-
-    <div class="container">  
-        <div class="notificacao-container" title="Nenhuma notificação hoje">
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;">
+        </div>
+        <div class="menu-section">
+            <h6>MENU</h6>
+            <ul class="menu-list">
+                <li><a href="sistema.php"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="estoque.php"><i class="fas fa-box"></i> Estoque</a></li>
+                <li><a href="agenda.php" class="active"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
+                <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
+                <li><a href="#"><i class="fas fa-chart-bar"></i> Vendas</a></li>
+                <li><a href="caixa.php"><i class="fas fa-cash-register"></i> Caixa</a></li>
+                <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
+                <li><a href="#"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
+            </ul>
+        </div>
+        <div class="menu-section outros">
+            <h6>OUTROS</h6>
+            <ul class="menu-list">
+                <li><a href="#"><i class="fas fa-store"></i> Loja de Planos</a></li>
+                <li><a href="sair.php"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div id="notification-popup"></div>
+    <div id="calendar-container">
+        <div class="notificacao-container" title="Nenhuma notificação hoje" style="position:relative;">
             <i class="fa fa-bell"></i>
             <span id="notificacao-contador" class="notificacao-contador" style="display:none;">0</span>
         </div>
@@ -51,7 +72,23 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 <div class="dia-semana">Sáb</div>
             </div>
             <div class="calendario-grid" id="calendario-corpo">
-                </div>
+                <!-- Dias do mês serão inseridos via JS -->
+            </div>
+        </div>
+        <div id="eventos-dia-container" style="margin-top:30px;">
+            <h3>Eventos do dia selecionado</h3>
+            <table id="eventos-dia-tabela" style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Início</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Eventos serão inseridos aqui via JS -->
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -62,27 +99,19 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             <form id="form-evento">
                 <input type="hidden" id="data-selecionada-input" name="data">
                 <label for="titulo">Título:</label><br>
-                <input type="text" id="titulo-evento" name="titulo" required style="width: 95%; margin-bottom: 10px;"><br>
+                <input type="text" id="titulo-evento" name="titulo" required
+                    style="width: 95%; margin-bottom: 10px;"><br>
+                <label for="horario">Horário:</label><br>
+                <input type="time" id="horario-evento" name="horario" required
+                    style="width: 95%; margin-bottom: 10px;"><br>
+                <label for="descricao">Descrição:</label><br>
+                <textarea id="descricao-evento" name="descricao" rows="3"
+                    style="width: 95%; margin-bottom: 10px;"></textarea><br>
                 <button type="submit">Salvar</button>
                 <button type="button" onclick="fecharModal()">Cancelar</button>
             </form>
         </div>
     </div>
-    <div id="eventos-dia-container">
-        <h3>Eventos do dia selecionado</h3>
-        <table id="eventos-dia-tabela" style="width:100%; border-collapse:collapse;">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Início</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Eventos serão inseridos aqui via JS -->
-            </tbody>
-        </table>
-    </div>
-
 </body>
+
 </html>
