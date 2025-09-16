@@ -41,6 +41,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -141,14 +142,14 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                                 <td><?= htmlspecialchars($produto['id']) ?></td>
                                 <td><?= htmlspecialchars($produto['nome']) ?></td>
                                 <td><?= htmlspecialchars($produto['quantidade_estoque']) ?></td>
-                                <td>R$ <?= number_format((float)$produto['valor_venda'], 2, ',', '.') ?></td>
+                                <td>R$ <?= number_format((float) $produto['valor_venda'], 2, ',', '.') ?></td>
                                 <td><?= htmlspecialchars($produto['categoria_nome'] ?? 'N/A') ?></td>
                                 <td class="actions">
                                     <a href="produto_formulario.php?id=<?= $produto['id'] ?>" class="btn-action btn-edit">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
 
-                                    <a href="excluir_produto.php?id=<?= $produto['id'] ?>" class="btn-action btn-delete" onclick="return confirm('Tem certeza que deseja excluir este produto?');">
+                                    <a href="excluir_produto.php?id=<?= $produto['id'] ?>" class="btn-action btn-delete">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                 </td>
@@ -208,6 +209,84 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 document.getElementById('categoria_id').value = categoriaId;
                 document.getElementById('fornecedor_id').value = fornecedorId;
                 modalContainer.style.display = 'flex';
+            });
+        });
+        const modalContainer = document.getElementById('modalCadastro');
+        const openModalBtn = document.getElementById('btnCadastrarProduto');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
+
+        const closeModal = () => {
+            modalContainer.style.display = 'none';
+        };
+
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelModalBtn.addEventListener('click', closeModal);
+        modalContainer.addEventListener('click', (e) => {
+            if (e.target === modalContainer) {
+                closeModal();
+            }
+        });
+
+        openModalBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('.modal-form').reset();
+            document.getElementById('modalTitle').innerText = 'Cadastrar Novo Produto';
+            document.getElementById('formAcao').value = 'cadastrar';
+            document.getElementById('produto_id').value = '';
+            modalContainer.style.display = 'flex';
+        });
+
+        const editButtons = document.querySelectorAll('.btn-edit');
+        editButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const id = button.dataset.id;
+                const nome = button.dataset.nome;
+                const especificacao = button.dataset.especificacao;
+                const qtdEstoque = button.dataset.qtd_estoque;
+                const qtdMinima = button.dataset.qtd_minima;
+                const valorCompra = button.dataset.valor_compra;
+                const valorVenda = button.dataset.valor_venda;
+                const categoriaId = button.dataset.categoria_id;
+                const fornecedorId = button.dataset.fornecedor_id;
+
+                document.getElementById('modalTitle').innerText = 'Editar Produto';
+                document.getElementById('formAcao').value = 'editar';
+                document.getElementById('produto_id').value = id;
+                document.getElementById('nome').value = nome;
+                document.getElementById('especificacao').value = especificacao;
+                document.getElementById('quantidade_estoque').value = qtdEstoque;
+                document.getElementById('quantidade_minima').value = qtdMinima;
+                document.getElementById('valor_compra').value = valorCompra.replace('.', ',');
+                document.getElementById('valor_venda').value = valorVenda.replace('.', ',');
+                document.getElementById('categoria_id').value = categoriaId;
+                document.getElementById('fornecedor_id').value = fornecedorId;
+
+                modalContainer.style.display = 'flex';
+            });
+        });
+
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+                const url = this.href;
+
+                Swal.fire({
+                    title: 'Tem certeza?',
+                    text: "Você não poderá reverter esta ação!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6B7280',
+                    confirmButtonText: 'Sim',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
             });
         });
     </script>

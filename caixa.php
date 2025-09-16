@@ -15,6 +15,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
     <meta charset="UTF-8">
     <title>Caixa - Streamline</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/sistema.css">
     <link rel="stylesheet" href="css/caixa.css">
@@ -30,13 +31,13 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             <ul class="menu-list">
                 <li><a href="sistema.php"><i class="fas fa-home"></i> Início</a></li>
                 <li><a href="estoque.php"><i class="fas fa-box"></i> Estoque</a></li>
-                <li><a href="agenda.php"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
                 <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
-                <li><a href="#"><i class="fas fa-chart-bar"></i> Vendas</a></li>
+                <li><a href="agenda.php"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
+                <li><a href="vendas.php"><i class="fas fa-chart-bar"></i> Vendas</a></li>
                 <li><a href="caixa.php" class="active"><i class="fas fa-cash-register"></i> Caixa</a></li>
-                <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
-                <li><a href="#"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
+                <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="nota_fiscal.php"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
+                <li><a href="servicos.php"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
             </ul>
         </div>
         <div class="menu-section outros">
@@ -50,19 +51,20 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 
     <main class="main-content">
         <header class="main-header">
-            <div class="message-container">
-                <?php if (isset($_SESSION['msg_sucesso_caixa'])): ?>
-                    <div class="alert alert-success">
-                        <?= $_SESSION['msg_sucesso_caixa'];
-                        unset($_SESSION['msg_sucesso_caixa']); ?>
-                    </div>
-                <?php endif; ?>
-            </div>
             <h2>Caixa Aberto</h2>
             <div class="user-profile"><span><?= htmlspecialchars($nome_empresa) ?></span>
                 <div class="avatar"><i class="fas fa-user"></i></div>
             </div>
         </header>
+
+        <div class="message-container">
+            <?php if (isset($_SESSION['msg_sucesso_caixa'])): ?>
+                <div class="alert alert-success">
+                    <?= $_SESSION['msg_sucesso_caixa'];
+                    unset($_SESSION['msg_sucesso_caixa']); ?>
+                </div>
+            <?php endif; ?>
+        </div>
 
         <div class="caixa-container">
             <div class="caixa-painel-venda">
@@ -74,11 +76,11 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 <div class="info-group-caixa">
                     <div class="info-box">
                         <label>Valor Unitário</label>
-                        <span id="valor_unitario">Aparecer</span>
+                        <span id="valor_unitario">R$0,00</span>
                     </div>
                     <div class="info-box">
                         <label>Total. Item</label>
-                        <span id="total_item">Aparecer</span>
+                        <span id="total_item">R$0,00</span>
                     </div>
                 </div>
                 <div class="form-group-caixa">
@@ -88,10 +90,14 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 <button class="btn-caixa btn-lancamento">Lançar Produto</button>
 
                 <div class="caixa-acoes-secundarias">
-                    <button class="btn-caixa btn-secundario">Excluir essa venda</button>
+                    <button class="btn-caixa btn-secundario" id="btnExcluirVenda">Excluir essa venda</button>
                     <button class="btn-caixa btn-secundario">Editar essa venda</button>
-                    <button class="btn-caixa btn-secundario">Gerenciar Vendas</button>
+                    <a href="vendas.php" class="btn-caixa btn-secundario">Gerenciar Vendas</a>
                     <button class="btn-caixa btn-secundario">Imprimir nota fiscal</button>
+                </div>
+
+                <div class="form-group-caixa">
+                    <input type="text" id="valor_pago" placeholder="Valor Pago pelo Cliente (R$)">
                 </div>
 
                 <button class="btn-caixa btn-finalizar">Finalizar Compra</button>
@@ -105,13 +111,14 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                     <p class="lista-vazia">Nenhum produto lançado.</p>
                 </div>
                 <div class="caixa-totais">
-                    <div><span>Subtotal:</span> <span id="subtotal">Aparecer de acordo com conta</span></div>
-                    <div><span>Troco:</span> <span id="troco"></span></div>
-                    <div class="total-geral"><span>Total:</span> <span id="total_geral">Mesmo do sub</span></div>
+                    <div><span>Subtotal:</span> <span id="subtotal">R$ 0,00</span></div>
+                    <div><span>Troco:</span> <span id="troco">R$ 0,00</span></div>
+                    <div class="total-geral"><span>Total:</span> <span id="total_geral">R$ 0,00</span></div>
                 </div>
             </div>
         </div>
     </main>
+
     <script>
         const inputCodigoBarras = document.getElementById('codigo_barras');
         const displayValorUnitario = document.getElementById('valor_unitario');
@@ -119,6 +126,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         const displayTotalItem = document.getElementById('total_item');
         const btnLancarProduto = document.querySelector('.btn-lancamento');
         const btnFinalizarCompra = document.querySelector('.btn-finalizar');
+        const btnExcluirVenda = document.getElementById('btnExcluirVenda');
         const listaProdutosDiv = document.getElementById('lista-produtos');
         const subtotalDisplay = document.getElementById('subtotal');
         const totalGeralDisplay = document.getElementById('total_geral');
@@ -154,7 +162,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                     const response = await fetch(`buscar_produto.php?codigo_barras=${codigo}`);
                     const data = await response.json();
                     if (data.error) {
-                        alert(data.error);
+                        Swal.fire({ icon: 'error', title: 'Oops...', text: data.error });
                     } else {
                         produtoAtual = data;
                         displayValorUnitario.innerText = formatarMoeda(data.valor_venda);
@@ -162,7 +170,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                         inputQuantidade.select();
                     }
                 } catch (error) {
-                    alert('Erro ao se comunicar com o servidor.');
+                    Swal.fire({ icon: 'error', title: 'Erro de Conexão', text: 'Não foi possível se comunicar com o servidor.' });
                 }
             }
             calcularTotalItem();
@@ -200,14 +208,10 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 
         async function lancarProduto() {
             if (!produtoAtual) {
-                alert('Por favor, busque um produto válido primeiro.');
+                Swal.fire({ icon: 'warning', title: 'Atenção', text: 'Por favor, busque um produto válido primeiro.' });
                 return;
             }
-            const dados = {
-                acao: 'adicionar',
-                produto_id: produtoAtual.id,
-                quantidade: parseInt(inputQuantidade.value)
-            };
+            const dados = { acao: 'adicionar', produto_id: produtoAtual.id, quantidade: parseInt(inputQuantidade.value) };
             const response = await fetch('gerenciar_carrinho.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -223,25 +227,35 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             inputCodigoBarras.focus();
         }
 
-        async function finalizarVenda() {
-            if (!confirm('Tem certeza que deseja finalizar esta venda?')) {
-                return;
-            }
-            try {
-                const response = await fetch('finalizar_venda.php', { method: 'POST' });
-                const data = await response.json();
-                if (data.error) {
-                    alert(data.error);
-                } else if (data.success) {
-                    window.location.reload();
+        function finalizarVenda() {
+            Swal.fire({
+                title: 'Finalizar Venda?',
+                text: "Esta ação é irreversível.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#6D28D9',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Sim, finalizar',
+                cancelButtonText: 'Cancelar'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch('finalizar_venda.php', { method: 'POST' });
+                        const data = await response.json();
+                        if (data.error) {
+                            Swal.fire({ icon: 'error', title: 'Erro!', text: data.error });
+                        } else if (data.success) {
+                            window.location.reload();
+                        }
+                    } catch (error) {
+                        Swal.fire({ icon: 'error', title: 'Erro de Conexão', text: 'Ocorreu um erro ao finalizar a venda.' });
+                    }
                 }
-            } catch (error) {
-                alert('Ocorreu um erro ao finalizar a venda.');
-            }
+            });
         }
 
         function calcularTroco() {
-            const valorPago = parseMoeda(inputValorPago.value);
+            const valorPago = parseFloat(inputValorPago.value.replace(',', '.')) || 0;
             let troco = 0;
             if (valorPago > 0 && valorPago >= totalVendaAtual) {
                 troco = valorPago - totalVendaAtual;
@@ -249,18 +263,38 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             trocoDisplay.innerText = formatarMoeda(troco);
         }
 
-        inputCodigoBarras.addEventListener('keypress', e => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                buscarProduto();
-            }
-        });
+        async function excluirVenda() {
+            Swal.fire({
+                title: 'Limpar Venda?',
+                text: "Todos os itens do carrinho serão removidos.",
+                showCancelButton: true,
+                icon: 'warning',
+                confirmButtonColor: 'rgba(118, 25, 240, 1)',
+                cancelButtonColor: '#dbc9f0ff',
+                confirmButtonText: 'Sim',
+                cancelButtonText: 'Cancelar'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const dados = { acao: 'limpar' };
+                    const response = await fetch('gerenciar_carrinho.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dados)
+                    });
+                    const carrinhoVazio = await response.json();
+                    atualizarCarrinhoNaTela(carrinhoVazio);
+                    inputValorPago.value = '';
+                    calcularTroco();
+                }
+            });
+        }
 
+        inputCodigoBarras.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); buscarProduto(); } });
         inputQuantidade.addEventListener('input', calcularTotalItem);
         btnLancarProduto.addEventListener('click', lancarProduto);
         btnFinalizarCompra.addEventListener('click', finalizarVenda);
         inputValorPago.addEventListener('input', calcularTroco);
-
+        btnExcluirVenda.addEventListener('click', excluirVenda);
     </script>
 </body>
 

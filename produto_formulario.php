@@ -1,28 +1,35 @@
 <?php
 session_start();
 include_once('config.php');
+
 if (empty($_SESSION['id'])) {
     header('Location: login.php');
     exit;
 }
+
 $modo_edicao = false;
 $produto_para_editar = [];
 $titulo_pagina = "Cadastrar Produto";
+
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $modo_edicao = true;
     $id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
     $titulo_pagina = "Editar Produto";
+
     $stmt = $pdo->prepare("SELECT * FROM produtos WHERE id = :id");
     $stmt->execute([':id' => $id]);
     $produto_para_editar = $stmt->fetch(PDO::FETCH_ASSOC);
+
     if (!$produto_para_editar) {
         $_SESSION['msg_erro'] = "Produto não encontrado.";
         header('Location: estoque.php');
         exit;
     }
 }
+
 $categorias = $pdo->query("SELECT id, nome FROM categorias ORDER BY nome")->fetchAll(PDO::FETCH_ASSOC);
 $fornecedores = $pdo->query("SELECT id, razao_social FROM fornecedores ORDER BY razao_social")->fetchAll(PDO::FETCH_ASSOC);
+
 $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 ?>
 <!DOCTYPE html>
@@ -37,32 +44,8 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 </head>
 <body>
     <nav class="sidebar">
-        <div class="sidebar-logo">
-            <img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;">
-        </div>
-        <div class="menu-section">
-            <h6>MENU</h6>
-            <ul class="menu-list">
-                <li><a href="sistema.php"><i class="fas fa-home"></i> Início</a></li>
-                <li><a href="estoque.php" class="active"><i class="fas fa-box"></i> Estoque</a></li>
-                <li><a href="categorias.php"><i class="fas fa-tags"></i> Categorias</a></li>
-                <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
-                <li><a href="#"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
-                <li><a href="#"><i class="fas fa-chart-bar"></i> Vendas</a></li>
-                <li><a href="#"><i class="fas fa-cash-register"></i> Caixa</a></li>
-                <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
-                <li><a href="#"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
-            </ul>
-        </div>
-        <div class="menu-section outros">
-            <h6>OUTROS</h6>
-            <ul class="menu-list">
-                <li><a href="#"><i class="fas fa-store"></i> Loja de Planos</a></li>
-                <li><a href="sair.php"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
-            </ul>
-        </div>
-    </nav>
+        </nav>
+
     <main class="main-content">
         <header class="main-header">
             <h2>Estoque > <?= $titulo_pagina ?></h2>
@@ -71,11 +54,13 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 <div class="avatar"><i class="fas fa-user"></i></div>
             </div>
         </header>
+
         <div class="form-produto-container">
             <h3 class="form-produto-title"><?= $modo_edicao ? 'EDITAR PRODUTO' : 'CADASTRE SEU PRODUTO MANUALMENTE' ?></h3>
             <form action="processa_produto.php" method="POST">
                 <input type="hidden" name="acao" value="<?= $modo_edicao ? 'editar' : 'cadastrar' ?>">
                 <input type="hidden" name="produto_id" value="<?= $produto_para_editar['id'] ?? '' ?>">
+
                 <div class="form-produto-grid">
                     <div class="form-produto-group">
                         <label for="codigo_barras">Código de barras</label>

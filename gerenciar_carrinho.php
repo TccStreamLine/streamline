@@ -9,7 +9,7 @@ if (!isset($_SESSION['carrinho'])) {
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
-$acao = $data['acao'] ?? $_GET['acao'] ?? '';
+$acao = $data['acao'] ?? '';
 
 if ($acao === 'adicionar') {
     $produto_id = $data['produto_id'] ?? 0;
@@ -38,4 +38,4 @@ if ($acao === 'adicionar') {
 }
 
 echo json_encode(array_values($_SESSION['carrinho']));
-?>
+?>  

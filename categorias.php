@@ -13,14 +13,17 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Categorias - Sistema de Gerenciamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/sistema.css">
     <link rel="stylesheet" href="css/estoque.css">
 </head>
+
 <body>
     <nav class="sidebar">
         <div class="sidebar-logo"><img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;"></div>
@@ -29,8 +32,8 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             <ul class="menu-list">
                 <li><a href="sistema.php"><i class="fas fa-home"></i> Início</a></li>
                 <li><a href="estoque.php" class="active"><i class="fas fa-box"></i> Estoque</a></li>
-                <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
                 <li><a href="#"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
+                <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
                 <li><a href="#"><i class="fas fa-chart-bar"></i> Vendas</a></li>
                 <li><a href="caixa.php"><i class="fas fa-cash-register"></i> Caixa</a></li>
                 <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
@@ -54,11 +57,18 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             </div>
         </header>
         <div class="message-container">
-            <?php if (isset($_SESSION['msg_sucesso'])): ?><div class="alert alert-success"><?= $_SESSION['msg_sucesso']; unset($_SESSION['msg_sucesso']); ?></div><?php endif; ?>
-            <?php if (isset($_SESSION['msg_erro'])): ?><div class="alert alert-danger"><?= $_SESSION['msg_erro']; unset($_SESSION['msg_erro']); ?></div><?php endif; ?>
+            <?php if (isset($_SESSION['msg_sucesso'])): ?>
+                <div class="alert alert-success"><?= $_SESSION['msg_sucesso'];
+                unset($_SESSION['msg_sucesso']); ?></div>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['msg_erro'])): ?>
+                <div class="alert alert-danger"><?= $_SESSION['msg_erro'];
+                unset($_SESSION['msg_erro']); ?></div>
+            <?php endif; ?>
         </div>
         <div class="actions-container">
-            <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Pesquisar Categoria..."></div>
+            <div class="search-bar"><i class="fas fa-search"></i><input type="text"
+                    placeholder="Pesquisar Categoria..."></div>
             <a href="categoria_formulario.php" class="btn-primary"><i class="fas fa-plus"></i> Cadastrar Categoria</a>
         </div>
         <div class="table-container">
@@ -81,8 +91,10 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                                 <td><?= htmlspecialchars($categoria['id']) ?></td>
                                 <td><?= htmlspecialchars($categoria['nome']) ?></td>
                                 <td class="actions">
-                                    <a href="categoria_formulario.php?id=<?= $categoria['id'] ?>" class="btn-action btn-edit"><i class="fas fa-pencil-alt"></i></a>
-                                    <a href="excluir_categoria.php?id=<?= $categoria['id'] ?>" class="btn-action btn-delete" onclick="return confirm('Tem certeza?');"><i class="fas fa-trash-alt"></i></a>
+                                    <a href="categoria_formulario.php?id=<?= $categoria['id'] ?>" class="btn-action btn-edit">
+                                        <i class="fas fa-pencil-alt"></i> </a>
+                                    <a href="excluir_categoria.php?id=<?= $categoria['id'] ?>" class="btn-action btn-delete">
+                                        <i class="fas fa-trash-alt"></i> </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -91,5 +103,32 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             </table>
         </div>
     </main>
+    <script>
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                const url = this.href;
+
+                Swal.fire({
+                    title: 'Tem certeza?',
+                    text: "Você não poderá reverter esta ação!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6B7280',
+                    confirmButtonText: 'Sim',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    </script>
 </body>
+
 </html>
