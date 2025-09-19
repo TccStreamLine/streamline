@@ -11,7 +11,7 @@ if (empty($codigo_barras)) {
 }
 
 try {
-    $stmt = $pdo->prepare("SELECT id, nome, valor_venda FROM produtos WHERE codigo_barras = ?");
+    $stmt = $pdo->prepare("SELECT id, nome, valor_venda FROM produtos WHERE codigo_barras = ? AND status = 'ativo'");
     $stmt->execute([$codigo_barras]);
     $produto = $stmt->fetch(PDO::FETCH_ASSOC);
 

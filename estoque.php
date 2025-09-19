@@ -13,7 +13,7 @@ $fornecedores = [];
 $erro_busca = null;
 
 try {
-    $stmt_produtos = $pdo->prepare("SELECT p.*, c.nome as categoria_nome FROM produtos p LEFT JOIN categorias c ON p.categoria_id = c.id ORDER BY p.nome ASC");
+    $stmt_produtos = $pdo->prepare("SELECT p.*, c.nome as categoria_nome FROM produtos p LEFT JOIN categorias c ON p.categoria_id = c.id WHERE p.status = 'ativo' ORDER BY p.nome ASC");
     $stmt_produtos->execute();
     $produtos = $stmt_produtos->fetchAll(PDO::FETCH_ASSOC);
 
