@@ -134,7 +134,7 @@ body {
 }
 
 /* Campos com efeito igual ao cadastro */
-.inputLogin input {
+.inputLogin input, .inputLogin select {
     width: 100%;
     padding: 15px 15px 15px 50px;
     background: #f3e8ff;
@@ -172,10 +172,10 @@ body {
     border: none;
     padding: 16px;
     border-radius: 12px;
-    margin-right: 300px;
+    margin-right: 0px;
+    width: 100%;
     margin-top: 15px;
     margin-bottom: 15px;
-    width: 115%;
     transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(74, 20, 140, 0.3);
 }

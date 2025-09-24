@@ -31,8 +31,8 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             <ul class="menu-list">
                 <li><a href="sistema.php"><i class="fas fa-home"></i> Início</a></li>
                 <li><a href="estoque.php"><i class="fas fa-box"></i> Estoque</a></li>
-                <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
                 <li><a href="agenda.php"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
+                <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
                 <li><a href="vendas.php"><i class="fas fa-chart-bar"></i> Vendas</a></li>
                 <li><a href="caixa.php" class="active"><i class="fas fa-cash-register"></i> Caixa</a></li>
                 <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
@@ -59,7 +59,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 
         <div class="message-container">
             <?php if (isset($_SESSION['msg_sucesso_caixa'])): ?>
-                <div class="alert alert-success">
+                <div class="alert alert-success" style="background-color: #10B981; color: white; padding: 1rem; border-radius: 8px;">
                     <?= $_SESSION['msg_sucesso_caixa'];
                     unset($_SESSION['msg_sucesso_caixa']); ?>
                 </div>
@@ -90,10 +90,8 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 <button class="btn-caixa btn-lancamento">Lançar Produto</button>
 
                 <div class="caixa-acoes-secundarias">
-                    <button class="btn-caixa btn-secundario" id="btnExcluirVenda">Excluir essa venda</button>
-                    <button class="btn-caixa btn-secundario">Editar essa venda</button>
+                    <button class="btn-caixa btn-secundario" id="btnExcluirVenda">Limpar Venda</button>
                     <a href="vendas.php" class="btn-caixa btn-secundario">Gerenciar Vendas</a>
-                    <button class="btn-caixa btn-secundario">Imprimir nota fiscal</button>
                 </div>
 
                 <div class="form-group-caixa">
@@ -136,7 +134,10 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         let totalVendaAtual = 0;
 
         function formatarMoeda(valor) {
-            return parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            return parseFloat(valor).toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
         }
 
         function parseMoeda(valorString) {
@@ -162,7 +163,11 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                     const response = await fetch(`buscar_produto.php?codigo_barras=${codigo}`);
                     const data = await response.json();
                     if (data.error) {
-                        Swal.fire({ icon: 'error', title: 'Oops...', text: data.error });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: data.error
+                        });
                     } else {
                         produtoAtual = data;
                         displayValorUnitario.innerText = formatarMoeda(data.valor_venda);
@@ -170,7 +175,11 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                         inputQuantidade.select();
                     }
                 } catch (error) {
-                    Swal.fire({ icon: 'error', title: 'Erro de Conexão', text: 'Não foi possível se comunicar com o servidor.' });
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro de Conexão',
+                        text: 'Não foi possível se comunicar com o servidor.'
+                    });
                 }
             }
             calcularTotalItem();
@@ -183,18 +192,19 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 listaProdutosDiv.innerHTML = '<p class="lista-vazia">Nenhum produto lançado.</p>';
             } else {
                 const table = document.createElement('table');
-                table.innerHTML = `<thead><tr><th>Produto</th><th>Qtd.</th><th>V. Unit.</th><th>V. Total</th></tr></thead>`;
+                table.innerHTML = `<thead><tr><th>Produto</th><th>Qtd.</th><th>V. Unit.</th><th>V. Total</th><th>Ações</th></tr></thead>`;
                 const tbody = document.createElement('tbody');
                 carrinho.forEach(item => {
                     const totalItem = item.quantidade * item.valor_unitario;
                     subtotal += totalItem;
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                    <td>${item.nome}</td>
-                    <td>${item.quantidade}</td>
-                    <td>${formatarMoeda(item.valor_unitario)}</td>
-                    <td>${formatarMoeda(totalItem)}</td>
-                `;
+                        <td>${item.nome}</td>
+                        <td>${item.quantidade}</td>
+                        <td>${formatarMoeda(item.valor_unitario)}</td>
+                        <td>${formatarMoeda(totalItem)}</td>
+                        <td><button class="btn-remover-item" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button></td>
+                    `;
                     tbody.appendChild(tr);
                 });
                 table.appendChild(tbody);
@@ -208,13 +218,23 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 
         async function lancarProduto() {
             if (!produtoAtual) {
-                Swal.fire({ icon: 'warning', title: 'Atenção', text: 'Por favor, busque um produto válido primeiro.' });
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atenção',
+                    text: 'Por favor, busque um produto válido primeiro.'
+                });
                 return;
             }
-            const dados = { acao: 'adicionar', produto_id: produtoAtual.id, quantidade: parseInt(inputQuantidade.value) };
+            const dados = {
+                acao: 'adicionar',
+                produto_id: produtoAtual.id,
+                quantidade: parseInt(inputQuantidade.value)
+            };
             const response = await fetch('gerenciar_carrinho.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(dados)
             });
             const carrinhoAtualizado = await response.json();
@@ -225,6 +245,22 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             displayTotalItem.innerText = 'R$ 0,00';
             produtoAtual = null;
             inputCodigoBarras.focus();
+        }
+
+        async function removerProduto(produtoId) {
+            const dados = {
+                acao: 'remover',
+                produto_id: produtoId
+            };
+            const response = await fetch('gerenciar_carrinho.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dados)
+            });
+            const carrinhoAtualizado = await response.json();
+            atualizarCarrinhoNaTela(carrinhoAtualizado);
         }
 
         function finalizarVenda() {
@@ -240,15 +276,27 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        const response = await fetch('finalizar_venda.php', { method: 'POST' });
+                        const response = await fetch('finalizar_venda.php', {
+                            method: 'POST'
+                        });
                         const data = await response.json();
                         if (data.error) {
-                            Swal.fire({ icon: 'error', title: 'Erro!', text: data.error });
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Erro!',
+                                text: data.error,
+                                confirmButtonColor: '#6D28D9'
+                            });
                         } else if (data.success) {
                             window.location.reload();
                         }
                     } catch (error) {
-                        Swal.fire({ icon: 'error', title: 'Erro de Conexão', text: 'Ocorreu um erro ao finalizar a venda.' });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro de Conexão',
+                            text: 'Ocorreu um erro ao finalizar a venda.',
+                            confirmButtonColor: '#6D28D9'
+                        });
                     }
                 }
             });
@@ -269,16 +317,20 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 text: "Todos os itens do carrinho serão removidos.",
                 showCancelButton: true,
                 icon: 'warning',
-                confirmButtonColor: 'rgba(118, 25, 240, 1)',
-                cancelButtonColor: '#dbc9f0ff',
+                confirmButtonColor: '#6D28D9',
+                cancelButtonColor: '#6B7280',
                 confirmButtonText: 'Sim',
                 cancelButtonText: 'Cancelar'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    const dados = { acao: 'limpar' };
+                    const dados = {
+                        acao: 'limpar'
+                    };
                     const response = await fetch('gerenciar_carrinho.php', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
                         body: JSON.stringify(dados)
                     });
                     const carrinhoVazio = await response.json();
@@ -289,13 +341,35 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             });
         }
 
-        inputCodigoBarras.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); buscarProduto(); } });
+        inputCodigoBarras.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                buscarProduto();
+            }
+        });
         inputQuantidade.addEventListener('input', calcularTotalItem);
         btnLancarProduto.addEventListener('click', lancarProduto);
         btnFinalizarCompra.addEventListener('click', finalizarVenda);
         inputValorPago.addEventListener('input', calcularTroco);
         btnExcluirVenda.addEventListener('click', excluirVenda);
+
+        listaProdutosDiv.addEventListener('click', function(e) {
+            const removeButton = e.target.closest('.btn-remover-item');
+            if (removeButton) {
+                const produtoId = removeButton.dataset.id;
+                removerProduto(produtoId);
+            }
+        });
     </script>
+    <style>
+        .btn-remover-item {
+            background: none;
+            border: none;
+            color: #EF4444;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+    </style>
 </body>
 
 </html>

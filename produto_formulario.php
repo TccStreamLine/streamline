@@ -34,6 +34,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title><?= $titulo_pagina ?> - Streamline</title>
@@ -42,9 +43,34 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
     <link rel="stylesheet" href="css/sistema.css">
     <link rel="stylesheet" href="css/produto_formulario.css">
 </head>
+
 <body>
     <nav class="sidebar">
-        </nav>
+        <div class="sidebar-logo">
+            <img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;">
+        </div>
+        <div class="menu-section">
+            <h6>MENU</h6>
+            <ul class="menu-list">
+                <li><a href="sistema.php"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="estoque.php" class="active"><i class="fas fa-box"></i> Estoque</a></li>
+                <li><a href="agenda.php"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
+                <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
+                <li><a href="vendas.php"><i class="fas fa-chart-bar"></i> Vendas</a></li>
+                <li><a href="caixa.php"><i class="fas fa-cash-register"></i> Caixa</a></li>
+                <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
+                <li><a href="#"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
+            </ul>
+        </div>
+        <div class="menu-section outros">
+            <h6>OUTROS</h6>
+            <ul class="menu-list">
+                <li><a href="#"><i class="fas fa-store"></i> Loja de Planos</a></li>
+                <li><a href="sair.php"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <main class="main-content">
         <header class="main-header">
@@ -111,4 +137,5 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         </div>
     </main>
 </body>
+
 </html>

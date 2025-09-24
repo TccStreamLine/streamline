@@ -1,0 +1,106 @@
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.kpi-card, .chart-card, .list-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+}
+
+.kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.kpi-card .icon {
+    font-size: 1.8rem;
+    padding: 1rem;
+    border-radius: 50%;
+    background-color: #F3E8FF;
+    color: #6D28D9;
+}
+
+.kpi-card .icon.danger {
+    background-color: #FEE2E2;
+    color: #EF4444;
+}
+
+.kpi-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.kpi-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.chart-card {
+    display: flex; 
+    flex-direction: column; 
+}
+
+.chart-card.large {
+    grid-column: span 2;
+}
+
+/* ESTA É A NOVA REGRA QUE RESOLVE O PROBLEMA */
+.chart-container {
+    position: relative;
+    flex-grow: 1; /* Faz o contêiner ocupar o espaço disponível */
+    min-height: 250px; /* Altura mínima para evitar que o gráfico suma se não houver dados */
+}
+
+.chart-card h3, .list-card h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.list-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list-card li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.list-card li:last-child {
+    border-bottom: none;
+}
+
+.produto-nome {
+    font-weight: 500;
+}
+.produto-qtd {
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.insight-item {
+    display: block !important; /* Força o item a se comportar como um bloco normal */
+    padding: 1rem 0 !important; /* Adiciona espaçamento em cima e embaixo */
+    border-bottom: 1px solid #E5E7EB; /* Adiciona a linha divisória */
+    line-height: 1.6;
+}
+
+/* Remove a borda do último item da lista para ficar mais limpo */
+.list-card ul .insight-item:last-child {
+    border-bottom: none;
+}

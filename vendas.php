@@ -1,30 +1,44 @@
 <?php
 session_start();
 include_once('config.php');
+
 if (empty($_SESSION['id'])) {
     header('Location: login.php');
     exit;
 }
-// Alteração aqui para buscar apenas fornecedores com status 'ativo'
-$sql = "SELECT * FROM fornecedores WHERE status = 'ativo' ORDER BY razao_social ASC";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$fornecedores = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$usuario_id = $_SESSION['id'];
+$vendas = [];
+
+try {
+    // A alteração está na linha abaixo, dentro do GROUP_CONCAT
+    $sql = "SELECT v.id, v.data_venda, v.valor_total, v.descricao, GROUP_CONCAT(CONCAT(p.nome, ' (', vi.quantidade, 'x)') SEPARATOR ', ') as produtos
+            FROM vendas v
+            LEFT JOIN venda_itens vi ON v.id = vi.venda_id
+            LEFT JOIN produtos p ON vi.produto_id = p.id
+            WHERE v.usuario_id = ? AND v.status = 'finalizada'
+            GROUP BY v.id
+            ORDER BY v.data_venda DESC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$usuario_id]);
+    $vendas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $_SESSION['msg_erro'] = "Erro ao buscar vendas.";
+}
+
 $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fornecedores - Sistema de Gerenciamento</title>
+    <title>Vendas - Sistema de Gerenciamento</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/sistema.css">
     <link rel="stylesheet" href="css/estoque.css">
 </head>
-
 <body>
     <nav class="sidebar">
         <div class="sidebar-logo">
@@ -36,8 +50,8 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 <li><a href="sistema.php"><i class="fas fa-home"></i> Início</a></li>
                 <li><a href="estoque.php"><i class="fas fa-box"></i> Estoque</a></li>
                 <li><a href="agenda.php"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
-                <li><a href="fornecedores.php" class="active"><i class="fas fa-truck"></i> Fornecimento</a></li>
-                <li><a href="vendas.php"><i class="fas fa-chart-bar"></i> Vendas</a></li>
+                <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
+                <li><a href="vendas.php" class="active"><i class="fas fa-chart-bar"></i> Vendas</a></li>
                 <li><a href="caixa.php"><i class="fas fa-cash-register"></i> Caixa</a></li>
                 <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
@@ -54,56 +68,46 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
     </nav>
     <main class="main-content">
         <header class="main-header">
-            <h2>Gerenciamento de Fornecedores</h2>
-            <div class="user-profile"><span><?= htmlspecialchars($nome_empresa) ?></span>
-                <div class="avatar"><i class="fas fa-user"></i></div>
-            </div>
+            <h2>Gerenciamento de Vendas</h2>
+            <div class="user-profile"><span><?= htmlspecialchars($nome_empresa) ?></span><div class="avatar"><i class="fas fa-user"></i></div></div>
         </header>
+        
         <div class="message-container">
-            <?php if (isset($_SESSION['msg_sucesso'])): ?>
-                <div class="alert alert-success"><?= $_SESSION['msg_sucesso'];
-                unset($_SESSION['msg_sucesso']); ?></div>
-            <?php endif; ?>
-            <?php if (isset($_SESSION['msg_erro'])): ?>
-                <div class="alert alert-danger"><?= $_SESSION['msg_erro'];
-                unset($_SESSION['msg_erro']); ?></div>
-            <?php endif; ?>
+            <?php if (isset($_SESSION['msg_sucesso'])): ?><div class="alert alert-success"><?= $_SESSION['msg_sucesso']; unset($_SESSION['msg_sucesso']); ?></div><?php endif; ?>
+            <?php if (isset($_SESSION['msg_erro'])): ?><div class="alert alert-danger"><?= $_SESSION['msg_erro']; unset($_SESSION['msg_erro']); ?></div><?php endif; ?>
         </div>
+        
         <div class="actions-container">
-            <div class="search-bar"><i class="fas fa-search"></i><input type="text"
-                    placeholder="Pesquisar Fornecedor..."></div>
-            <a href="fornecedor_formulario.php" class="btn-primary"><i class="fas fa-plus"></i> Cadastrar Fornecedor</a>
+            <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Pesquisar Venda..."></div>
+            <a href="venda_formulario.php" class="btn-primary"><i class="fas fa-plus"></i> Cadastrar Venda</a>
         </div>
+
         <div class="table-container">
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Razão Social</th>
-                        <th>CNPJ</th>
-                        <th>E-mail</th>
-                        <th>Telefone</th>
+                        <th>Data</th>
+                        <th>Produtos (Quantidade)</th>
+                        <th>Descrição</th>
+                        <th>Valor Total</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (empty($fornecedores)): ?>
-                        <tr>
-                            <td colspan="6" class="text-center">Nenhum fornecedor cadastrado.</td>
-                        </tr>
+                    <?php if (empty($vendas)): ?>
+                        <tr><td colspan="6" class="text-center">Nenhuma venda registrada.</td></tr>
                     <?php else: ?>
-                        <?php foreach ($fornecedores as $fornecedor): ?>
+                        <?php foreach ($vendas as $venda): ?>
                             <tr>
-                                <td><?= htmlspecialchars($fornecedor['id']) ?></td>
-                                <td><?= htmlspecialchars($fornecedor['razao_social']) ?></td>
-                                <td><?= htmlspecialchars($fornecedor['cnpj']) ?></td>
-                                <td><?= htmlspecialchars($fornecedor['email']) ?></td>
-                                <td><?= htmlspecialchars($fornecedor['telefone']) ?></td>
+                                <td><?= htmlspecialchars($venda['id']) ?></td>
+                                <td><?= date('d/m/Y H:i', strtotime($venda['data_venda'])) ?></td>
+                                <td><?= htmlspecialchars($venda['produtos'] ?? 'N/A') ?></td>
+                                <td><?= htmlspecialchars($venda['descricao']) ?></td>
+                                <td>R$ <?= number_format((float)$venda['valor_total'], 2, ',', '.') ?></td>
                                 <td class="actions">
-                                    <a href="fornecedor_formulario.php?id=<?= $fornecedor['id'] ?>" class="btn-action btn-edit">
-                                        <i class="fas fa-pencil-alt"></i> </a>
-                                    <a href="excluir_fornecedor.php?id=<?= $fornecedor['id'] ?>" class="btn-action btn-delete">
-                                        <i class="fas fa-trash-alt"></i> </a>
+                                    <a href="venda_formulario.php?id=<?= $venda['id'] ?>" class="btn-action btn-edit"><i class="fas fa-pencil-alt"></i></a>
+                                    <a href="excluir_venda.php?id=<?= $venda['id'] ?>" class="btn-action btn-delete"><i class="fas fa-trash-alt"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -113,20 +117,19 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         </div>
     </main>
     <script>
-        const deleteButtons = document.querySelectorAll('.btn-delete');
-        deleteButtons.forEach(button => {
+        document.querySelectorAll('.btn-delete').forEach(button => {
             button.addEventListener('click', function (event) {
                 event.preventDefault();
                 const url = this.href;
                 Swal.fire({
                     title: 'Tem certeza?',
-                    text: "O fornecedor será inativado e não aparecerá mais nas listas.",
+                    text: "A venda será cancelada e os produtos retornarão ao estoque. Esta ação não pode ser desfeita.",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#6B7280',
-                    confirmButtonText: 'Sim, inativar!',
-                    cancelButtonText: 'Cancelar'
+                    confirmButtonText: 'Sim, cancelar venda!',
+                    cancelButtonText: 'Voltar'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.href = url;

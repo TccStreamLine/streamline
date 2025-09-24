@@ -33,9 +33,14 @@ if ($acao === 'adicionar') {
             }
         }
     }
+} elseif ($acao === 'remover') {
+    $produto_id = $data['produto_id'] ?? 0;
+    if ($produto_id > 0 && isset($_SESSION['carrinho'][$produto_id])) {
+        unset($_SESSION['carrinho'][$produto_id]);
+    }
 } elseif ($acao === 'limpar') {
     $_SESSION['carrinho'] = [];
 }
 
 echo json_encode(array_values($_SESSION['carrinho']));
-?>  
+?>

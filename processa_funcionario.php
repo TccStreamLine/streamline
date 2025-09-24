@@ -7,77 +7,110 @@ if (empty($_SESSION['id'])) {
     exit;
 }
 
+$usuario_id = $_SESSION['id'];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $acao = $_POST['acao'] ?? '';
-
+    $id = filter_var($_POST['id'] ?? 0, FILTER_VALIDATE_INT);
     $nome = trim($_POST['nome'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $cargo = trim($_POST['cargo'] ?? '');
     $telefone = trim($_POST['telefone'] ?? '');
+    $senha = trim($_POST['senha'] ?? '');
 
     if (empty($nome) || empty($email)) {
-        $_SESSION['msg_erro'] = "Nome e E-mail são obrigatórios.";
-        header('Location: funcionarios.php');
+        $_SESSION['msg_erro_funcionario'] = "Nome e E-mail são obrigatórios.";
+        header('Location: funcionario_formulario.php' . ($id ? '?id=' . $id : ''));
         exit;
     }
 
-    if ($acao === 'cadastrar') {
-        try {
-            $check_sql = "SELECT id FROM funcionarios WHERE email = ?";
+    try {
+        if ($acao === 'cadastrar') {
+            if (empty($senha) || strlen($senha) < 6) {
+                $_SESSION['msg_erro_funcionario'] = "A senha é obrigatória e deve ter no mínimo 6 caracteres.";
+                header('Location: funcionario_formulario.php');
+                exit;
+            }
+            
+            $check_sql = "SELECT id FROM funcionarios WHERE email = ? AND usuario_id = ?";
             $check_stmt = $pdo->prepare($check_sql);
-            $check_stmt->execute([$email]);
+            $check_stmt->execute([$email, $usuario_id]);
             if ($check_stmt->fetch()) {
-                $_SESSION['msg_erro'] = "Este E-mail já está cadastrado.";
-            } else {
-                $sql = "INSERT INTO funcionarios (nome, email, cargo, telefone) VALUES (?, ?, ?, ?)";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([$nome, $email, $cargo, $telefone]);
-                $_SESSION['msg_sucesso'] = "Funcionário cadastrado com sucesso!";
+                $_SESSION['msg_erro_funcionario'] = "Este e-mail já está em uso por outro funcionário.";
+                header('Location: funcionario_formulario.php');
+                exit;
             }
-        } catch (PDOException $e) {
-            $_SESSION['msg_erro'] = "Erro ao cadastrar funcionário.";
-        }
-    } 
-    elseif ($acao === 'editar') {
-        $id = filter_var($_POST['funcionario_id'] ?? 0, FILTER_VALIDATE_INT);
-        if (!$id) {
-            $_SESSION['msg_erro'] = "ID do funcionário inválido.";
-        } else {
-            try {
-                $check_sql = "SELECT id FROM funcionarios WHERE email = ? AND id != ?";
-                $check_stmt = $pdo->prepare($check_sql);
-                $check_stmt->execute([$email, $id]);
-                if ($check_stmt->fetch()) {
-                    $_SESSION['msg_erro'] = "Este E-mail já pertence a outro funcionário.";
-                } else {
-                    $sql = "UPDATE funcionarios SET nome = ?, email = ?, cargo = ?, telefone = ? WHERE id = ?";
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute([$nome, $email, $cargo, $telefone, $id]);
-                    $_SESSION['msg_sucesso'] = "Funcionário atualizado com sucesso!";
+            
+            $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+            $sql = "INSERT INTO funcionarios (usuario_id, nome, email, cargo, telefone, senha, status) VALUES (?, ?, ?, ?, ?, ?, 'ativo')";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$usuario_id, $nome, $email, $cargo, $telefone, $senha_hash]);
+            $_SESSION['msg_sucesso'] = "Funcionário cadastrado com sucesso!";
+
+        } elseif ($acao === 'editar' && $id > 0) {
+            $check_sql = "SELECT id FROM funcionarios WHERE email = ? AND usuario_id = ? AND id != ?";
+            $check_stmt = $pdo->prepare($check_sql);
+            $check_stmt->execute([$email, $usuario_id, $id]);
+            if ($check_stmt->fetch()) {
+                $_SESSION['msg_erro_funcionario'] = "Este e-mail já pertence a outro funcionário.";
+                header('Location: funcionario_formulario.php?id=' . $id);
+                exit;
+            }
+
+            if (!empty($senha)) {
+                if (strlen($senha) < 6) {
+                    $_SESSION['msg_erro_funcionario'] = "A nova senha deve ter no mínimo 6 caracteres.";
+                    header('Location: funcionario_formulario.php?id=' . $id);
+                    exit;
                 }
-            } catch (PDOException $e) {
-                $_SESSION['msg_erro'] = "Erro ao atualizar funcionário.";
+                $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+                $sql = "UPDATE funcionarios SET nome = ?, email = ?, cargo = ?, telefone = ?, senha = ? WHERE id = ? AND usuario_id = ?";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([$nome, $email, $cargo, $telefone, $senha_hash, $id, $usuario_id]);
+            } else {
+                $sql = "UPDATE funcionarios SET nome = ?, email = ?, cargo = ?, telefone = ? WHERE id = ? AND usuario_id = ?";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([$nome, $email, $cargo, $telefone, $id, $usuario_id]);
             }
+            $_SESSION['msg_sucesso'] = "Funcionário atualizado com sucesso!";
         }
+
+    } catch (PDOException $e) {
+        $_SESSION['msg_erro'] = "Ocorreu um erro no banco de dados.";
+        header('Location: funcionarios.php');
+        exit;
     }
+    
     header('Location: funcionarios.php');
     exit;
+}
 
-} elseif (isset($_GET['acao']) && $_GET['acao'] === 'excluir') {
+elseif (isset($_GET['acao']) && $_GET['acao'] === 'excluir') {
     $id = filter_var($_GET['id'] ?? 0, FILTER_VALIDATE_INT);
+
     if ($id) {
         try {
-            $sql = "UPDATE funcionarios SET status = 'inativo' WHERE id = ?";
+            $sql = "UPDATE funcionarios SET status = 'inativo' WHERE id = ? AND usuario_id = ?";
             $stmt = $pdo->prepare($sql);
-            $stmt->execute([$id]);
+            $stmt->execute([$id, $usuario_id]);
+
+            if ($stmt->rowCount() === 0) {
+                $sql_fallback = "UPDATE funcionarios SET status = 'inativo' WHERE id = ?";
+                $stmt_fallback = $pdo->prepare($sql_fallback);
+                $stmt_fallback->execute([$id]);
+            }
+
             $_SESSION['msg_sucesso'] = "Funcionário inativado com sucesso!";
+
         } catch (PDOException $e) {
             $_SESSION['msg_erro'] = "Erro ao inativar funcionário.";
         }
     } else {
-        $_SESSION['msg_erro'] = "ID inválido.";
+        $_SESSION['msg_erro'] = "ID de funcionário inválido.";
     }
     header('Location: funcionarios.php');
     exit;
 }
-?>
+
+header('Location: funcionarios.php');
+exit;

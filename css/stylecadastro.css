@@ -31,11 +31,12 @@ body {
 }
 
 .nav-links {
-   margin-top: 30px;
+    margin-top: 30px;
     margin-left: 687px;
     display: flex;
     gap: 30px;
-    flex-wrap: wrap;  /* Permite a quebra de linha em telas menores */
+    flex-wrap: wrap;
+    /* Permite a quebra de linha em telas menores */
     justify-content: flex-start;
 }
 
@@ -205,7 +206,7 @@ img {
 }
 
 .logo {
-   width: 300px;
+    width: 300px;
     margin-top: -5px;
     margin-left: 30px;
 }
@@ -234,7 +235,8 @@ img {
 /* Telas até 1200px (notebooks menores) */
 @media (max-width: 1200px) {
     .nav-links {
-        margin-left: 300px; /* diminui deslocamento do menu */
+        margin-left: 300px;
+        /* diminui deslocamento do menu */
         gap: 20px;
     }
 
@@ -269,16 +271,19 @@ img {
     }
 
     .form-row {
-        flex-direction: column; /* empilha inputs */
+        flex-direction: column;
+        /* empilha inputs */
     }
 
     #submit {
-        width: 100%; /* botão ocupa largura toda */
+        width: 100%;
+        /* botão ocupa largura toda */
         margin-left: 0;
     }
 
     img {
-        display: none; /* some a imagem em tablets */
+        display: none;
+        /* some a imagem em tablets */
     }
 }
 
@@ -297,7 +302,8 @@ img {
     }
 
     .form-group {
-        flex-basis: 100%; /* inputs ocupam toda largura */
+        flex-basis: 100%;
+        /* inputs ocupam toda largura */
     }
 
     .logo {
@@ -343,5 +349,9 @@ img {
         padding: 14px;
     }
 
-    .logo {width: 180px;
-        margin: 0 auto;}
+    .logo {
+        width: 180px;
+        margin: 0 auto;
+    }
+
+}
