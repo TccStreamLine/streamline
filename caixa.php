@@ -19,6 +19,28 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/sistema.css">
     <link rel="stylesheet" href="css/caixa.css">
+    <style>
+        .tipo-item-select {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #EFE6FD;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: #4C1D95;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-remover-item {
+            background: none;
+            border: none;
+            color: #EF4444;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+    </style>
 </head>
 
 <body>
@@ -48,7 +70,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             </ul>
         </div>
     </nav>
-
     <main class="main-content">
         <header class="main-header">
             <h2>Caixa Aberto</h2>
@@ -70,43 +91,37 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             <div class="caixa-painel-venda">
                 <img src="img/relplogo.png" alt="Logo" class="caixa-logo">
 
+                <select id="tipo_item_select" class="tipo-item-select">
+                    <option value="produto">Buscar Produto</option>
+                    <option value="servico">Buscar Serviço</option>
+                </select>
+
                 <div class="form-group-caixa">
-                    <input type="text" id="codigo_barras" placeholder="Código de Barras">
+                    <input type="text" id="termo_busca" placeholder="Código de Barras ou Nome">
                 </div>
                 <div class="info-group-caixa">
-                    <div class="info-box">
-                        <label>Valor Unitário</label>
-                        <span id="valor_unitario">R$0,00</span>
-                    </div>
-                    <div class="info-box">
-                        <label>Total. Item</label>
-                        <span id="total_item">R$0,00</span>
-                    </div>
+                    <div class="info-box"><label>Valor Unitário</label><span id="valor_unitario">R$0,00</span></div>
+                    <div class="info-box"><label>Total. Item</label><span id="total_item">R$0,00</span></div>
                 </div>
                 <div class="form-group-caixa">
-                    <input type="number" id="quantidade" value="1" min="1" placeholder="Quant. do Item">
+                    <input type="number" id="quantidade" value="1" min="1" placeholder="Quantidade">
                 </div>
-
-                <button class="btn-caixa btn-lancamento">Lançar Produto</button>
-
+                <button class="btn-caixa btn-lancamento">Lançar Item</button>
                 <div class="caixa-acoes-secundarias">
                     <button class="btn-caixa btn-secundario" id="btnExcluirVenda">Limpar Venda</button>
                     <a href="vendas.php" class="btn-caixa btn-secundario">Gerenciar Vendas</a>
                 </div>
-
                 <div class="form-group-caixa">
                     <input type="text" id="valor_pago" placeholder="Valor Pago pelo Cliente (R$)">
                 </div>
-
                 <button class="btn-caixa btn-finalizar">Finalizar Compra</button>
             </div>
-
             <div class="caixa-painel-lista">
                 <div class="lista-header">
-                    <h4>Lista de Produtos</h4>
+                    <h4>Itens da Venda</h4>
                 </div>
-                <div class="lista-produtos-venda" id="lista-produtos">
-                    <p class="lista-vazia">Nenhum produto lançado.</p>
+                <div class="lista-produtos-venda" id="lista-itens">
+                    <p class="lista-vazia">Nenhum item lançado.</p>
                 </div>
                 <div class="caixa-totais">
                     <div><span>Subtotal:</span> <span id="subtotal">R$ 0,00</span></div>
@@ -118,19 +133,20 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
     </main>
 
     <script>
-        const inputCodigoBarras = document.getElementById('codigo_barras');
+        const tipoItemSelect = document.getElementById('tipo_item_select');
+        const termoBuscaInput = document.getElementById('termo_busca');
         const displayValorUnitario = document.getElementById('valor_unitario');
         const inputQuantidade = document.getElementById('quantidade');
         const displayTotalItem = document.getElementById('total_item');
-        const btnLancarProduto = document.querySelector('.btn-lancamento');
+        const btnLancarItem = document.querySelector('.btn-lancamento');
         const btnFinalizarCompra = document.querySelector('.btn-finalizar');
         const btnExcluirVenda = document.getElementById('btnExcluirVenda');
-        const listaProdutosDiv = document.getElementById('lista-produtos');
+        const listaItensDiv = document.getElementById('lista-itens');
         const subtotalDisplay = document.getElementById('subtotal');
         const totalGeralDisplay = document.getElementById('total_geral');
         const inputValorPago = document.getElementById('valor_pago');
         const trocoDisplay = document.getElementById('troco');
-        let produtoAtual = null;
+        let itemAtual = null;
         let totalVendaAtual = 0;
 
         function formatarMoeda(valor) {
@@ -140,13 +156,8 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             });
         }
 
-        function parseMoeda(valorString) {
-            if (typeof valorString !== 'string') return 0;
-            return parseFloat(valorString.replace('R$', '').trim().replace(/\./g, '').replace(',', '.')) || 0;
-        }
-
         function calcularTotalItem() {
-            const valorUnitario = produtoAtual ? parseFloat(produtoAtual.valor_venda) : 0;
+            const valorUnitario = itemAtual ? parseFloat(itemAtual.valor_venda) : 0;
             const quantidade = parseInt(inputQuantidade.value);
             if (!isNaN(valorUnitario) && !isNaN(quantidade)) {
                 const total = valorUnitario * quantidade;
@@ -154,80 +165,53 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             }
         }
 
-        async function buscarProduto() {
-            const codigo = inputCodigoBarras.value.trim();
-            produtoAtual = null;
+        async function buscarItem() {
+            const termo = termoBuscaInput.value.trim();
+            const tipo = tipoItemSelect.value;
+            itemAtual = null;
             displayValorUnitario.innerText = 'R$ 0,00';
-            if (codigo) {
-                try {
-                    const response = await fetch(`buscar_produto.php?codigo_barras=${codigo}`);
-                    const data = await response.json();
-                    if (data.error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: data.error
-                        });
-                    } else {
-                        produtoAtual = data;
-                        displayValorUnitario.innerText = formatarMoeda(data.valor_venda);
-                        inputQuantidade.focus();
-                        inputQuantidade.select();
-                    }
-                } catch (error) {
+            if (!termo) return;
+
+            try {
+                const response = await fetch(`buscar_item.php?termo=${encodeURIComponent(termo)}&tipo=${tipo}`);
+                const data = await response.json();
+                if (data.error) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Erro de Conexão',
-                        text: 'Não foi possível se comunicar com o servidor.'
+                        title: 'Não encontrado',
+                        text: data.error
                     });
+                } else {
+                    itemAtual = data;
+                    displayValorUnitario.innerText = formatarMoeda(data.valor_venda);
+                    inputQuantidade.disabled = (data.tipo === 'servico');
+                    if (data.tipo === 'servico') inputQuantidade.value = 1;
+                    inputQuantidade.focus();
+                    inputQuantidade.select();
                 }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro de Conexão',
+                    text: 'Não foi possível se comunicar com o servidor.'
+                });
             }
             calcularTotalItem();
         }
 
-        function atualizarCarrinhoNaTela(carrinho) {
-            listaProdutosDiv.innerHTML = '';
-            let subtotal = 0;
-            if (carrinho.length === 0) {
-                listaProdutosDiv.innerHTML = '<p class="lista-vazia">Nenhum produto lançado.</p>';
-            } else {
-                const table = document.createElement('table');
-                table.innerHTML = `<thead><tr><th>Produto</th><th>Qtd.</th><th>V. Unit.</th><th>V. Total</th><th>Ações</th></tr></thead>`;
-                const tbody = document.createElement('tbody');
-                carrinho.forEach(item => {
-                    const totalItem = item.quantidade * item.valor_unitario;
-                    subtotal += totalItem;
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${item.nome}</td>
-                        <td>${item.quantidade}</td>
-                        <td>${formatarMoeda(item.valor_unitario)}</td>
-                        <td>${formatarMoeda(totalItem)}</td>
-                        <td><button class="btn-remover-item" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button></td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-                table.appendChild(tbody);
-                listaProdutosDiv.appendChild(table);
-            }
-            totalVendaAtual = subtotal;
-            subtotalDisplay.innerText = formatarMoeda(subtotal);
-            totalGeralDisplay.innerText = formatarMoeda(subtotal);
-            calcularTroco();
-        }
-
-        async function lancarProduto() {
-            if (!produtoAtual) {
+        async function lancarItem() {
+            if (!itemAtual) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Atenção',
-                    text: 'Por favor, busque um produto válido primeiro.'
+                    text: 'Busque um item válido primeiro.'
                 });
                 return;
             }
             const dados = {
                 acao: 'adicionar',
-                produto_id: produtoAtual.id,
+                item_id: itemAtual.id,
+                tipo: itemAtual.tipo,
                 quantidade: parseInt(inputQuantidade.value)
             };
             const response = await fetch('gerenciar_carrinho.php', {
@@ -237,20 +221,51 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 },
                 body: JSON.stringify(dados)
             });
-            const carrinhoAtualizado = await response.json();
-            atualizarCarrinhoNaTela(carrinhoAtualizado);
-            inputCodigoBarras.value = '';
+            const carrinho = await response.json();
+            atualizarCarrinhoNaTela(carrinho);
+            termoBuscaInput.value = '';
             displayValorUnitario.innerText = 'R$ 0,00';
             inputQuantidade.value = '1';
             displayTotalItem.innerText = 'R$ 0,00';
-            produtoAtual = null;
-            inputCodigoBarras.focus();
+            itemAtual = null;
+            termoBuscaInput.focus();
         }
 
-        async function removerProduto(produtoId) {
+        function atualizarCarrinhoNaTela(carrinho) {
+            listaItensDiv.innerHTML = '';
+            let subtotal = 0;
+            if (!carrinho || Object.keys(carrinho).length === 0) {
+                listaItensDiv.innerHTML = '<p class="lista-vazia">Nenhum item lançado.</p>';
+            } else {
+                const table = document.createElement('table');
+                table.innerHTML = `<thead><tr><th>Item</th><th>Tipo</th><th>Qtd.</th><th>V. Total</th><th>Ações</th></tr></thead>`;
+                const tbody = document.createElement('tbody');
+                Object.values(carrinho).forEach(item => {
+                    const totalItem = item.quantidade * item.valor_unitario;
+                    subtotal += totalItem;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${item.nome}</td>
+                        <td>${item.tipo}</td>
+                        <td>${item.quantidade}</td>
+                        <td>${formatarMoeda(totalItem)}</td>
+                        <td><button class="btn-remover-item" data-id="${item.id}" data-tipo="${item.tipo}"><i class="fas fa-trash-alt"></i></button></td>`;
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+                listaItensDiv.appendChild(table);
+            }
+            totalVendaAtual = subtotal;
+            subtotalDisplay.innerText = formatarMoeda(subtotal);
+            totalGeralDisplay.innerText = formatarMoeda(subtotal);
+            calcularTroco();
+        }
+
+        async function removerItem(itemId, itemTipo) {
             const dados = {
                 acao: 'remover',
-                produto_id: produtoId
+                item_id: itemId,
+                tipo: itemTipo
             };
             const response = await fetch('gerenciar_carrinho.php', {
                 method: 'POST',
@@ -259,8 +274,8 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 },
                 body: JSON.stringify(dados)
             });
-            const carrinhoAtualizado = await response.json();
-            atualizarCarrinhoNaTela(carrinhoAtualizado);
+            const carrinho = await response.json();
+            atualizarCarrinhoNaTela(carrinho);
         }
 
         function finalizarVenda() {
@@ -311,7 +326,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             trocoDisplay.innerText = formatarMoeda(troco);
         }
 
-        async function excluirVenda() {
+        async function limparVenda() {
             Swal.fire({
                 title: 'Limpar Venda?',
                 text: "Todos os itens do carrinho serão removidos.",
@@ -323,15 +338,14 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 cancelButtonText: 'Cancelar'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    const dados = {
-                        acao: 'limpar'
-                    };
                     const response = await fetch('gerenciar_carrinho.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(dados)
+                        body: JSON.stringify({
+                            acao: 'limpar'
+                        })
                     });
                     const carrinhoVazio = await response.json();
                     atualizarCarrinhoNaTela(carrinhoVazio);
@@ -341,35 +355,30 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             });
         }
 
-        inputCodigoBarras.addEventListener('keypress', e => {
+        termoBuscaInput.addEventListener('keypress', e => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                buscarProduto();
+                buscarItem();
             }
         });
-        inputQuantidade.addEventListener('input', calcularTotalItem);
-        btnLancarProduto.addEventListener('click', lancarProduto);
+        btnLancarItem.addEventListener('click', lancarItem);
         btnFinalizarCompra.addEventListener('click', finalizarVenda);
+        btnExcluirVenda.addEventListener('click', limparVenda);
+        inputQuantidade.addEventListener('input', calcularTotalItem);
         inputValorPago.addEventListener('input', calcularTroco);
-        btnExcluirVenda.addEventListener('click', excluirVenda);
-
-        listaProdutosDiv.addEventListener('click', function(e) {
+        listaItensDiv.addEventListener('click', function(e) {
             const removeButton = e.target.closest('.btn-remover-item');
             if (removeButton) {
-                const produtoId = removeButton.dataset.id;
-                removerProduto(produtoId);
+                removerItem(removeButton.dataset.id, removeButton.dataset.tipo);
             }
         });
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const response = await fetch('gerenciar_carrinho.php');
+            const carrinho = await response.json();
+            atualizarCarrinhoNaTela(carrinho);
+        });
     </script>
-    <style>
-        .btn-remover-item {
-            background: none;
-            border: none;
-            color: #EF4444;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-    </style>
 </body>
 
 </html>

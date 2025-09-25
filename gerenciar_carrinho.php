@@ -1,7 +1,6 @@
 <?php
 session_start();
 include_once('config.php');
-
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['carrinho'])) {
@@ -10,37 +9,39 @@ if (!isset($_SESSION['carrinho'])) {
 
 $data = json_decode(file_get_contents('php://input'), true);
 $acao = $data['acao'] ?? '';
+$tipo = $data['tipo'] ?? '';
+$item_id = $data['item_id'] ?? 0;
+$chave_carrinho = $tipo . '-' . $item_id;
 
 if ($acao === 'adicionar') {
-    $produto_id = $data['produto_id'] ?? 0;
     $quantidade = $data['quantidade'] ?? 0;
+    if ($item_id > 0 && $quantidade > 0) {
+        if ($tipo === 'produto') {
+            $stmt = $pdo->prepare("SELECT nome, valor_venda FROM produtos WHERE id = ?");
+        } else {
+            $stmt = $pdo->prepare("SELECT nome_servico as nome, valor_venda FROM servicos_prestados WHERE id = ?");
+        }
+        $stmt->execute([$item_id]);
+        $item = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($produto_id > 0 && $quantidade > 0) {
-        $stmt = $pdo->prepare("SELECT nome, valor_venda FROM produtos WHERE id = ?");
-        $stmt->execute([$produto_id]);
-        $produto = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($produto) {
-            if (isset($_SESSION['carrinho'][$produto_id])) {
-                $_SESSION['carrinho'][$produto_id]['quantidade'] += $quantidade;
+        if ($item) {
+            if (isset($_SESSION['carrinho'][$chave_carrinho])) {
+                $_SESSION['carrinho'][$chave_carrinho]['quantidade'] += $quantidade;
             } else {
-                $_SESSION['carrinho'][$produto_id] = [
-                    'id' => $produto_id,
-                    'nome' => $produto['nome'],
-                    'quantidade' => $quantidade,
-                    'valor_unitario' => $produto['valor_venda']
+                $_SESSION['carrinho'][$chave_carrinho] = [
+                    'id' => $item_id, 'tipo' => $tipo, 'nome' => $item['nome'],
+                    'quantidade' => $quantidade, 'valor_unitario' => $item['valor_venda']
                 ];
             }
         }
     }
 } elseif ($acao === 'remover') {
-    $produto_id = $data['produto_id'] ?? 0;
-    if ($produto_id > 0 && isset($_SESSION['carrinho'][$produto_id])) {
-        unset($_SESSION['carrinho'][$produto_id]);
+    if (isset($_SESSION['carrinho'][$chave_carrinho])) {
+        unset($_SESSION['carrinho'][$chave_carrinho]);
     }
 } elseif ($acao === 'limpar') {
     $_SESSION['carrinho'] = [];
 }
 
-echo json_encode(array_values($_SESSION['carrinho']));
+echo json_encode($_SESSION['carrinho']);
 ?>

@@ -52,7 +52,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 <li><a href="caixa.php"><i class="fas fa-cash-register"></i> Caixa</a></li>
                 <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
-                <li><a href="#"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
+                <li><a href="servicos.php"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
             </ul>
         </div>
         <div class="menu-section outros">
