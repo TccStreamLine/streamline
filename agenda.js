@@ -4,130 +4,133 @@ document.addEventListener('DOMContentLoaded', function () {
     const mesAno = document.getElementById('mes-ano');
     const btnAnterior = document.getElementById('mes-anterior');
     const btnSeguinte = document.getElementById('mes-seguinte');
-    const btnNovoEvento = document.querySelector('.btn-primary'); // Botão principal
+    const btnNovoEvento = document.querySelector('.btn-primary');
     const modal = document.getElementById('modal-evento');
     const dataDisplay = document.getElementById('data-selecionada-display');
     const dataInput = document.getElementById('data-selecionada-input');
     const formEvento = document.getElementById('form-evento');
+    const listaEventosContainer = document.getElementById('lista-eventos');
 
     // --- ESTADO DO CALENDÁRIO ---
     let dataAtual = new Date();
-    let dataSelecionada = new Date(); // Guarda a data que está selecionada
+    let dataSelecionada = new Date();
 
     // --- FUNÇÕES ---
 
-    /**
-     * Capitaliza a primeira letra de uma string.
-     * @param {string} str A string para capitalizar.
-     * @returns {string} A string capitalizada.
-     */
     function capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    /**
-     * Renderiza o grid do calendário para o mês e ano em 'dataAtual'.
-     */
     function renderizarCalendario() {
         calendarioCorpo.innerHTML = '';
         const ano = dataAtual.getFullYear();
         const mes = dataAtual.getMonth();
-
         const nomeMes = dataAtual.toLocaleString('pt-BR', { month: 'long' });
         mesAno.textContent = `${capitalize(nomeMes)} de ${ano}`;
-
         const primeiroDia = new Date(ano, mes, 1);
         const ultimoDia = new Date(ano, mes + 1, 0);
         const diaSemanaInicio = primeiroDia.getDay();
         const totalDias = ultimoDia.getDate();
-
-        const hoje = new Date();
-        const hojeAno = hoje.getFullYear();
-        const hojeMes = hoje.getMonth();
-        const hojeDia = hoje.getDate();
-
-        // Cria células vazias para os dias antes do início do mês
         for (let i = 0; i < diaSemanaInicio; i++) {
             const div = document.createElement('div');
             div.classList.add('dia-vazio');
             calendarioCorpo.appendChild(div);
         }
-
-        // Cria as células para cada dia do mês
         for (let dia = 1; dia <= totalDias; dia++) {
             const div = document.createElement('div');
             div.classList.add('dia-mes');
             div.textContent = dia;
-
-            // Marca o dia de hoje
-            if (ano === hoje.getFullYear() && mes === hoje.getMonth() && dia === hoje.getDate()) {
+            if (ano === new Date().getFullYear() && mes === new Date().getMonth() && dia === new Date().getDate()) {
                 div.classList.add('dia-hoje');
             }
-
-            // Marca o dia selecionado
             if (ano === dataSelecionada.getFullYear() && mes === dataSelecionada.getMonth() && dia === dataSelecionada.getDate()) {
                 div.classList.add('dia-selecionado');
             }
-
-            // Adiciona o evento de clique para selecionar o dia
             div.onclick = () => {
                 dataSelecionada = new Date(ano, mes, dia);
                 const dataStr = `${ano}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
                 carregarEventosDoDia(dataStr);
-                renderizarCalendario(); // Re-renderiza para atualizar a classe 'dia-selecionado'
+                renderizarCalendario();
             };
-            
             calendarioCorpo.appendChild(div);
         }
     }
-    
-    /**
-     * Busca e exibe os eventos para uma data específica.
-     * @param {string} dataStr A data no formato 'YYYY-MM-DD'.
-     */
+
     function carregarEventosDoDia(dataStr) {
+        listaEventosContainer.innerHTML = '<p>Carregando eventos...</p>';
         fetch(`buscar_eventos.php?data=${dataStr}`)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Falha ao buscar eventos. Status: ' + res.status);
+                }
+                return res.json();
+            })
             .then(eventos => {
-                const tbody = document.querySelector('#eventos-dia-tabela tbody');
-                tbody.innerHTML = ''; // Limpa a tabela
+                listaEventosContainer.innerHTML = '';
                 if (eventos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Nenhum evento para este dia.</td></tr>';
+                    listaEventosContainer.innerHTML = '<p class="nenhum-evento">Nenhum evento para este dia.</p>';
                 } else {
                     eventos.forEach(ev => {
-                        const tr = document.createElement('tr');
-                        // Ajuste para incluir a coluna de Ações
-                        tr.innerHTML = `
-                            <td>${ev.titulo}</td>
-                            <td>${ev.horario ? ev.horario.substring(0, 5) : ''}</td>
-                            <td><button class="btn-acao-excluir" data-id="${ev.id}">Excluir</button></td>
+                        const horarioFormatado = ev.horario ? ev.horario.substring(0, 5) : 'Dia todo';
+                        const eventoCard = document.createElement('div');
+                        eventoCard.className = 'evento-item';
+                        eventoCard.innerHTML = `
+                            <div class="evento-horario">
+                                <i class="far fa-clock"></i>
+                                <span>${horarioFormatado}</span>
+                            </div>
+                            <div class="evento-detalhes">
+                                <h4>${ev.titulo}</h4>
+                                <p>${ev.descricao || ''}</p>
+                            </div>
+                            <div class="evento-acoes">
+                                <button class="btn-acao-editar" data-id="${ev.id}" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                                <button class="btn-acao-excluir" data-id="${ev.id}" title="Excluir"><i class="fas fa-trash"></i></button>
+                            </div>
                         `;
-                        tbody.appendChild(tr);
+                        listaEventosContainer.appendChild(eventoCard);
                     });
                 }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar eventos:', error);
+                listaEventosContainer.innerHTML = '<p class="erro-evento">Não foi possível carregar os eventos.</p>';
             });
     }
 
-    /**
-     * Abre o modal para adicionar um novo evento na data atualmente selecionada.
-     */
-    function abrirModal() {
+    function abrirModalParaNovo() {
         const ano = dataSelecionada.getFullYear();
         const mes = dataSelecionada.getMonth() + 1;
         const dia = dataSelecionada.getDate();
-        
         const dataFormatada = `${String(dia).padStart(2, '0')}/${String(mes).padStart(2, '0')}/${ano}`;
         const dataValue = `${ano}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
         
+        formEvento.reset(); // Limpa o formulário
+        document.querySelector('#modal-evento h3').textContent = 'Adicionar Compromisso';
+        document.getElementById('evento-id').value = ''; // Limpa o ID do evento
         dataDisplay.textContent = dataFormatada;
         dataInput.value = dataValue;
-        formEvento.reset(); // Limpa o formulário
         modal.style.display = 'block';
     }
 
-    /**
-     * Fecha o modal de eventos.
-     */
+    function abrirModalParaEditar(evento) {
+        formEvento.reset();
+        document.querySelector('#modal-evento h3').textContent = 'Editar Compromisso';
+
+        // Preenche o formulário com os dados do evento
+        document.getElementById('evento-id').value = evento.id;
+        document.getElementById('titulo-evento').value = evento.titulo;
+        document.getElementById('horario-evento').value = evento.horario.substring(0, 5);
+        document.getElementById('descricao-evento').value = evento.descricao;
+        
+        // Define a data no display e no input
+        const [ano, mes, dia] = evento.data.split('-');
+        dataDisplay.textContent = `${dia}/${mes}/${ano}`;
+        dataInput.value = evento.data;
+
+        modal.style.display = 'block';
+    }
+
     window.fecharModal = function () {
         modal.style.display = 'none';
     };
@@ -143,29 +146,26 @@ document.addEventListener('DOMContentLoaded', function () {
         dataAtual.setMonth(dataAtual.getMonth() + 1);
         renderizarCalendario();
     };
-    
-    // O botão "Novo Evento" agora é responsável por abrir o modal
-    btnNovoEvento.onclick = abrirModal;
 
-    // Lida com o envio do formulário para salvar um evento
-    formEvento.onsubmit = function(e) {
+    btnNovoEvento.onclick = abrirModalParaNovo;
+
+    formEvento.onsubmit = function (e) {
         e.preventDefault();
         const formData = new URLSearchParams(new FormData(formEvento)).toString();
 
         fetch('salvar_evento.php', {
             method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: formData
         })
         .then(res => res.text())
         .then(res => {
             if (res === "ok") {
                 fecharModal();
-                carregarEventosDoDia(dataInput.value); // Atualiza a lista de eventos do dia
-                
+                carregarEventosDoDia(dataInput.value);
                 const popup = document.getElementById('notification-popup');
                 popup.textContent = "Evento salvo com sucesso!";
-                popup.style.display = 'block'; // Usar display ao invés de class para simplificar
+                popup.style.display = 'block';
                 setTimeout(() => popup.style.display = 'none', 4000);
             } else {
                 alert("Erro ao salvar o evento: " + res);
@@ -173,19 +173,60 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    // Fecha o modal se o usuário clicar fora dele
     window.onclick = function (event) {
         if (event.target === modal) {
             fecharModal();
         }
     };
     
+    listaEventosContainer.addEventListener('click', function(e) {
+        const target = e.target.closest('button');
+        if (!target) return;
+
+        const eventoId = target.dataset.id;
+
+        if (target.classList.contains('btn-acao-excluir')) {
+            if (confirm('Tem certeza que deseja excluir este evento?')) {
+                fetch('excluir_evento.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: eventoId })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        carregarEventosDoDia(dataInput.value);
+                        const popup = document.getElementById('notification-popup');
+                        popup.textContent = "Evento excluído com sucesso!";
+                        popup.style.display = 'block';
+                        setTimeout(() => popup.style.display = 'none', 4000);
+                    } else {
+                        alert('Erro ao excluir: ' + data.message);
+                    }
+                })
+                .catch(error => console.error('Erro na requisição:', error));
+            }
+        }
+
+        if (target.classList.contains('btn-acao-editar')) {
+            fetch(`buscar_detalhes_evento.php?id=${eventoId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        abrirModalParaEditar(data);
+                    }
+                });
+        }
+    });
+
     // --- INICIALIZAÇÃO ---
     function init() {
         renderizarCalendario();
         const dataHojeStr = `${dataSelecionada.getFullYear()}-${String(dataSelecionada.getMonth() + 1).padStart(2, '0')}-${String(dataSelecionada.getDate()).padStart(2, '0')}`;
         carregarEventosDoDia(dataHojeStr);
     }
-    
+
     init();
 });

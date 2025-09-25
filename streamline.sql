@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 24/09/2025 às 05:54
--- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.2.12
+-- Tempo de geração: 25-Set-2025 às 18:51
+-- Versão do servidor: 10.4.27-MariaDB
+-- versão do PHP: 8.0.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `categorias`
+-- Estrutura da tabela `categorias`
 --
 
 CREATE TABLE `categorias` (
@@ -33,7 +33,7 @@ CREATE TABLE `categorias` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `categorias`
+-- Extraindo dados da tabela `categorias`
 --
 
 INSERT INTO `categorias` (`id`, `nome`) VALUES
@@ -45,7 +45,7 @@ INSERT INTO `categorias` (`id`, `nome`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `eventos`
+-- Estrutura da tabela `eventos`
 --
 
 CREATE TABLE `eventos` (
@@ -59,18 +59,21 @@ CREATE TABLE `eventos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `eventos`
+-- Extraindo dados da tabela `eventos`
 --
 
 INSERT INTO `eventos` (`id`, `titulo`, `inicio`, `horario`, `fim`, `usuario_id`, `descricao`) VALUES
 (17, 'tcc', '2025-09-15 00:00:00', NULL, NULL, 17, 'tcc porra'),
 (18, 'tcc', '2025-09-16 00:00:00', '00:26:00', NULL, 17, 'gfgf'),
-(19, 'tcc', '2025-09-15 00:00:00', '12:27:00', NULL, 17, 'fgfgf');
+(19, 'tcc', '2025-09-15 00:00:00', '12:27:00', NULL, 17, 'fgfgf'),
+(20, 'prova de matemática', '2025-09-25 17:48:00', NULL, NULL, 20, '1234'),
+(21, 'prova de matemática', '2025-09-25 17:00:00', NULL, NULL, 20, 'porra'),
+(22, 'prova de matemática', '2025-09-25 17:43:00', '17:43:00', NULL, 20, '23232');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `fornecedores`
+-- Estrutura da tabela `fornecedores`
 --
 
 CREATE TABLE `fornecedores` (
@@ -86,7 +89,7 @@ CREATE TABLE `fornecedores` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `fornecedores`
+-- Extraindo dados da tabela `fornecedores`
 --
 
 INSERT INTO `fornecedores` (`id`, `razao_social`, `cnpj`, `email`, `telefone`, `senha`, `reset_token`, `reset_token_expire`, `status`) VALUES
@@ -96,7 +99,7 @@ INSERT INTO `fornecedores` (`id`, `razao_social`, `cnpj`, `email`, `telefone`, `
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `funcionarios`
+-- Estrutura da tabela `funcionarios`
 --
 
 CREATE TABLE `funcionarios` (
@@ -111,7 +114,7 @@ CREATE TABLE `funcionarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `funcionarios`
+-- Extraindo dados da tabela `funcionarios`
 --
 
 INSERT INTO `funcionarios` (`id`, `usuario_id`, `nome`, `email`, `cargo`, `telefone`, `senha`, `status`) VALUES
@@ -120,7 +123,7 @@ INSERT INTO `funcionarios` (`id`, `usuario_id`, `nome`, `email`, `cargo`, `telef
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `produtos`
+-- Estrutura da tabela `produtos`
 --
 
 CREATE TABLE `produtos` (
@@ -139,19 +142,19 @@ CREATE TABLE `produtos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `produtos`
+-- Extraindo dados da tabela `produtos`
 --
 
 INSERT INTO `produtos` (`id`, `codigo_barras`, `nome`, `especificacao`, `quantidade_estoque`, `quantidade_minima`, `valor_compra`, `valor_venda`, `categoria_id`, `fornecedor_id`, `data_cadastro`, `status`) VALUES
-(1, '123', 'Prensado do jaca', 'do jaca', 151, 5, 2.50, 5.00, 1, NULL, '2025-09-16 12:05:18', 'ativo'),
-(2, '321', 'Md do bart simpson', 'NBOMB', 123, 4, 12.50, 25.50, 2, NULL, '2025-09-16 12:06:22', 'ativo'),
-(3, '111', 'Lança do bico verde', 'Lança do bom', 89, 5, 15.00, 35.00, 2, NULL, '2025-09-16 12:06:51', 'ativo'),
-(4, '1234', 'canela seca', 'Mata bem', 11, 5, 3000.00, 5000.00, 5, NULL, '2025-09-16 12:17:10', 'ativo');
+(1, '123', 'Prensado do jaca', 'do jaca', 151, 5, '2.50', '5.00', 1, NULL, '2025-09-16 12:05:18', 'ativo'),
+(2, '321', 'Md do bart simpson', 'NBOMB', 123, 4, '12.50', '25.50', 2, NULL, '2025-09-16 12:06:22', 'ativo'),
+(3, '111', 'Lança do bico verde', 'Lança do bom', 89, 5, '15.00', '35.00', 2, NULL, '2025-09-16 12:06:51', 'ativo'),
+(4, '1234', 'canela seca', 'Mata bem', 11, 5, '3000.00', '5000.00', 5, NULL, '2025-09-16 12:17:10', 'ativo');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `usuarios`
+-- Estrutura da tabela `usuarios`
 --
 
 CREATE TABLE `usuarios` (
@@ -169,7 +172,7 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Despejando dados para a tabela `usuarios`
+-- Extraindo dados da tabela `usuarios`
 --
 
 INSERT INTO `usuarios` (`id`, `nome_empresa`, `email`, `telefone`, `ramo_atuacao`, `quantidade_funcionarios`, `natureza_juridica`, `cnpj`, `senha`, `reset_token`, `reset_token_expire`) VALUES
@@ -180,12 +183,13 @@ INSERT INTO `usuarios` (`id`, `nome_empresa`, `email`, `telefone`, `ramo_atuacao
 (16, 'vitin', 'vitin@gmail.com', '1111111111', 'Outro', '1-5', 'LTDA', '49447734000102', '$2y$10$yGmmOm1CqBGSxvJBtVkT7uUtdRcJXvEEu/iAdrhdnSdOS6953skUG', NULL, NULL),
 (17, 'felipe', 'pepeu2322@gmail.com', '11 94567-4567', 'Beleza/Estética', '6-10', 'MEI', '91852832000191', '$2y$10$88gbW3/XCPLjTe8pcDFCneAJzvbdyrdhzeylAkWI9f.opnFSwR622', NULL, NULL),
 (18, 'teste', 'teste@gmail.com', '11111111111', 'Atacado/Varejo', '11-20', 'LTDA', '12345678901234', '$2y$10$M0Lz8QygNYc4Tea7uVj0G.zCPS5Ow/O.tdy/YNG.yP81fPFLzTteS', NULL, NULL),
-(19, 'back', 'lastzrr@gmail.com', '11111111111', 'Outro', '21-50', 'LTDA', '11111111111111', '$2y$10$0Msz21FicQf4bkJEa0A2NOWDVyDAa/QOtE7eEfBCbsNGil/2xdDlC', NULL, NULL);
+(19, 'back', 'lastzrr@gmail.com', '11111111111', 'Outro', '21-50', 'LTDA', '11111111111111', '$2y$10$0Msz21FicQf4bkJEa0A2NOWDVyDAa/QOtE7eEfBCbsNGil/2xdDlC', NULL, NULL),
+(20, 'teste', 'teste123@gmail.com', '1145645632', 'Beleza/Estética', '1-5', 'MEI', '41709372000179', '$2y$10$KVNEIG64S/grlceYPkrHSeDFmhd5cqR5BSarQbrm7m5CPiLy0Dck6', NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `vendas`
+-- Estrutura da tabela `vendas`
 --
 
 CREATE TABLE `vendas` (
@@ -198,25 +202,25 @@ CREATE TABLE `vendas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `vendas`
+-- Extraindo dados da tabela `vendas`
 --
 
 INSERT INTO `vendas` (`id`, `usuario_id`, `valor_total`, `descricao`, `data_venda`, `status`) VALUES
-(11, 18, 2525.50, 'desconto de 50% no 3Oitão', '2025-09-24 02:59:00', 'inativo'),
-(12, 18, 5000.00, '', '2025-09-24 08:02:00', 'inativo'),
-(13, 18, 10116.50, NULL, '2025-09-24 03:03:35', 'inativo'),
-(14, 18, 5.00, NULL, '2025-09-24 03:11:55', 'finalizada'),
-(15, 18, 245.00, '', '2025-09-25 03:50:00', 'finalizada'),
-(16, 18, 15.00, '', '2025-09-25 03:50:00', 'finalizada'),
-(17, 18, 382.50, '', '2025-09-26 03:50:00', 'finalizada'),
-(18, 18, 25.00, '', '2025-09-24 03:51:00', 'finalizada'),
-(19, 18, 76.50, '', '2025-09-24 03:51:00', 'finalizada'),
-(20, 18, 76.50, '', '2025-09-24 03:51:00', 'finalizada');
+(11, 18, '2525.50', 'desconto de 50% no 3Oitão', '2025-09-24 02:59:00', 'inativo'),
+(12, 18, '5000.00', '', '2025-09-24 08:02:00', 'inativo'),
+(13, 18, '10116.50', NULL, '2025-09-24 03:03:35', 'inativo'),
+(14, 18, '5.00', NULL, '2025-09-24 03:11:55', 'finalizada'),
+(15, 18, '245.00', '', '2025-09-25 03:50:00', 'finalizada'),
+(16, 18, '15.00', '', '2025-09-25 03:50:00', 'finalizada'),
+(17, 18, '382.50', '', '2025-09-26 03:50:00', 'finalizada'),
+(18, 18, '25.00', '', '2025-09-24 03:51:00', 'finalizada'),
+(19, 18, '76.50', '', '2025-09-24 03:51:00', 'finalizada'),
+(20, 18, '76.50', '', '2025-09-24 03:51:00', 'finalizada');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `venda_itens`
+-- Estrutura da tabela `venda_itens`
 --
 
 CREATE TABLE `venda_itens` (
@@ -229,43 +233,43 @@ CREATE TABLE `venda_itens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `venda_itens`
+-- Extraindo dados da tabela `venda_itens`
 --
 
 INSERT INTO `venda_itens` (`id`, `venda_id`, `produto_id`, `quantidade`, `valor_unitario`, `valor_total`) VALUES
-(16, 11, 4, 1, 2500.00, 2500.00),
-(17, 11, 2, 1, 25.50, 25.50),
-(18, 12, 4, 1, 5000.00, 5000.00),
-(19, 13, 1, 8, 5.00, 40.00),
-(20, 13, 4, 2, 5000.00, 10000.00),
-(21, 13, 2, 3, 25.50, 76.50),
-(22, 14, 1, 1, 5.00, 5.00),
-(23, 15, 3, 7, 35.00, 245.00),
-(24, 16, 1, 3, 5.00, 15.00),
-(25, 17, 2, 15, 25.50, 382.50),
-(26, 18, 1, 5, 5.00, 25.00),
-(27, 19, 2, 3, 25.50, 76.50),
-(28, 20, 2, 3, 25.50, 76.50);
+(16, 11, 4, 1, '2500.00', '2500.00'),
+(17, 11, 2, 1, '25.50', '25.50'),
+(18, 12, 4, 1, '5000.00', '5000.00'),
+(19, 13, 1, 8, '5.00', '40.00'),
+(20, 13, 4, 2, '5000.00', '10000.00'),
+(21, 13, 2, 3, '25.50', '76.50'),
+(22, 14, 1, 1, '5.00', '5.00'),
+(23, 15, 3, 7, '35.00', '245.00'),
+(24, 16, 1, 3, '5.00', '15.00'),
+(25, 17, 2, 15, '25.50', '382.50'),
+(26, 18, 1, 5, '5.00', '25.00'),
+(27, 19, 2, 3, '25.50', '76.50'),
+(28, 20, 2, 3, '25.50', '76.50');
 
 --
 -- Índices para tabelas despejadas
 --
 
 --
--- Índices de tabela `categorias`
+-- Índices para tabela `categorias`
 --
 ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nome_unico` (`nome`);
 
 --
--- Índices de tabela `eventos`
+-- Índices para tabela `eventos`
 --
 ALTER TABLE `eventos`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices de tabela `fornecedores`
+-- Índices para tabela `fornecedores`
 --
 ALTER TABLE `fornecedores`
   ADD PRIMARY KEY (`id`),
@@ -273,7 +277,7 @@ ALTER TABLE `fornecedores`
   ADD UNIQUE KEY `email_unico` (`email`);
 
 --
--- Índices de tabela `funcionarios`
+-- Índices para tabela `funcionarios`
 --
 ALTER TABLE `funcionarios`
   ADD PRIMARY KEY (`id`),
@@ -281,27 +285,27 @@ ALTER TABLE `funcionarios`
   ADD KEY `fk_funcionarios_usuarios` (`usuario_id`);
 
 --
--- Índices de tabela `produtos`
+-- Índices para tabela `produtos`
 --
 ALTER TABLE `produtos`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `codigo_barras` (`codigo_barras`);
 
 --
--- Índices de tabela `usuarios`
+-- Índices para tabela `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices de tabela `vendas`
+-- Índices para tabela `vendas`
 --
 ALTER TABLE `vendas`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_vendas_usuarios` (`usuario_id`);
 
 --
--- Índices de tabela `venda_itens`
+-- Índices para tabela `venda_itens`
 --
 ALTER TABLE `venda_itens`
   ADD PRIMARY KEY (`id`),
@@ -309,7 +313,7 @@ ALTER TABLE `venda_itens`
   ADD KEY `fk_venda_itens_produtos` (`produto_id`);
 
 --
--- AUTO_INCREMENT para tabelas despejadas
+-- AUTO_INCREMENT de tabelas despejadas
 --
 
 --
@@ -322,7 +326,7 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT de tabela `eventos`
 --
 ALTER TABLE `eventos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de tabela `fornecedores`
@@ -346,7 +350,7 @@ ALTER TABLE `produtos`
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de tabela `vendas`
@@ -361,23 +365,23 @@ ALTER TABLE `venda_itens`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
--- Restrições para tabelas despejadas
+-- Restrições para despejos de tabelas
 --
 
 --
--- Restrições para tabelas `funcionarios`
+-- Limitadores para a tabela `funcionarios`
 --
 ALTER TABLE `funcionarios`
   ADD CONSTRAINT `fk_funcionarios_usuarios` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 
 --
--- Restrições para tabelas `vendas`
+-- Limitadores para a tabela `vendas`
 --
 ALTER TABLE `vendas`
   ADD CONSTRAINT `fk_vendas_usuarios` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 
 --
--- Restrições para tabelas `venda_itens`
+-- Limitadores para a tabela `venda_itens`
 --
 ALTER TABLE `venda_itens`
   ADD CONSTRAINT `fk_venda_itens_produtos` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`),

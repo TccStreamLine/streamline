@@ -54,12 +54,14 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             <div class="header-left">
                 <h2><b>Calendário</b></h2>
             </div>
+
+            <div class="navigation-buttons">
+                <button id="mes-anterior" class="btn btn-icon"><i class="fas fa-chevron-left"></i></button>
+                <h3 id="mes-ano"></h3>
+                <button id="mes-seguinte" class="btn btn-icon"><i class="fas fa-chevron-right"></i></button>
+            </div>
+
             <div class="header-right">
-                <div class="navigation-buttons">
-                     <button id="mes-anterior" class="btn btn-icon"><i class="fas fa-chevron-left"></i></button>
-                     <h3 id="mes-ano"></h3>
-                     <button id="mes-seguinte" class="btn btn-icon"><i class="fas fa-chevron-right"></i></button>
-                </div>
                 <button class="btn btn-primary"><i class="fas fa-plus"></i> Novo evento</button>
             </div>
         </div>
@@ -76,22 +78,13 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                     <div class="dia-semana">Sáb</div>
                 </div>
                 <div class="calendario-grid" id="calendario-corpo">
-                    </div>
+                </div>
             </div>
 
             <div id="eventos-dia-container">
                 <h3>Eventos do dia selecionado</h3>
-                <table id="eventos-dia-tabela">
-                    <thead>
-                        <tr>
-                            <th>Título</th>
-                            <th>Início</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        </tbody>
-                </table>
+                <div id="lista-eventos">
+                    </div>
             </div>
         </div>
     </main>
@@ -102,13 +95,19 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             <h3>Adicionar Compromisso</h3>
             <p><strong>Data:</strong> <span id="data-selecionada-display"></span></p>
             <form id="form-evento">
-                <input type="hidden" id="data-selecionada-input" name="data">
-                <label for="titulo">Título:</label><br>
+            <input type="hidden" id="evento-id" name="id">
+
+            <input type="hidden" id="data-selecionada-input" name="data">
+            
+            <label for="titulo-evento">Título:</label><br>
                 <input type="text" id="titulo-evento" name="titulo" required style="width: 95%; margin-bottom: 10px;"><br>
-                <label for="horario">Horário:</label><br>
+                
+                <label for="horario-evento">Horário:</label><br>
                 <input type="time" id="horario-evento" name="horario" required style="width: 95%; margin-bottom: 10px;"><br>
-                <label for="descricao">Descrição:</label><br>
+                
+                <label for="descricao-evento">Descrição:</label><br>
                 <textarea id="descricao-evento" name="descricao" rows="3" style="width: 95%; margin-bottom: 10px;"></textarea><br>
+                
                 <button type="submit">Salvar</button>
                 <button type="button" onclick="fecharModal()">Cancelar</button>
             </form>
