@@ -1,5 +1,7 @@
 /* sigmaboyhujyiyuy76hy Importar Poppins do Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+
 
 /* Fonte global */
 body {
@@ -37,9 +39,10 @@ body {
 .nav-links {
     position: absolute;
     top: 30px;
-    margin-left: 635px;
+    right: 5%; /* MODIFICADO: Alinhamento mais flexível */
     display: flex;
     gap: 30px;
+    z-index: 100;
 }
 
 .nav-link {
@@ -167,6 +170,7 @@ body {
     color: #fff;
     font-weight: 600;
     display: flex;
+    justify-content: center; /* MODIFICADO: Centraliza o texto do botão */
     font-size: 1.1rem;
     cursor: pointer;
     border: none;
@@ -229,8 +233,8 @@ img {
 
 /* --- Media Queries para Responsividade --- */
 
-/* Telas até 768px (tablets grandes / celulares pequenos) */
-@media (max-width: 768px) {
+/* ADICIONADO: Ponto de quebra para tablets maiores */
+@media (max-width: 992px) {
     .main-container {
         flex-direction: column;
         height: auto;
@@ -244,47 +248,44 @@ img {
 
     .left-panel {
         padding: 40px 20px;
+        order: 2; /* Formulário aparece depois da navegação */
     }
 
     .right-panel {
-        display: none;
+        display: none; /* Esconde a imagem */
+    }
+
+    .nav-links {
+        order: 1; /* Navegação aparece primeiro */
+        position: relative;
+        top: auto;
+        right: auto;
+        width: 100%;
+        justify-content: center;
+        padding: 15px 0;
+        background-color: #fff;
+    }
+
+    .header-logo {
+        display: none; /* Esconde o logo que estava posicionado absolutamente */
     }
 
     .login-content {
         width: 100%;
-        max-width: none;
+        max-width: 500px; /* Aumenta um pouco a largura máxima */
         text-align: center;
     }
+}
 
+
+/* Telas até 768px (tablets / celulares) */
+@media (max-width: 768px) {
     .main-login-title {
         font-size: 2.5rem;
     }
 
     .login-slogan {
         font-size: 1rem;
-    }
-
-    .header-logo,
-    .nav-links {
-        position: static;
-        width: auto;
-        margin: 0 auto;
-        padding: 0;
-        top: auto;
-        left: auto;
-        right: auto;
-        justify-content: center;
-    }
-
-    .header-logo {
-        margin-bottom: 20px;
-    }
-
-    .nav-links {
-        flex-wrap: wrap;
-        gap: 15px;
-        margin-top: 10px;
-        margin-bottom: 20px;
     }
 
     .inputSubmit {
@@ -313,21 +314,8 @@ img {
     .login-slogan {
         font-size: 0.9rem;
     }
-
-    .inputSubmit {
-        margin-right: 0;
-        /* Remove o excesso de margem à direita */
-        width: 100%;
-        /* Ajusta a largura do botão */
-    }
-
-    .nav-links {
-        justify-content: center;
-        margin-top: 10px;
-    }
-
+    
     .login-content {
         width: 90%;
-        /* Reduz a largura do formulário */
     }
 }
