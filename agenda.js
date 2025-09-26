@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function carregarEventosDoDia(dataStr) {
         listaEventosContainer.innerHTML = '<p>Carregando eventos...</p>';
-        fetch(`buscar_eventos.php?data=${dataStr}`)
+        fetch(`buscar_evento.php?data=${dataStr}`)
             .then(res => {
                 if (!res.ok) {
                     throw new Error('Falha ao buscar eventos. Status: ' + res.status);
@@ -99,15 +99,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function abrirModalParaNovo() {
+        formEvento.reset();
+        document.querySelector('#modal-evento h3').textContent = 'Adicionar Compromisso';
+        document.getElementById('evento-id').value = '';
         const ano = dataSelecionada.getFullYear();
         const mes = dataSelecionada.getMonth() + 1;
         const dia = dataSelecionada.getDate();
         const dataFormatada = `${String(dia).padStart(2, '0')}/${String(mes).padStart(2, '0')}/${ano}`;
         const dataValue = `${ano}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
-        
-        formEvento.reset(); // Limpa o formulário
-        document.querySelector('#modal-evento h3').textContent = 'Adicionar Compromisso';
-        document.getElementById('evento-id').value = ''; // Limpa o ID do evento
         dataDisplay.textContent = dataFormatada;
         dataInput.value = dataValue;
         modal.style.display = 'block';
@@ -116,18 +115,13 @@ document.addEventListener('DOMContentLoaded', function () {
     function abrirModalParaEditar(evento) {
         formEvento.reset();
         document.querySelector('#modal-evento h3').textContent = 'Editar Compromisso';
-
-        // Preenche o formulário com os dados do evento
         document.getElementById('evento-id').value = evento.id;
         document.getElementById('titulo-evento').value = evento.titulo;
-        document.getElementById('horario-evento').value = evento.horario.substring(0, 5);
+        document.getElementById('horario-evento').value = evento.horario ? evento.horario.substring(0, 5) : '';
         document.getElementById('descricao-evento').value = evento.descricao;
-        
-        // Define a data no display e no input
         const [ano, mes, dia] = evento.data.split('-');
         dataDisplay.textContent = `${dia}/${mes}/${ano}`;
         dataInput.value = evento.data;
-
         modal.style.display = 'block';
     }
 
@@ -152,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function () {
     formEvento.onsubmit = function (e) {
         e.preventDefault();
         const formData = new URLSearchParams(new FormData(formEvento)).toString();
-
         fetch('salvar_evento.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -187,10 +180,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (target.classList.contains('btn-acao-excluir')) {
             if (confirm('Tem certeza que deseja excluir este evento?')) {
+                // --- ALTERAÇÃO AQUI ---
+                // Mudamos o formato de envio para 'form-urlencoded'
                 fetch('excluir_evento.php', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: eventoId })
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ 'id': eventoId })
                 })
                 .then(res => res.json())
                 .then(data => {

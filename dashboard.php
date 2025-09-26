@@ -10,7 +10,7 @@ if (empty($_SESSION['id'])) {
 $usuario_id = $_SESSION['id'];
 $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 
-// --- QUERIES PARA KPIs E GRÁFICOS (JÁ EXISTENTES) ---
+// --- QUERIES PARA KPIs E GRÁFICOS (CÓDIGO ORIGINAL RESTAURADO) ---
 $faturamento_mes = $pdo->prepare("SELECT SUM(valor_total) as total FROM vendas WHERE usuario_id = ? AND MONTH(data_venda) = MONTH(CURDATE()) AND YEAR(data_venda) = YEAR(CURDATE()) AND status = 'finalizada'");
 $faturamento_mes->execute([$usuario_id]);
 $faturamento_mes = $faturamento_mes->fetchColumn();
@@ -53,7 +53,6 @@ $stmt_top_produtos->execute([$usuario_id]);
 $top_produtos = $stmt_top_produtos->fetchAll(PDO::FETCH_ASSOC);
 
 
-// --- NOVAS QUERIES PARA OS INSIGHTS ---
 $insight_melhor_dia = $pdo->prepare("SELECT DAYNAME(data_venda) as dia, SUM(valor_total) as total FROM vendas WHERE usuario_id = ? AND data_venda >= CURDATE() - INTERVAL 7 DAY AND status = 'finalizada' GROUP BY DAYNAME(data_venda) ORDER BY total DESC LIMIT 1");
 $insight_melhor_dia->execute([$usuario_id]);
 $melhor_dia = $insight_melhor_dia->fetch(PDO::FETCH_ASSOC);
@@ -61,11 +60,9 @@ $melhor_dia = $insight_melhor_dia->fetch(PDO::FETCH_ASSOC);
 $insight_produto_campeao = $pdo->prepare("SELECT p.nome FROM venda_itens vi JOIN produtos p ON vi.produto_id = p.id JOIN vendas v ON vi.venda_id = v.id WHERE v.usuario_id = ? AND v.status = 'finalizada' GROUP BY p.nome ORDER BY SUM(vi.quantidade) DESC LIMIT 1");
 $insight_produto_campeao->execute([$usuario_id]);
 $produto_campeao = $insight_produto_campeao->fetchColumn();
-
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,7 +72,6 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
     <link rel="stylesheet" href="css/dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
     <nav class="sidebar">
         <div class="sidebar-logo">
@@ -111,7 +107,7 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
                 <div class="avatar"><i class="fas fa-user"></i></div>
             </div>
         </header>
-
+        
         <div class="dashboard-grid">
             <div class="kpi-card">
                 <i class="fas fa-dollar-sign icon"></i>
@@ -179,10 +175,35 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
                     <?php endif; ?>
                 </ul>
             </div>
-
+        </div>
+        
+        <div id="chat-launcher">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div id="chat-container" class="hidden">
+            <div class="chat-header">
+                <h3>Converse com Relp! IA</h3>
+                <button id="close-chat"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message ai">
+                    Olá! Eu sou Relp!, sua assistente de IA. Pergunte-me sobre seus dados, como "Qual o faturamento deste mês?" ou "Qual o produto mais vendido?".
+                </div>
+            </div>
+            <div class="chat-input-form">
+                <div id="typing-indicator" class="hidden">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <form id="ai-chat-form">
+                    <input type="text" id="chat-input" placeholder="Faça uma pergunta..." autocomplete="off">
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
         </div>
     </main>
-
+    
     <script>
         const faturamentoCtx = document.getElementById('faturamentoDiarioChart').getContext('2d');
         new Chart(faturamentoCtx, {
@@ -206,6 +227,7 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
                 maintainAspectRatio: false
             }
         });
+        
         const categoriaCtx = document.getElementById('vendasCategoriaChart').getContext('2d');
         new Chart(categoriaCtx, {
             type: 'doughnut',
@@ -229,6 +251,7 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
             }
         });
     </script>
-</body>
 
+    <script src="dashboard_chat.js"></script>
+</body>
 </html>

@@ -1,0 +1,393 @@
+/* --- ESTRUTURA PRINCIPAL --- */
+body {
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    background-color: #F5F5F5;
+    color: #333;
+    margin: 0;
+    display: flex;
+    height: 100vh;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 24px 32px;
+    overflow-y: auto;
+}
+
+/* --- CABEÇALHO PRINCIPAL (MODIFICADO) --- */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.main-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.header-left, .header-right {
+    flex: 1;
+}
+
+.header-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* --- BOTÕES --- */
+.btn {
+    border: 1px solid #D1D1D1;
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.btn:hover {
+    background-color: #F5F5F5;
+}
+
+.btn-primary {
+    background-color: #6264A7;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+}
+
+.btn-primary i {
+    margin-right: 6px;
+}
+
+.btn-primary:hover {
+    background-color: #464775;
+}
+
+.btn-icon {
+    padding: 8px 10px;
+    line-height: 1;
+}
+
+/* --- ESTILO DO CARROSSEL DE MÊS --- */
+.navigation-buttons {
+    flex: 0 1 auto;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background-color: #f0f2f5;
+    border: 1px solid #E1E1E1;
+    border-radius: 25px;
+    padding: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+#mes-ano {
+    margin: 0 12px;
+    padding: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    width: 170px;
+    text-align: center;
+}
+
+.navigation-buttons .btn-icon {
+    background-color: #fff;
+    border: none;
+    color: #6264A7;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.navigation-buttons .btn-icon:hover {
+    background-color: #f8f8f8;
+}
+
+.navigation-buttons .btn-icon:active {
+    transform: scale(0.95);
+    background-color: #f0f0f0;
+}
+
+
+/* --- CONTAINER DO CALENDÁRIO E EVENTOS --- */
+#calendar-container {
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    border: 1px solid #E1E1E1;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* --- GRID DO CALENDÁRIO --- */
+.calendario-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.dias-semana-grid {
+    margin-bottom: 12px;
+}
+
+.dia-semana {
+    font-weight: 600;
+    text-align: center;
+    padding: 8px 0;
+    color: #666;
+    font-size: 13px;
+}
+
+.dia-mes {
+    background: #fff;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    height: 45px;
+    width: 45px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.dia-mes:hover {
+    background: #F0F0F0;
+    color: #333;
+}
+
+.dia-vazio {
+    background: transparent;
+    cursor: default;
+}
+
+.dia-hoje {
+    background-color: #6264A7 !important;
+    color: #fff !important;
+    font-weight: 700;
+}
+
+.dia-selecionado {
+    background-color: #E8E8F8 !important;
+    color: #464775 !important;
+    font-weight: 700;
+}
+
+/* --- LISTA DE EVENTOS DO DIA (NOVO ESTILO) --- */
+#eventos-dia-container {
+    margin-top: 30px;
+    border-top: 1px solid #E1E1E1;
+    padding-top: 20px;
+}
+
+#eventos-dia-container h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#lista-eventos {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.evento-item {
+    display: flex;
+    align-items: stretch;
+    background-color: #fff;
+    border: 1px solid #E1E1E1;
+    border-left: 5px solid #6264A7;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease-in-out;
+    overflow: hidden;
+}
+
+.evento-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.evento-horario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 20px;
+    background-color: #F8F8F8;
+    font-weight: 600;
+    color: #333;
+    min-width: 90px;
+}
+
+.evento-horario .fa-clock {
+    font-size: 1.3em;
+    margin-bottom: 5px;
+    color: #6264A7;
+}
+
+.evento-detalhes {
+    flex-grow: 1;
+    padding: 15px 20px;
+}
+
+.evento-detalhes h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.evento-detalhes p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.evento-acoes {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 15px;
+}
+
+.evento-acoes button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #888;
+    padding: 5px;
+    transition: color 0.2s ease;
+}
+
+.evento-acoes .btn-acao-editar:hover {
+    color: #6264A7;
+}
+
+.evento-acoes .btn-acao-excluir:hover {
+    color: #D83B01;
+}
+
+.nenhum-evento {
+    text-align: center;
+    color: #888;
+    padding: 20px;
+    background-color: #F9F9F9;
+    border-radius: 5px;
+    border: 1px dashed #E1E1E1;
+}
+
+/* --- NOVA ESTILIZAÇÃO DO MODAL --- */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: #fff;
+    margin: 10% auto;
+    width: 450px;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    border-left: 5px solid #6264A7;
+    padding: 0;
+    overflow: hidden;
+}
+
+.modal-content h3 {
+    padding: 20px 24px;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #E1E1E1;
+}
+
+.modal-content p {
+    padding: 15px 24px 15px 24px;
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+    border-bottom: 1px solid #E1E1E1;
+}
+
+#form-evento {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#form-evento label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: -10px;
+}
+
+#form-evento input[type="text"],
+#form-evento input[type="time"],
+#form-evento textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #D1D1D1;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: "Segoe UI", sans-serif;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#form-evento input[type="text"]:focus,
+#form-evento input[type="time"]:focus,
+#form-evento textarea:focus {
+    outline: none;
+    border-color: #6264A7;
+    box-shadow: 0 0 0 3px rgba(98, 100, 167, 0.2);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+#notification-popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
+    display: none;
+}
