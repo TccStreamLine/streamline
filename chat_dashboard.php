@@ -2,9 +2,12 @@
 session_start();
 include_once('config.php');
 
-// !! CONFIRME QUE SUA CHAVE DE API ESTÁ AQUI !!
+// ===================================================================
+// == COLOQUE SUA CHAVE DE API REAL AQUI DENTRO DAS ASPAS          ==
+// ===================================================================
 define('GEMINI_API_KEY', 'AIzaSyDB41H-kbuT8mkN3JP_2DbHAFyZKkZJQJY');
 
+// Verifica se o usuário está logado na sessão
 if (empty($_SESSION['id'])) {
     http_response_code(401);
     echo json_encode(['resposta' => 'Erro: Usuário não autenticado.']);
@@ -12,7 +15,7 @@ if (empty($_SESSION['id'])) {
 }
 $usuario_id = $_SESSION['id'];
 
-// --- COLETA DE DADOS ---
+// --- COLETA DE DADOS PARA O CONTEXTO DA IA ---
 $faturamento_mes_stmt = $pdo->prepare("SELECT SUM(valor_total) as total FROM vendas WHERE usuario_id = ? AND MONTH(data_venda) = MONTH(CURDATE()) AND YEAR(data_venda) = YEAR(CURDATE()) AND status = 'finalizada'");
 $faturamento_mes_stmt->execute([$usuario_id]);
 $faturamento_mes = $faturamento_mes_stmt->fetchColumn();
@@ -49,11 +52,12 @@ $data_input = json_decode($json_input);
 $pergunta_usuario = $data_input->pergunta ?? '';
 
 if (empty($pergunta_usuario)) {
+    header('Content-Type: application/json');
     echo json_encode(['resposta' => 'Por favor, faça uma pergunta.']);
     exit;
 }
 
-// --- MONTAGEM DO PROMPT PARA O GEMINI ---
+// --- MONTAGEM DO PROMPT ---
 $prompt = "Você é 'Relp!', um assistente de IA amigável e especialista em análise de dados de negócios. Sua tarefa é responder à pergunta do usuário de forma clara e objetiva, baseando-se estritamente nos dados fornecidos no contexto JSON abaixo. Não invente informações. Se a resposta não estiver nos dados, diga que você não tem essa informação.
 
 Contexto dos dados da empresa:
@@ -64,33 +68,24 @@ Pergunta do usuário:
 
 Sua resposta:";
 
-// --- COMUNICAÇÃO COM A API DO GEMINI USANDO cURL ---
-
-// AQUI ESTÁ A LINHA CORRIGIDA
+// --- COMUNICAÇÃO COM A API DO GEMINI ---
 $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=' . GEMINI_API_KEY;
 
-$data_payload = json_encode([
-    'contents' => [
-        [
-            'parts' => [
-                ['text' => $prompt]
-            ]
-        ]
-    ]
-]);
+$data_payload = json_encode(['contents' => [['parts' => [['text' => $prompt]]]]]);
 
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $data_payload);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); 
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
 $response = curl_exec($ch);
 $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
-// --- PROCESSAMENTO DA RESPOSTA E ENVIO PARA O FRONTEND ---
+// --- PROCESSAMENTO DA RESPOSTA ---
+header('Content-Type: application/json'); // Garante que a resposta sempre será JSON
 if ($httpcode == 200) {
     $result = json_decode($response, true);
     $texto_da_ia = $result['candidates'][0]['content']['parts'][0]['text'] ?? 'Desculpe, não consegui processar sua pergunta no momento.';

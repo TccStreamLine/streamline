@@ -47,7 +47,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                     </div>
                     <div class="form-produto-group">
                         <label>Horas Gastas</label>
-                        <input type="text" name="horas_gastas" placeholder="Ex: 1.5" value="<?= htmlspecialchars($servico['horas_gastas'] ?? '') ?>">
+                        <input type="text" name="horas_gastas" placeholder="Ex: 1, 5" value="<?= htmlspecialchars($servico['horas_gastas'] ?? '') ?>">
                     </div>
                     <div class="form-produto-group" style="grid-column: span 2;">
                         <label>Especificação</label>
@@ -55,7 +55,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                     </div>
                     <div class="form-produto-group" style="grid-column: span 2;">
                         <label>Produtos Utilizados</label>
-                        <input type="text" name="produtos_usados" value="<?= htmlspecialchars($servico['produtos_usados'] ?? '') ?>" placeholder="Ex: 1x Mouse, 2x Teclado...">
+                        <input type="text" name="produtos_usados" value="<?= htmlspecialchars($servico['produtos_usados'] ?? '') ?>" placeholder="Ex: 1x Sucrilhos, 2x caixas de leite">
                     </div>
                     <div class="form-produto-group">
                         <label>Custo do Serviço (R$)</label>

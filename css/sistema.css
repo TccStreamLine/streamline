@@ -315,3 +315,110 @@
         .plan-card.pro .plan-button:hover {
             background-color: #F3F4F6;
         }
+       /* --- ESTILOS DO SINO DE NOTIFICAÇÃO --- */
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.notification-icon {
+    position: relative;
+    font-size: 1.2em;
+    color: #555;
+    cursor: pointer;
+}
+
+/* ESTILO DA BOLINHA VERMELHA (BADGE) */
+.notification-icon .badge {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background-color: #DC143C; /* Vermelho */
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+}
+
+/* PAINEL DE NOTIFICAÇÕES */
+.notificacao-painel {
+    position: absolute;
+    top: 150%;
+    right: 0;
+    width: 350px;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #E1E1E1;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    z-index: 1002;
+    overflow: hidden;
+}
+
+.painel-header {
+    padding: 15px;
+    background-color: #f9f9ff;
+    border-bottom: 1px solid #E1E1E1;
+    text-align: center;
+}
+
+.painel-header a {
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.painel-header a strong {
+    color: #6264A7;
+}
+
+.painel-corpo {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ESTILO DOS CARDS DE EVENTO DENTRO DO PAINEL */
+.painel-corpo .evento-item {
+    display: flex;
+    align-items: stretch;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #f0f0f0;
+    border-left: 5px solid #6264A7;
+}
+
+.painel-corpo .evento-horario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;
+    padding: 5px 10px;
+    margin-right: 10px;
+    padding-right: 10px;
+    border-right: 1px solid #f0f0f0;
+}
+
+.painel-corpo .evento-detalhes h4 {
+    font-size: 1em;
+    margin: 0 0 5px 0;
+}
+
+.painel-corpo .evento-detalhes p {
+    font-size: 0.85em;
+    margin: 0;
+    color: #666;
+}
