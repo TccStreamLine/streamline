@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="login-content">
                 <form action="formulario.php" method="POST">
                     <fieldset>
-                        <legend><b>FAÇA SEU CADASTRO</b></legend>
+                        <legend class="legenda"><b>FAÇA SEU CADASTRO</b></legend>
                         <p class="cadastro-slogan">Está pronto para começar?</p>
                         <div class="form-row-group">
                             <div class="form-row">
