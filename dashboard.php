@@ -75,7 +75,7 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
 <body>
     <nav class="sidebar">
         <div class="sidebar-logo">
-            <img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;">
+            <img class="logo" src="img/relplogo2.png" alt="Relp! Logo" style="width: 100px;">
         </div>
         <div class="menu-section">
             <h6>MENU</h6>
@@ -254,4 +254,5 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
 
     <script src="dashboard_chat.js"></script>
 </body>
+
 </html>
