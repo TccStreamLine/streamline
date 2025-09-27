@@ -52,7 +52,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 <body>
     <nav class="sidebar">
         <div class="sidebar-logo">
-            <img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;">
+            <img class="logo" src="img/relplogo2.png" alt="Relp! Logo" style="width: 100px;">
         </div>
         <div class="menu-section">
             <h6>MENU</h6>
