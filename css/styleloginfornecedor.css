@@ -136,6 +136,7 @@ body {
 .input-group .icon {
     position: absolute;
     left: 15px;
+    margin-left: 30px;
     top: 50%;
     transform: translateY(-50%);
     color: #8e24aa;
@@ -144,6 +145,7 @@ body {
 /* Campos com efeito igual ao cadastro */
 .inputLogin input,
 .inputLogin select {
+    margin-left: 30px;
     width: 100%;
     padding: 15px 15px 15px 50px;
     background: #f3e8ff;
@@ -231,14 +233,51 @@ img {
     margin-top: -35px;
 }
 
- .success-message {
-            color: #10B981;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+.success-message {
+    color: #10B981;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
 
 /* --- Media Queries para Responsividade --- */
+
+/* Telas até 1200px (notebooks grandes) */
+@media (max-width: 1200px) {
+    .nav-links {
+        right: 3%;
+        gap: 25px;
+    }
+
+    .login-content {
+        max-width: 360px;
+    }
+
+    img {
+        width: 750px;
+    }
+}
+
+/* Telas até 1024px (notebooks médios) */
+@media (max-width: 1024px) {
+    .nav-links {
+        right: 2%;
+        gap: 20px;
+        font-size: 1.1rem;
+    }
+
+    .login-content {
+        max-width: 340px;
+    }
+
+    .main-login-title {
+        font-size: 2.8rem;
+    }
+
+    img {
+        width: 650px;
+    }
+}
 
 /* ADICIONADO: Ponto de quebra para tablets maiores */
 @media (max-width: 992px) {
@@ -287,8 +326,26 @@ img {
         /* Aumenta um pouco a largura máxima */
         text-align: center;
     }
-}
 
+    /* Ajusta margens para mobile */
+    .login-slogan {
+        margin-left: 0;
+        text-align: center;
+    }
+
+    .input-group .icon {
+        margin-left: 0;
+    }
+
+    .inputLogin input,
+    .inputLogin select {
+        margin-left: 0;
+    }
+
+    .inputSubmit {
+        margin-left: 0;
+    }
+}
 
 /* Telas até 768px (tablets / celulares) */
 @media (max-width: 768px) {
@@ -299,11 +356,13 @@ img {
 
     .login-slogan {
         font-size: 1rem;
+        margin-left: 0;
     }
 
     .inputSubmit {
         width: 100%;
         margin-top: 25px;
+        margin-left: 0;
     }
 
     /* Alinha o contêiner de links do formulário no mobile */
@@ -312,11 +371,20 @@ img {
         align-items: center;
         gap: 10px;
     }
+
+    .input-group .icon {
+        margin-left: 0;
+    }
+
+    .inputLogin input,
+    .inputLogin select {
+        margin-left: 0;
+    }
 }
 
 /* Telas até 576px (celulares pequenos) */
 @media (max-width: 576px) {
-    .header-logo {
+    .header-logo .logo {
         width: 220px;
     }
 
@@ -327,9 +395,30 @@ img {
 
     .login-slogan {
         font-size: 0.9rem;
+        margin-left: 0;
     }
 
     .login-content {
         width: 90%;
+    }
+
+    .nav-links {
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .input-group .icon {
+        margin-left: 0;
+    }
+
+    .inputLogin input,
+    .inputLogin select {
+        margin-left: 0;
+        font-size: 0.95rem;
+    }
+
+    .inputSubmit {
+        margin-left: 0;
+        font-size: 1rem;
     }
 }
