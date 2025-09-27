@@ -9,16 +9,9 @@ session_start();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="css/stylelogin.css">
+    <link rel="stylesheet" href="css/styleloginfornecedor.css">
     <link rel="stylesheet" href="css/imagem.css">
-    <style>
-        .success-message {
-            color: #10B981;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-    </style>
+   
 </head>
 <body>
     <div class="main-container">
@@ -32,7 +25,7 @@ session_start();
                 <a href="formulario.php" class="nav-link">Cadastro</a>
             </nav>
             <div class="login-content">
-                <h1 class="main-login-title">ACESSO DO FORNECEDOR</h1>
+                <h1 class="main-login-title">LOGIN FORNECEDOR</h1>
                 <p class="login-slogan">Bem-vindo! Faça login para continuar.</p>
                 <?php
                     if (!empty($_SESSION['msg_login'])) {
