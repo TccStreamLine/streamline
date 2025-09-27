@@ -1,31 +1,45 @@
 <?php
+
+declare(strict_types=1);
+
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
 session_start();
-include_once('config.php');
 
 if (empty($_SESSION['id'])) {
+    session_unset();
+    session_destroy();
     header('Location: login.php');
     exit;
 }
 
-$nome_empresa = $_SESSION['nome_empresa'] ?? 'Relp!';
+$nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Início - Sistema de Gerenciamento</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="css/sistema.css">
     <link rel="stylesheet" href="css/estoque.css">
 </head>
+
 <body>
     <nav class="sidebar">
         <div class="sidebar-logo">
-            <img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;">
+            <img class="logo" src="img/relplogo2.png" alt="Relp! Logo" style="width: 100px;">
         </div>
         <div class="menu-section">
             <h6>MENU</h6>
@@ -54,18 +68,9 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Relp!';
         <header class="main-header">
             <h2>Início</h2>
             <div class="user-profile">
-                <div id="notificacao-sino" class="notification-icon">
+                <div class="notification-icon">
                     <i class="fas fa-bell"></i>
-                    <span id="notificacao-badge" class="badge" style="display: none;">0</span>
-                    <div id="notificacao-painel" class="notificacao-painel" style="display: none;">
-                        <div class="painel-header">
-                            <a href="agenda.php">Você tem eventos para hoje!<br><strong>Verifique sua Agenda</strong></a>
-                        </div>
-                        <div id="notificacao-lista" class="painel-corpo">
-                            </div>
-                    </div>
                 </div>
-                
                 <span>Sua empresa</span>
                 <div class="avatar">
                     <i class="fas fa-user"></i>
@@ -74,7 +79,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Relp!';
         </header>
 
         <section class="welcome-section">
-            <h1>Olá, <?= htmlspecialchars($nome_empresa) ?>!</h1>
+            <h1>Olá, <?= htmlspecialchars($nome_empresa) ?>...</h1>
             <p>Seja bem-vindo ao seu sistema inteligente de gerenciamento!</p>
         </section>
 
@@ -124,8 +129,9 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Relp!';
                 </form>
             </div>
         </section>
+
     </main>
 
-    <script src="notificacoes.js"></script>
 </body>
+
 </html>
