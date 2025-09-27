@@ -19,34 +19,12 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/sistema.css">
     <link rel="stylesheet" href="css/caixa.css">
-    <style>
-        .tipo-item-select {
-            width: 100%;
-            padding: 1rem;
-            border: none;
-            border-radius: 8px;
-            background-color: #EFE6FD;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            color: #4C1D95;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .btn-remover-item {
-            background: none;
-            border: none;
-            color: #EF4444;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-    </style>
 </head>
 
 <body>
     <nav class="sidebar">
         <div class="sidebar-logo">
-            <img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;">
+            <img class="logo" src="img/relplogo2.png" alt="Relp! Logo" style="width: 100px;">
         </div>
         <div class="menu-section">
             <h6>MENU</h6>
@@ -80,7 +58,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 
         <div class="message-container">
             <?php if (isset($_SESSION['msg_sucesso_caixa'])): ?>
-                <div class="alert alert-success" style="background-color: #10B981; color: white; padding: 1rem; border-radius: 8px;">
+                <div class="alert alert-success">
                     <?= $_SESSION['msg_sucesso_caixa'];
                     unset($_SESSION['msg_sucesso_caixa']); ?>
                 </div>
