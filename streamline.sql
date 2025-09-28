@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 26/09/2025 às 17:53
+-- Tempo de geração: 28/09/2025 às 05:37
 -- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.0.30
+-- Versão do PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -104,16 +104,6 @@ CREATE TABLE `produtos` (
   `status` varchar(20) NOT NULL DEFAULT 'ativo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Despejando dados para a tabela `produtos`
---
-
-INSERT INTO `produtos` (`id`, `codigo_barras`, `nome`, `especificacao`, `quantidade_estoque`, `quantidade_minima`, `valor_compra`, `valor_venda`, `categoria_id`, `fornecedor_id`, `data_cadastro`, `status`) VALUES
-(1, '123', 'Prensado do jaca', 'do jaca', 151, 5, 2.50, 5.00, 1, NULL, '2025-09-16 12:05:18', 'ativo'),
-(2, '321', 'Md do bart simpson', 'NBOMB', 123, 4, 12.50, 25.50, 2, NULL, '2025-09-16 12:06:22', 'ativo'),
-(3, '111', 'Lança do bico verde', 'Lança do bom', 89, 5, 15.00, 35.00, 2, NULL, '2025-09-16 12:06:51', 'ativo'),
-(4, '1234', 'canela seca', 'Mata bem', 11, 5, 3000.00, 5000.00, 5, NULL, '2025-09-16 12:17:10', 'ativo');
-
 -- --------------------------------------------------------
 
 --
@@ -153,21 +143,6 @@ CREATE TABLE `usuarios` (
   `reset_token_expire` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Despejando dados para a tabela `usuarios`
---
-
-INSERT INTO `usuarios` (`id`, `nome_empresa`, `email`, `telefone`, `ramo_atuacao`, `quantidade_funcionarios`, `natureza_juridica`, `cnpj`, `senha`, `reset_token`, `reset_token_expire`) VALUES
-(12, 'hihi', 'hihi123@gmail.com', '11-96767-5644', 'Atacado/Varejo', '11-20', 'ltda', '82281119000144', '$2y$10$6ofchys8ByzoWMEBTJXaSOHQtPl0Nw7LcGvCIB7eJCS4Jyu/soXFK', NULL, NULL),
-(13, 'paulo', 'paulo123@gmail.com', '11-96767-5655', 'Atacado/Varejo', '51+', 'ltda', '82281119000166', '$2y$10$6ToWHDKfamHSteoIKmBFpe1NnfB4L5TlCnMwP81TygJCC2Qiur/Iq', NULL, NULL),
-(14, 'thiago', 'thiago@gmail.com', '11 95675-3245', 'Atacado/Varejo', '21-50', 'LTDA', '49447734000133', '$2y$10$RfMvk/qoGVI1VwJ8WrwVJ.pILFE9wnJ7DLu2xALMsN6I14NsRFWum', '85b719f4ea303aeeb4a9b8515aabd65c7678f5d119bbca8087d86f7e2eb004e35fa025d3e79e5f697116215a7db0087464d6', '2025-09-01 15:00:15'),
-(15, 'dedada', 'dedada@gmail.com', '11 95675-3277', 'Higiene/Limpeza', '11-20', 'LTDA', '49447734000188', '$2y$10$LhssPYW4tn.k3EooUG0lHu4qdiY799VZRNaiz0dCG/vSPJOG5LrU6', 'a5bb2cc2e9f2731c4859aa503882cc32ec86948512075dd8122d80c8635ef9ae6fb5aebe74d688e5f8c9d388a05de9cf5e15', '2025-09-01 15:18:41'),
-(16, 'vitin', 'vitin@gmail.com', '1111111111', 'Outro', '1-5', 'LTDA', '49447734000102', '$2y$10$yGmmOm1CqBGSxvJBtVkT7uUtdRcJXvEEu/iAdrhdnSdOS6953skUG', NULL, NULL),
-(17, 'felipe', 'pepeu2322@gmail.com', '11 94567-4567', 'Beleza/Estética', '6-10', 'MEI', '91852832000191', '$2y$10$88gbW3/XCPLjTe8pcDFCneAJzvbdyrdhzeylAkWI9f.opnFSwR622', NULL, NULL),
-(18, 'teste', 'teste@gmail.com', '11111111111', 'Atacado/Varejo', '11-20', 'LTDA', '12345678901234', '$2y$10$M0Lz8QygNYc4Tea7uVj0G.zCPS5Ow/O.tdy/YNG.yP81fPFLzTteS', NULL, NULL),
-(19, 'back', 'lastzrr@gmail.com', '11111111111', 'Outro', '21-50', 'LTDA', '11111111111111', '$2y$10$0Msz21FicQf4bkJEa0A2NOWDVyDAa/QOtE7eEfBCbsNGil/2xdDlC', NULL, NULL),
-(20, 'teste', 'teste123@gmail.com', '1145645632', 'Beleza/Estética', '1-5', 'MEI', '41709372000179', '$2y$10$KVNEIG64S/grlceYPkrHSeDFmhd5cqR5BSarQbrm7m5CPiLy0Dck6', NULL, NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -183,22 +158,6 @@ CREATE TABLE `vendas` (
   `status` varchar(50) NOT NULL DEFAULT 'finalizada'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Despejando dados para a tabela `vendas`
---
-
-INSERT INTO `vendas` (`id`, `usuario_id`, `valor_total`, `descricao`, `data_venda`, `status`) VALUES
-(11, 18, 2525.50, 'desconto de 50% no 3Oitão', '2025-09-24 02:59:00', 'inativo'),
-(12, 18, 5000.00, '', '2025-09-24 08:02:00', 'inativo'),
-(13, 18, 10116.50, NULL, '2025-09-24 03:03:35', 'inativo'),
-(14, 18, 5.00, NULL, '2025-09-24 03:11:55', 'finalizada'),
-(15, 18, 245.00, '', '2025-09-25 03:50:00', 'finalizada'),
-(16, 18, 15.00, '', '2025-09-25 03:50:00', 'finalizada'),
-(17, 18, 382.50, '', '2025-09-26 03:50:00', 'finalizada'),
-(18, 18, 25.00, '', '2025-09-24 03:51:00', 'finalizada'),
-(19, 18, 76.50, '', '2025-09-24 03:51:00', 'finalizada'),
-(20, 18, 76.50, '', '2025-09-24 03:51:00', 'finalizada');
-
 -- --------------------------------------------------------
 
 --
@@ -213,25 +172,6 @@ CREATE TABLE `venda_itens` (
   `valor_unitario` decimal(10,2) NOT NULL,
   `valor_total` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `venda_itens`
---
-
-INSERT INTO `venda_itens` (`id`, `venda_id`, `produto_id`, `quantidade`, `valor_unitario`, `valor_total`) VALUES
-(16, 11, 4, 1, 2500.00, 2500.00),
-(17, 11, 2, 1, 25.50, 25.50),
-(18, 12, 4, 1, 5000.00, 5000.00),
-(19, 13, 1, 8, 5.00, 40.00),
-(20, 13, 4, 2, 5000.00, 10000.00),
-(21, 13, 2, 3, 25.50, 76.50),
-(22, 14, 1, 1, 5.00, 5.00),
-(23, 15, 3, 7, 35.00, 245.00),
-(24, 16, 1, 3, 5.00, 15.00),
-(25, 17, 2, 15, 25.50, 382.50),
-(26, 18, 1, 5, 5.00, 25.00),
-(27, 19, 2, 3, 25.50, 76.50),
-(28, 20, 2, 3, 25.50, 76.50);
 
 -- --------------------------------------------------------
 
@@ -330,61 +270,61 @@ ALTER TABLE `venda_servicos`
 -- AUTO_INCREMENT de tabela `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de tabela `eventos`
 --
 ALTER TABLE `eventos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de tabela `fornecedores`
 --
 ALTER TABLE `fornecedores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de tabela `funcionarios`
 --
 ALTER TABLE `funcionarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `produtos`
 --
 ALTER TABLE `produtos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de tabela `servicos_prestados`
 --
 ALTER TABLE `servicos_prestados`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de tabela `vendas`
 --
 ALTER TABLE `vendas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de tabela `venda_itens`
 --
 ALTER TABLE `venda_itens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT de tabela `venda_servicos`
 --
 ALTER TABLE `venda_servicos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restrições para tabelas despejadas
