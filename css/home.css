@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+
+body{
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+  background: #ffffff;
+  background: linear-gradient(360deg,rgba(255, 255, 255, 1) 75.5%, rgba(241, 226, 255, 1) 50%);
+    
+}
+
+.box-login a{
+    text-decoration: none;
+    color: black;
+    border-radius: 10px;
+    padding: 10px;
+    left: 84.6%;
+    bottom: 90%;
+    
+    position: absolute;/*por algum motivo quando coloca o position absolute os valores tão invertidos,
+    ou seja, left é right e bottom é top*/
+    
+}
+.box-login a:hover{
+    color: #380a81;
+}
+
+.box-fornecedor a{
+    text-decoration: none;
+    color: black;
+    border-radius: 10px;
+    padding: 10px;
+    left: 75.5%;
+    bottom: 90%;
+    position: absolute;
+}
+.box-fornecedor a:hover{
+    color: #380a81;
+}
+
+.box-cadastro a{
+    text-decoration: none;
+    color: white;
+    border-radius: 10px;
+    padding: 10.5px;
+    left: 89%;
+    bottom: 90%;
+    position: absolute;
+    background: #9181F4;
+    background: linear-gradient(127deg,rgba(145, 129, 244, 1) 22%, rgba(97, 0, 171, 1) 52%);
+    display: flex;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.box-cadastro a:hover{
+    background-color: #380a81;
+    transform: scale(1.05);
+}
+
+h1{
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    color: black;
+    position: absolute;
+    right: 88%;
+
+}
+h3{
+    font-size: 60px;
+    color: #380361;
+    position: absolute;
+    left: 8%;
+    top: 22%;
+}
+
+div {
+  height: 60vh; /* simulação de rolagem */
+  display: flex;
+}
+
+.Quem {
+  left: 45%;
+  top: 6.5%;
+  position: absolute;
+}
+
+.Servicos {
+  left: 52%;
+  top: 6.5%;
+  position: absolute;
+}
+
+.FAQ {
+  left: 57%;
+  top: 6.5%;
+  position: absolute;
+}
+
+.conteudo h2 {
+  left: 41%;
+  position: absolute;
+  color: #380361;
+  bottom: -4%;
+  font-size: 36px;
+}
+
+.conteudo p {
+  left: 39%;
+  bottom: -5%;
+  position: absolute;
+  color: #717171;
+  
+}
+
+.botaoQ {
+  color: black;
+}
+
+.conteudo2 h2{
+  left: 32%;
+  position: absolute;
+  color: #380361;
+  bottom: -80%;
+  font-size: 36px;
+}
+
+.conteudo2 p {
+  left: 30%;
+  bottom: -84%;
+  position: absolute;
+  color: #717171;
+  text-align: center;
+}
+
+.conteudo3 h2{
+  bottom: -35%;
+  position: absolute;
+  right: 10%;
+  color: #380361;
+}
+
+.conteudo3 p{
+  bottom: -48%;
+  position: absolute;
+  right: 5%;
+  font-size: 15px;
+  
+}
+
+.conteudo4 h2{
+  bottom: -195%;
+  position: absolute;
+  right: 35%;
+  color: #380361;
+}
+
+.conteudo4 p{
+  bottom: -203%;
+  position: absolute;
+  right: 25%;
+  font-size: 15px;
+  text-align: center;
+  
+}
+
+.imagem {
+  width: 50%;
+  height: 50%;
+  position: absolute;
+  justify-content: center;
+  bottom: -55%;
+}
+
+.imagem2 {
+  height: 50%;
+  right: 20%;
+  position: absolute;
+  bottom: -135%;
+}
+
+.imagem3 {
+  height: 50%;
+  position: absolute;
+  bottom: -125%;
+  right: 10%;
+  top: 25%;
+}
+
+.imagem4 {
+  height: 50%;
+  position: absolute;
+  bottom: -255%;
+  right: 22%;
+}
+
+
+
+
+
+
+
+
