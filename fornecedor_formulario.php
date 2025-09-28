@@ -57,11 +57,11 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 
                 <div class="input-group-figma">
                     <i class="fas fa-building"></i>
-                    <input type="text" name="razao_social" placeholder="Razão Social*" required value="<?= htmlspecialchars($fornecedor_para_editar['razao_social'] ?? '') ?>">
+                    <input type="text" name="razao_social" placeholder="Razão Social" required value="<?= htmlspecialchars($fornecedor_para_editar['razao_social'] ?? '') ?>">
                 </div>
                 <div class="input-group-figma">
                     <i class="fas fa-id-card"></i>
-                    <input type="text" name="cnpj" placeholder="CNPJ*" required value="<?= htmlspecialchars($fornecedor_para_editar['cnpj'] ?? '') ?>">
+                    <input type="text" name="cnpj" placeholder="CNPJ" required value="<?= htmlspecialchars($fornecedor_para_editar['cnpj'] ?? '') ?>">
                 </div>
                 <div class="input-group-figma">
                     <i class="fas fa-envelope"></i>

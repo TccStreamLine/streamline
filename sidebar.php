@@ -1,10 +1,10 @@
 <?php
-// Lógica de verificação de papel (role) final e corrigida
+
 $user_role = null;
 if (isset($_SESSION['role'])) {
-    $user_role = $_SESSION['role']; // CEO ou Funcionário
+    $user_role = $_SESSION['role']; 
 } elseif (isset($_SESSION['id_fornecedor'])) {
-    $user_role = 'fornecedor'; // Fornecedor
+    $user_role = 'fornecedor'; 
 }
 ?>
 <nav class="sidebar">
@@ -24,7 +24,6 @@ if (isset($_SESSION['role'])) {
                 <li><a href="caixa.php" class="<?= ($pagina_ativa ?? '') == 'caixa' ? 'active' : '' ?>"><i class="fas fa-cash-register"></i> Caixa</a></li>
                 <li><a href="dashboard.php" class="<?= ($pagina_ativa ?? '') == 'dashboard' ? 'active' : '' ?>"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="servicos.php" class="<?= ($pagina_ativa ?? '') == 'servicos' ? 'active' : '' ?>"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
-                <li><a href="funcionarios.php" class="<?= ($pagina_ativa ?? '') == 'funcionarios' ? 'active' : '' ?>"><i class="fas fa-users"></i> Funcionários</a></li>
                 <li><a href="nota_fiscal.php" class="<?= ($pagina_ativa ?? '') == 'nota_fiscal' ? 'active' : '' ?>"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
             </ul>
         </div>

@@ -153,6 +153,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
     </script>
     <script src="main.js"></script>
     <script src="notificacoes.js"></script>
-    <script src="notificacoes_fornecedor.js"></script>
+    <script src="notificacoes_fornecedor.js"></script> 
 </body>
 </html>

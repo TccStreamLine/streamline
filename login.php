@@ -1,17 +1,21 @@
-<?php 
-session_start(); 
+<?php
+session_start();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>Login - Streamline</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="css/stylelogin.css">
     <style>
-        .hidden-field { display: none; }
+        .hidden-field {
+            display: none;
+        }
     </style>
 </head>
+
 <body>
     <div class="main-container">
         <div class="left-panel">
@@ -28,27 +32,27 @@ session_start();
                 <p class="login-slogan">Está pronto para começar?</p>
 
                 <?php
-                    if (!empty($_SESSION['msg_login'])) {
-                        echo "<p style='color: green; text-align: center; margin-bottom: 15px;'>" . htmlspecialchars($_SESSION['msg_login']) . "</p>";
-                        unset($_SESSION['msg_login']);
-                    }
-                    if (!empty($_SESSION['erro_login'])) {
-                        echo "<p class='error-message'>" . htmlspecialchars($_SESSION['erro_login']) . "</p>";
-                        unset($_SESSION['erro_login']);
-                    }
+                if (!empty($_SESSION['msg_login'])) {
+                    echo "<p style='color: green; text-align: center; margin-bottom: 15px;'>" . htmlspecialchars($_SESSION['msg_login']) . "</p>";
+                    unset($_SESSION['msg_login']);
+                }
+                if (!empty($_SESSION['erro_login'])) {
+                    echo "<p class='error-message'>" . htmlspecialchars($_SESSION['erro_login']) . "</p>";
+                    unset($_SESSION['erro_login']);
+                }
                 ?>
 
                 <form action="testLogin.php" method="POST" class="loginForm">
                     <input type="hidden" name="tipo_acesso" id="tipo_acesso" value="ceo">
                     <div class="inputLogin">
                         <div class="input-group">
-                             <i class="fas fa-user-tie icon"></i>
-                             <select id="tipo_acesso_select" required>
+                            <i class="fas fa-user-tie icon"></i>
+                            <select id="tipo_acesso_select" required>
                                 <option value="" disabled selected>Quem está acessando?</option>
                                 <option value="ceo">CEO</option>
                                 <option value="funcionario">Funcionário</option>
                                 <option value="fornecedor">Fornecedor</option>
-                             </select>
+                            </select>
                         </div>
                         <div id="campo-cnpj" class="input-group">
                             <i class="fas fa-building icon"></i>
@@ -83,25 +87,37 @@ session_start();
         const campoEmail = document.getElementById('campo-email');
         const inputCnpj = campoCnpj.querySelector('input');
         const inputEmail = campoEmail.querySelector('input');
+        const inputSenha = document.querySelector('input[name="senha"]');
 
         function toggleFields() {
             const selectedValue = tipoAcessoSelect.value;
             tipoAcessoHiddenInput.value = selectedValue;
 
-            if (selectedValue === 'funcionario' || selectedValue === 'fornecedor') {
+            if (selectedValue === 'funcionario') {
+                campoCnpj.classList.remove('hidden-field');
+                campoEmail.classList.add('hidden-field');
+                inputCnpj.required = true;
+                inputEmail.required = false;
+                inputCnpj.placeholder = "CNPJ da Empresa";
+                inputSenha.placeholder = "Senha dos Funcionários";
+            } else if (selectedValue === 'fornecedor') {
                 campoCnpj.classList.add('hidden-field');
                 campoEmail.classList.remove('hidden-field');
                 inputCnpj.required = false;
                 inputEmail.required = true;
+                inputSenha.placeholder = "Senha";
             } else { // CEO
                 campoCnpj.classList.remove('hidden-field');
                 campoEmail.classList.add('hidden-field');
                 inputCnpj.required = true;
                 inputEmail.required = false;
+                inputCnpj.placeholder = "CNPJ da Empresa";
+                inputSenha.placeholder = "Senha";
             }
         }
         tipoAcessoSelect.addEventListener('change', toggleFields);
         document.addEventListener('DOMContentLoaded', toggleFields);
     </script>
 </body>
+
 </html>

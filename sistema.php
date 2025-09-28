@@ -78,9 +78,9 @@ if ($user_role === 'funcionario' || $user_role === 'ceo') {
 
         <?php if ($user_role === 'ceo'): ?>
             <section class="action-cards">
-                <a href="funcionarios.php" class="action-card">
+                <a href="funcionario_formulario.php" class="action-card">
                     <i class="fas fa-user-plus"></i>
-                    <h3>Gerenciar funcionários</h3>
+                    <h3>Cadastrar Funcionários</h3>
                 </a>
                 <a href="caixa.php" class="action-card">
                     <i class="fas fa-cash-register"></i>
@@ -179,4 +179,5 @@ if ($user_role === 'funcionario' || $user_role === 'ceo') {
     <script src="notificacoes.js"></script>
     <script src="notificacoes_fornecedor.js"></script>
 </body>
+
 </html>
