@@ -1,6 +1,10 @@
 <?php
 session_start();
 include_once('config.php');
+
+$pagina_ativa = 'estoque';
+$titulo_header = 'Estoque > Gerenciamento de Categorias';
+
 if (empty($_SESSION['id'])) {
     header('Location: login.php');
     exit;
@@ -25,45 +29,17 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 </head>
 
 <body>
-    <nav class="sidebar">
-        <div class="sidebar-logo"><img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;"></div>
-        <div class="menu-section">
-            <h6>MENU</h6>
-            <ul class="menu-list">
-                <li><a href="sistema.php"><i class="fas fa-home"></i> Início</a></li>
-                <li><a href="estoque.php" class="active"><i class="fas fa-box"></i> Estoque</a></li>
-                <li><a href="#"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
-                <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
-                <li><a href="vendas.php"><i class="fas fa-chart-bar"></i> Vendas</a></li>
-                <li><a href="caixa.php"><i class="fas fa-cash-register"></i> Caixa</a></li>
-                <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
-                <li><a href="#"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
-            </ul>
-        </div>
-        <div class="menu-section outros">
-            <h6>OUTROS</h6>
-            <ul class="menu-list">
-                <li><a href="#"><i class="fas fa-store"></i> Loja de Planos</a></li>
-                <li><a href="sair.php"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
-            </ul>
-        </div>
-    </nav>
+    <?php include 'sidebar.php'; ?>
     <main class="main-content">
-        <header class="main-header">
-            <h2>Gerenciamento de Categorias</h2>
-            <div class="user-profile"><span><?= htmlspecialchars($nome_empresa) ?></span>
-                <div class="avatar"><i class="fas fa-user"></i></div>
-            </div>
-        </header>
+        <?php include 'header.php'; ?>
         <div class="message-container">
             <?php if (isset($_SESSION['msg_sucesso'])): ?>
                 <div class="alert alert-success"><?= $_SESSION['msg_sucesso'];
-                unset($_SESSION['msg_sucesso']); ?></div>
+                                                    unset($_SESSION['msg_sucesso']); ?></div>
             <?php endif; ?>
             <?php if (isset($_SESSION['msg_erro'])): ?>
                 <div class="alert alert-danger"><?= $_SESSION['msg_erro'];
-                unset($_SESSION['msg_erro']); ?></div>
+                                                unset($_SESSION['msg_erro']); ?></div>
             <?php endif; ?>
         </div>
         <div class="actions-container">
@@ -75,7 +51,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Nome</th>
                         <th>Ações</th>
                     </tr>
@@ -88,7 +63,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                     <?php else: ?>
                         <?php foreach ($categorias as $categoria): ?>
                             <tr>
-                                <td><?= htmlspecialchars($categoria['id']) ?></td>
                                 <td><?= htmlspecialchars($categoria['nome']) ?></td>
                                 <td class="actions">
                                     <a href="categoria_formulario.php?id=<?= $categoria['id'] ?>" class="btn-action btn-edit">
@@ -107,7 +81,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         const deleteButtons = document.querySelectorAll('.btn-delete');
 
         deleteButtons.forEach(button => {
-            button.addEventListener('click', function (event) {
+            button.addEventListener('click', function(event) {
                 event.preventDefault();
 
                 const url = this.href;
@@ -127,6 +101,47 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                     }
                 });
             });
+        });
+
+        const searchInput = document.querySelector('.search-bar input');
+        const tableBody = document.querySelector('table tbody');
+
+        function renderTable(categorias) {
+            tableBody.innerHTML = '';
+
+            if (categorias.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="3" class="text-center">Nenhuma categoria encontrada.</td></tr>';
+                return;
+            }
+
+            categorias.forEach(categoria => {
+                const row = `
+                    <tr>
+                        <td>${categoria.nome}</td>
+                        <td class="actions">
+                            <a href="categoria_formulario.php?id=${categoria.id}" class="btn-action btn-edit">
+                                <i class="fas fa-pencil-alt"></i> 
+                            </a>
+                            <a href="excluir_categoria.php?id=${categoria.id}" class="btn-action btn-delete">
+                                <i class="fas fa-trash-alt"></i> 
+                            </a>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        searchInput.addEventListener('keyup', async () => {
+            const termo = searchInput.value;
+            try {
+                const response = await fetch(`buscar_categorias.php?termo=${encodeURIComponent(termo)}`);
+                const categorias = await response.json();
+                renderTable(categorias);
+            } catch (error) {
+                console.error('Erro ao buscar categorias:', error);
+                tableBody.innerHTML = '<tr><td colspan="3" class="text-center">Erro ao carregar os dados.</td></tr>';
+            }
         });
     </script>
 </body>

@@ -7,17 +7,24 @@ if (empty($_SESSION['id'])) {
     exit;
 }
 
+function format_value_for_db($value) {
+    $value = str_replace('.', '', $value);
+    $value = str_replace(',', '.', $value);
+    return (float)$value;
+}
+
 $usuario_id = $_SESSION['id'];
 $acao = $_POST['acao'] ?? '';
 $id = $_POST['id'] ?? 0;
 
-$gastos = str_replace(',', '.', trim($_POST['gastos'] ?? '0'));
 $nome_servico = trim($_POST['nome_servico'] ?? '');
 $produtos_usados = trim($_POST['produtos_usados'] ?? '');
-$horas_gastas = str_replace(',', '.', trim($_POST['horas_gastas'] ?? '0'));
 $especificacao = trim($_POST['especificacao'] ?? '');
-$valor_venda = str_replace(',', '.', trim($_POST['valor_venda'] ?? '0'));
 $data_prestacao = $_POST['data_prestacao'] ?? date('Y-m-d H:i:s');
+
+$gastos = format_value_for_db($_POST['gastos'] ?? '0');
+$horas_gastas = format_value_for_db($_POST['horas_gastas'] ?? '0');
+$valor_venda = format_value_for_db($_POST['valor_venda'] ?? '0');
 
 if ($acao === 'cadastrar') {
     $stmt = $pdo->prepare("INSERT INTO servicos_prestados (usuario_id, nome_servico, especificacao, horas_gastas, data_prestacao, gastos, valor_venda, produtos_usados) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");

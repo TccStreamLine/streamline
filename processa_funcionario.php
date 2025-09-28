@@ -2,9 +2,8 @@
 session_start();
 include_once('config.php');
 
-if (empty($_SESSION['id'])) {
-    header('Location: login.php');
-    exit;
+if (empty($_SESSION['id']) || $_SESSION['role'] !== 'ceo') {
+    exit('Acesso negado.');
 }
 
 $usuario_id = $_SESSION['id'];
@@ -31,12 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: funcionario_formulario.php');
                 exit;
             }
-            
-            $check_sql = "SELECT id FROM funcionarios WHERE email = ? AND usuario_id = ?";
+
+            // CORREÇÃO APLICADA AQUI: Adicionado "AND status = 'ativo'"
+            $check_sql = "SELECT id FROM funcionarios WHERE email = ? AND usuario_id = ? AND status = 'ativo'";
             $check_stmt = $pdo->prepare($check_sql);
             $check_stmt->execute([$email, $usuario_id]);
             if ($check_stmt->fetch()) {
-                $_SESSION['msg_erro_funcionario'] = "Este e-mail já está em uso por outro funcionário.";
+                $_SESSION['msg_erro_funcionario'] = "Este e-mail já está em uso por outro funcionário ativo.";
                 header('Location: funcionario_formulario.php');
                 exit;
             }
@@ -48,11 +48,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['msg_sucesso'] = "Funcionário cadastrado com sucesso!";
 
         } elseif ($acao === 'editar' && $id > 0) {
-            $check_sql = "SELECT id FROM funcionarios WHERE email = ? AND usuario_id = ? AND id != ?";
+            // CORREÇÃO APLICADA AQUI: Adicionado "AND status = 'ativo'"
+            $check_sql = "SELECT id FROM funcionarios WHERE email = ? AND usuario_id = ? AND id != ? AND status = 'ativo'";
             $check_stmt = $pdo->prepare($check_sql);
             $check_stmt->execute([$email, $usuario_id, $id]);
             if ($check_stmt->fetch()) {
-                $_SESSION['msg_erro_funcionario'] = "Este e-mail já pertence a outro funcionário.";
+                $_SESSION['msg_erro_funcionario'] = "Este e-mail já pertence a outro funcionário ativo.";
                 header('Location: funcionario_formulario.php?id=' . $id);
                 exit;
             }
@@ -74,7 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $_SESSION['msg_sucesso'] = "Funcionário atualizado com sucesso!";
         }
-
     } catch (PDOException $e) {
         $_SESSION['msg_erro'] = "Ocorreu um erro no banco de dados.";
         header('Location: funcionarios.php');
@@ -83,9 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     header('Location: funcionarios.php');
     exit;
-}
-
-elseif (isset($_GET['acao']) && $_GET['acao'] === 'excluir') {
+} elseif (isset($_GET['acao']) && $_GET['acao'] === 'excluir') {
     $id = filter_var($_GET['id'] ?? 0, FILTER_VALIDATE_INT);
 
     if ($id) {
@@ -101,7 +99,6 @@ elseif (isset($_GET['acao']) && $_GET['acao'] === 'excluir') {
             }
 
             $_SESSION['msg_sucesso'] = "Funcionário inativado com sucesso!";
-
         } catch (PDOException $e) {
             $_SESSION['msg_erro'] = "Erro ao inativar funcionário.";
         }

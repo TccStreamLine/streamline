@@ -7,6 +7,12 @@ if (empty($_SESSION['id'])) {
     exit;
 }
 
+function format_value_for_db($value) {
+    $value = str_replace('.', '', $value); 
+    $value = str_replace(',', '.', $value); 
+    return (float)$value;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $acao = $_POST['acao'] ?? '';
 
@@ -16,8 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $especificacao = trim($_POST['especificacao'] ?? '');
     $quantidade_estoque = filter_var($_POST['quantidade_estoque'] ?? 0, FILTER_VALIDATE_INT);
     $quantidade_minima = filter_var($_POST['quantidade_minima'] ?? 5, FILTER_VALIDATE_INT);
-    $valor_compra = str_replace(['.', ','], ['', '.'], $_POST['valor_compra'] ?? '0');
-    $valor_venda = str_replace(['.', ','], ['', '.'], $_POST['valor_venda'] ?? '0');
+    
+    $valor_compra = format_value_for_db($_POST['valor_compra'] ?? '0');
+    $valor_venda = format_value_for_db($_POST['valor_venda'] ?? '0');
+    
     $categoria_id = !empty($_POST['categoria_id']) ? (int)$_POST['categoria_id'] : null;
     $fornecedor_id = !empty($_POST['fornecedor_id']) ? (int)$_POST['fornecedor_id'] : null;
 
@@ -30,11 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($acao === 'cadastrar') {
         try {
             if (!empty($codigo_barras)) {
-                $check_sql = "SELECT id FROM produtos WHERE codigo_barras = ?";
+               
+                $check_sql = "SELECT id FROM produtos WHERE codigo_barras = ? AND status = 'ativo'";
                 $check_stmt = $pdo->prepare($check_sql);
                 $check_stmt->execute([$codigo_barras]);
                 if ($check_stmt->fetch()) {
-                    $_SESSION['msg_erro'] = "Este Código de Barras já está cadastrado.";
+                    $_SESSION['msg_erro'] = "Este Código de Barras já está em uso por um produto ativo.";
                     header('Location: produto_formulario.php');
                     exit;
                 }
@@ -55,11 +64,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             try {
                 if (!empty($codigo_barras)) {
-                    $check_sql = "SELECT id FROM produtos WHERE codigo_barras = ? AND id != ?";
+                    
+                    $check_sql = "SELECT id FROM produtos WHERE codigo_barras = ? AND id != ? AND status = 'ativo'";
                     $check_stmt = $pdo->prepare($check_sql);
                     $check_stmt->execute([$codigo_barras, $produto_id]);
                     if ($check_stmt->fetch()) {
-                        $_SESSION['msg_erro'] = "Este Código de Barras já pertence a outro produto.";
+                        $_SESSION['msg_erro'] = "Este Código de Barras já pertence a outro produto ativo.";
                         header('Location: produto_formulario.php?id=' . $produto_id);
                         exit;
                     }

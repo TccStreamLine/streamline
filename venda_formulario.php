@@ -7,9 +7,16 @@ if (empty($_SESSION['id'])) {
     exit;
 }
 
-// Lógica de Edição
+// Variáveis da página - Título dinâmico
+$pagina_ativa = 'vendas';
+$titulo_header = ''; // Será definido abaixo
+
+// --- CORREÇÃO AQUI ---
+// Inicializamos a variável $modo_edicao como false por padrão.
+// Isso garante que ela sempre exista, mesmo ao criar uma nova venda.
 $modo_edicao = false;
 $venda_para_editar = [];
+
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $modo_edicao = true;
     $venda_id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
@@ -25,8 +32,16 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     }
 }
 
+// Define o título do cabeçalho com base no modo
+$titulo_header = $modo_edicao ? 'Vendas > Editar Venda' : 'Vendas > Cadastrar Venda Manual';
+
 $produtos = $pdo->query("SELECT id, nome, valor_venda, quantidade_estoque FROM produtos WHERE status = 'ativo' ORDER BY nome")->fetchAll(PDO::FETCH_ASSOC);
-$nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
+
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'funcionario') {
+    $nome_exibicao = $_SESSION['funcionario_nome'];
+} else {
+    $nome_exibicao = $_SESSION['nome_empresa'] ?? 'Empresa';
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -65,39 +80,10 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 </head>
 
 <body>
-    <nav class="sidebar">
-        <div class="sidebar-logo">
-            <img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;">
-        </div>
-        <div class="menu-section">
-            <h6>MENU</h6>
-            <ul class="menu-list">
-                <li><a href="sistema.php"><i class="fas fa-home"></i> Início</a></li>
-                <li><a href="estoque.php"><i class="fas fa-box"></i> Estoque</a></li>
-                <li><a href="agenda.php"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
-                <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
-                <li><a href="vendas.php" class="active"><i class="fas fa-chart-bar"></i> Vendas</a></li>
-                <li><a href="caixa.php"><i class="fas fa-cash-register"></i> Caixa</a></li>
-                <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="nota_fiscal.php"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
-                <li><a href="servicos.php"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
-            </ul>
-        </div>
-        <div class="menu-section outros">
-            <h6>OUTROS</h6>
-            <ul class="menu-list">
-                <li><a href="#"><i class="fas fa-store"></i> Loja de Planos</a></li>
-                <li><a href="sair.php"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
-            </ul>
-        </div>
-    </nav>
+    <?php include 'sidebar.php'; ?>
+
     <main class="main-content">
-        <header class="main-header">
-            <h2>Vendas > <?= $modo_edicao ? 'Editar Venda' : 'Cadastrar Venda Manualmente' ?></h2>
-            <div class="user-profile"><span><?= htmlspecialchars($nome_empresa) ?></span>
-                <div class="avatar"><i class="fas fa-user"></i></div>
-            </div>
-        </header>
+        <?php include 'header.php'; ?>
 
         <div class="form-produto-container">
             <h3 class="form-produto-title"><?= $modo_edicao ? 'EDITAR VENDA' : 'CADASTRE SUA VENDA MANUALMENTE' ?></h3>
@@ -164,18 +150,14 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 const container = document.getElementById('itens-container');
                 const index = container.children.length;
                 const novoItem = container.children[0].cloneNode(true);
-
                 novoItem.querySelector('select').name = `itens[${index}][produto_id]`;
                 novoItem.querySelector('.quantidade-input').name = `itens[${index}][quantidade]`;
                 novoItem.querySelector('.valor-input').name = `itens[${index}][valor_venda]`;
-
                 novoItem.querySelector('select').value = '';
                 novoItem.querySelector('.quantidade-input').value = '1';
                 novoItem.querySelector('.valor-input').value = '';
-
                 const btnRemover = novoItem.querySelector('.btn-remover');
                 btnRemover.style.display = 'block';
-
                 container.appendChild(novoItem);
             });
         }
@@ -185,6 +167,9 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             firstSelect.addEventListener('change', preencherValor);
         }
     </script>
+    <script src="main.js"></script>
+    <script src="notificacoes.js"></script>
+    <script src="notificacoes_fornecedor.js"></script>
 </body>
 
 </html>

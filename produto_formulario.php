@@ -7,6 +7,7 @@ if (empty($_SESSION['id'])) {
     exit;
 }
 
+$pagina_ativa = 'estoque';
 $modo_edicao = false;
 $produto_para_editar = [];
 $titulo_pagina = "Cadastrar Produto";
@@ -27,9 +28,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     }
 }
 
+$titulo_header = 'Estoque > ' . $titulo_pagina;
 $categorias = $pdo->query("SELECT id, nome FROM categorias ORDER BY nome")->fetchAll(PDO::FETCH_ASSOC);
-$fornecedores = $pdo->query("SELECT id, razao_social FROM fornecedores ORDER BY razao_social")->fetchAll(PDO::FETCH_ASSOC);
-
+$fornecedores = $pdo->query("SELECT id, razao_social FROM fornecedores WHERE status = 'ativo' ORDER BY razao_social")->fetchAll(PDO::FETCH_ASSOC);
 $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 ?>
 <!DOCTYPE html>
@@ -45,42 +46,21 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 </head>
 
 <body>
-    <nav class="sidebar">
-        <div class="sidebar-logo">
-            <img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;">
-        </div>
-        <div class="menu-section">
-            <h6>MENU</h6>
-            <ul class="menu-list">
-                <li><a href="sistema.php"><i class="fas fa-home"></i> Início</a></li>
-                <li><a href="estoque.php" class="active"><i class="fas fa-box"></i> Estoque</a></li>
-                <li><a href="agenda.php"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
-                <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
-                <li><a href="vendas.php"><i class="fas fa-chart-bar"></i> Vendas</a></li>
-                <li><a href="caixa.php"><i class="fas fa-cash-register"></i> Caixa</a></li>
-                <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
-                <li><a href="#"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
-            </ul>
-        </div>
-        <div class="menu-section outros">
-            <h6>OUTROS</h6>
-            <ul class="menu-list">
-                <li><a href="#"><i class="fas fa-store"></i> Loja de Planos</a></li>
-                <li><a href="sair.php"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
-            </ul>
-        </div>
-    </nav>
+    <?php include 'sidebar.php'; ?>
 
     <main class="main-content">
-        <header class="main-header">
-            <h2>Estoque > <?= $titulo_pagina ?></h2>
-            <div class="user-profile">
-                <span><?= htmlspecialchars($nome_empresa) ?></span>
-                <div class="avatar"><i class="fas fa-user"></i></div>
-            </div>
-        </header>
+        <?php include 'header.php'; ?>
 
+        <div class="message-container" style="margin-bottom: 1.5rem;">
+            <?php if (isset($_SESSION['msg_sucesso'])): ?>
+                <div class="alert alert-success"><?= $_SESSION['msg_sucesso'];
+                                                    unset($_SESSION['msg_sucesso']); ?></div>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['msg_erro'])): ?>
+                <div class="alert alert-danger"><?= $_SESSION['msg_erro'];
+                                                unset($_SESSION['msg_erro']); ?></div>
+            <?php endif; ?>
+        </div>
         <div class="form-produto-container">
             <h3 class="form-produto-title"><?= $modo_edicao ? 'EDITAR PRODUTO' : 'CADASTRE SEU PRODUTO MANUALMENTE' ?></h3>
             <form action="processa_produto.php" method="POST">
@@ -93,16 +73,16 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                         <input type="text" id="codigo_barras" name="codigo_barras" value="<?= htmlspecialchars($produto_para_editar['codigo_barras'] ?? '') ?>">
                     </div>
                     <div class="form-produto-group">
-                        <label for="valor_compra">Valor de compra</label>
-                        <input type="text" id="valor_compra" name="valor_compra" value="<?= htmlspecialchars($produto_para_editar['valor_compra'] ?? '') ?>">
-                    </div>
-                    <div class="form-produto-group">
                         <label for="nome">Nome do produto</label>
                         <input type="text" id="nome" name="nome" value="<?= htmlspecialchars($produto_para_editar['nome'] ?? '') ?>" required>
                     </div>
+                    <div class="form-produto-group" style="grid-column: span 2;">
+                        <label for="especificacao">Especificações</label>
+                        <input type="text" id="especificacao" name="especificacao" value="<?= htmlspecialchars($produto_para_editar['especificacao'] ?? '') ?>">
+                    </div>
                     <div class="form-produto-group">
                         <label for="categoria_id">Categoria do produto</label>
-                        <select id="categoria_id" name="categoria_id" required>
+                        <select id="categoria_id" name="categoria_id">
                             <option value="">Selecione</option>
                             <?php foreach ($categorias as $cat): ?>
                                 <option value="<?= $cat['id'] ?>" <?= (isset($produto_para_editar['categoria_id']) && $produto_para_editar['categoria_id'] == $cat['id']) ? 'selected' : '' ?>>
@@ -112,20 +92,31 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                         </select>
                     </div>
                     <div class="form-produto-group">
+                        <label for="fornecedor_id">Fornecedor</label>
+                        <select id="fornecedor_id" name="fornecedor_id">
+                            <option value="">Selecione (Opcional)</option>
+                            <?php foreach ($fornecedores as $fornecedor): ?>
+                                <option value="<?= $fornecedor['id'] ?>" <?= (isset($produto_para_editar['fornecedor_id']) && $produto_para_editar['fornecedor_id'] == $fornecedor['id']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($fornecedor['razao_social']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-produto-group">
                         <label for="quantidade_estoque">Quantidade estocada</label>
                         <input type="number" id="quantidade_estoque" name="quantidade_estoque" min="0" value="<?= htmlspecialchars($produto_para_editar['quantidade_estoque'] ?? '0') ?>" required>
                     </div>
                     <div class="form-produto-group">
-                        <label for="especificacao">Especificações</label>
-                        <input type="text" id="especificacao" name="especificacao" value="<?= htmlspecialchars($produto_para_editar['especificacao'] ?? '') ?>">
-                    </div>
-                    <div class="form-produto-group">
-                        <label for="valor_venda">Valor de venda</label>
-                        <input type="text" id="valor_venda" name="valor_venda" value="<?= htmlspecialchars($produto_para_editar['valor_venda'] ?? '') ?>" required>
-                    </div>
-                    <div class="form-produto-group">
-                        <label for="quantidade_minima">Quantidade mínima no estoque</label>
+                        <label for="quantidade_minima">Quantidade mínima</label>
                         <input type="number" id="quantidade_minima" name="quantidade_minima" min="0" value="<?= htmlspecialchars($produto_para_editar['quantidade_minima'] ?? '5') ?>">
+                    </div>
+                    <div class="form-produto-group">
+                        <label for="valor_compra">Valor de compra (R$)</label>
+                        <input type="text" id="valor_compra" name="valor_compra" placeholder="0,00" value="<?= $modo_edicao ? number_format((float)($produto_para_editar['valor_compra'] ?? 0), 2, ',', '') : '' ?>">
+                    </div>
+                    <div class="form-produto-group">
+                        <label for="valor_venda">Valor de venda (R$)</label>
+                        <input type="text" id="valor_venda" name="valor_venda" placeholder="0,00" value="<?= $modo_edicao ? number_format((float)($produto_para_editar['valor_venda'] ?? 0), 2, ',', '') : '' ?>" required>
                     </div>
                 </div>
                 <div class="form-produto-actions">
@@ -136,6 +127,9 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             </form>
         </div>
     </main>
+    <script src="main.js"></script>
+    <script src="notificacoes.js"></script>
+    <script src="notificacoes_fornecedor.js"></script>
 </body>
 
 </html>

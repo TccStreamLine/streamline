@@ -2,8 +2,11 @@
 session_start();
 include_once('config.php');
 
-if (empty($_SESSION['id'])) {
-    header('Location: login.php');
+$pagina_ativa = 'funcionarios';
+$titulo_header = 'Gerenciamento de Funcionários';
+
+if (empty($_SESSION['id']) || $_SESSION['role'] !== 'ceo') {
+    header('Location: sistema.php');
     exit;
 }
 
@@ -16,6 +19,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,19 +29,18 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
     <link rel="stylesheet" href="css/estoque.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
-    <nav class="sidebar">
-    </nav>
+    <?php include 'sidebar.php'; ?>
 
     <main class="main-content">
-        <header class="main-header">
-            <h2>Gerenciamento de Funcionários</h2>
-            <div class="user-profile"><span><?= htmlspecialchars($nome_empresa) ?></span><div class="avatar"><i class="fas fa-user"></i></div></div>
-        </header>
+        <?php include 'header.php'; ?>
 
         <div class="message-container">
-            <?php if (isset($_SESSION['msg_sucesso'])): ?><div class="alert alert-success"><?= $_SESSION['msg_sucesso']; unset($_SESSION['msg_sucesso']); ?></div><?php endif; ?>
-            <?php if (isset($_SESSION['msg_erro'])): ?><div class="alert alert-danger"><?= $_SESSION['msg_erro']; unset($_SESSION['msg_erro']); ?></div><?php endif; ?>
+            <?php if (isset($_SESSION['msg_sucesso'])): ?><div class="alert alert-success"><?= $_SESSION['msg_sucesso'];
+                                                                                            unset($_SESSION['msg_sucesso']); ?></div><?php endif; ?>
+            <?php if (isset($_SESSION['msg_erro'])): ?><div class="alert alert-danger"><?= $_SESSION['msg_erro'];
+                                                                                        unset($_SESSION['msg_erro']); ?></div><?php endif; ?>
         </div>
 
         <div class="actions-container">
@@ -47,10 +50,21 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 
         <div class="table-container">
             <table>
-                <thead><tr><th>ID</th><th>Nome</th><th>E-mail</th><th>Cargo</th><th>Telefone</th><th>Ações</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Cargo</th>
+                        <th>Telefone</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <?php if (empty($funcionarios)): ?>
-                        <tr><td colspan="6" class="text-center">Nenhum funcionário cadastrado.</td></tr>
+                        <tr>
+                            <td colspan="6" class="text-center">Nenhum funcionário cadastrado.</td>
+                        </tr>
                     <?php else: ?>
                         <?php foreach ($funcionarios as $funcionario): ?>
                             <tr>
@@ -73,7 +87,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
     <script>
         const deleteButtons = document.querySelectorAll('.btn-delete');
         deleteButtons.forEach(button => {
-            button.addEventListener('click', function (event) {
+            button.addEventListener('click', function(event) {
                 event.preventDefault();
                 const url = this.href;
                 Swal.fire({
@@ -93,5 +107,9 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             });
         });
     </script>
+    <script src="main.js"></script>
+    <script src="notificacoes.js"></script>
+    <script src="notificacoes_fornecedor.js"></script>
 </body>
+
 </html>

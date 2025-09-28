@@ -1,7 +1,7 @@
 <?php
 session_start();
-unset($_SESSION["empresa"]);
-unset($_SESSION["cnpj"]);
-unset($_SESSION["senha"]);
+session_unset(); // Remove todas as variáveis da sessão
+session_destroy(); // Destrói a sessão
 header('Location: home.php');
+exit();
 ?>

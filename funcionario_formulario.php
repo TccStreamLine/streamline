@@ -2,8 +2,8 @@
 session_start();
 include_once('config.php');
 
-if (empty($_SESSION['id'])) {
-    header('Location: login.php');
+if (empty($_SESSION['id']) || $_SESSION['role'] !== 'ceo') {
+    header('Location: sistema.php');
     exit;
 }
 
@@ -12,6 +12,8 @@ $funcionario = [];
 $titulo_pagina = "Cadastro de Funcionário";
 $titulo_formulario = "CADASTRO DE FUNCIONÁRIOS";
 $nome_botao = "CADASTRAR AQUI";
+$pagina_ativa = 'funcionarios';
+$titulo_header = 'Funcionários > ' . $titulo_pagina;
 
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
@@ -37,6 +39,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Sua empresa';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -45,10 +48,11 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Sua empresa';
     <link rel="stylesheet" href="css/stylecadastro.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
     <div class="main-container">
         <div class="left-panel">
-             <header class="header-logo">
+            <header class="header-logo">
                 <img src="img/relplogo.png" alt="Logo" class="logo">
             </header>
             <nav class="nav-links">
@@ -63,9 +67,10 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Sua empresa';
                     <fieldset>
                         <legend><b><?= $titulo_formulario ?></b></legend>
                         <p class="subtitle">Olá, <?= htmlspecialchars($nome_empresa) ?>! Gerencie seus usuários aqui.</p>
-                        
+
                         <?php if (isset($_SESSION['msg_erro_funcionario'])): ?>
-                            <p style="color: red; text-align: center; margin-bottom: 15px;"><?= $_SESSION['msg_erro_funcionario']; unset($_SESSION['msg_erro_funcionario']); ?></p>
+                            <p style="color: red; text-align: center; margin-bottom: 15px;"><?= $_SESSION['msg_erro_funcionario'];
+                                                                                            unset($_SESSION['msg_erro_funcionario']); ?></p>
                         <?php endif; ?>
 
                         <div class="form-row-group">
@@ -105,5 +110,9 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Sua empresa';
             <img src="img/imagemtela.png" alt="Imagem ilustrativa">
         </div>
     </div>
+    <script src="main.js"></script>
+    <script src="notificacoes.js"></script>
+    <script src="notificacoes_fornecedor.js"></script>
 </body>
+
 </html>

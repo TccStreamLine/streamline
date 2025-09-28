@@ -1,18 +1,20 @@
 <?php
 session_start();
 
-require 'config.php';
-require './phpmailer/src/Exception.php';
-require './phpmailer/src/SMTP.php';
-require './phpmailer/src/PHPMailer.php';
+// --- CORREÇÃO AQUI: Usando caminhos absolutos para garantir que os arquivos sejam encontrados ---
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/phpmailer/src/Exception.php';
+require_once __DIR__ . '/phpmailer/src/SMTP.php';
+require_once __DIR__ . '/phpmailer/src/PHPMailer.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = trim($_POST["email"]);
 
-    $stmt = $pdo->prepare("SELECT id, email FROM usuarios WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT id, email, nome_empresa FROM usuarios WHERE email = ?");
     $stmt->execute([$email]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -34,16 +36,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
             $mail->CharSet = 'UTF-8';
+            
             $mail->setFrom('tccstreamline@gmail.com', 'Streamline - Recuperação de Senha');
-            $mail->addAddress($usuario['email']);
+            $mail->addAddress($usuario['email'], $usuario['nome_empresa']);
+            
             $mail->isHTML(true);
-            $mail->Subject = 'Redefinicao de Senha';
+            $mail->Subject = 'Redefinição de Senha';
             $link = "http://localhost/streamline/resetar_senha.php?token=" . $token;
             $mail->Body = "
                 <h2>Você solicitou uma redefinição de senha?</h2>
                 <p>Recebemos uma solicitação para redefinir a senha da sua conta. Se foi você, clique no link abaixo para criar uma nova senha:</p>
-                <p>
-                    <a href='$link' style='background-color: #6D28D9; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;'>
+                <p style='margin: 20px 0;'>
+                    <a href='$link' style='background-color: #6D28D9; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;'>
                         Redefinir Minha Senha
                     </a>
                 </p>

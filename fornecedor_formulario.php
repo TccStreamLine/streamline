@@ -10,6 +10,8 @@ if (empty($_SESSION['id'])) {
 $modo_edicao = false;
 $fornecedor_para_editar = [];
 $titulo_pagina = "Cadastrar Novo Fornecedor";
+$pagina_ativa = 'fornecedores';
+$titulo_header = 'Fornecimento > ' . $titulo_pagina;
 
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $modo_edicao = true;
@@ -42,40 +44,10 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 </head>
 
 <body>
-    <nav class="sidebar">
-        <div class="sidebar-logo">
-            <img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;">
-        </div>
-        <div class="menu-section">
-            <h6>MENU</h6>
-            <ul class="menu-list">
-                <li><a href="sistema.php"><i class="fas fa-home"></i> Início</a></li>
-                <li><a href="estoque.php"><i class="fas fa-box"></i> Estoque</a></li>
-                <li><a href="agenda.php"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
-                <li><a href="fornecedores.php" class="active"><i class="fas fa-truck"></i> Fornecimento</a></li>
-                <li><a href="vendas.php"><i class="fas fa-chart-bar"></i> Vendas</a></li>
-                <li><a href="caixa.php"><i class="fas fa-cash-register"></i> Caixa</a></li>
-                <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
-                <li><a href="#"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
-            </ul>
-        </div>
-        <div class="menu-section outros">
-            <h6>OUTROS</h6>
-            <ul class="menu-list">
-                <li><a href="#"><i class="fas fa-store"></i> Loja de Planos</a></li>
-                <li><a href="sair.php"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
-            </ul>
-        </div>
-    </nav>
+    <?php include 'sidebar.php'; ?>
 
     <main class="main-content">
-        <header class="main-header">
-            <h2>Fornecimento > <?= $titulo_pagina ?></h2>
-            <div class="user-profile"><span><?= htmlspecialchars($nome_empresa) ?></span>
-                <div class="avatar"><i class="fas fa-user"></i></div>
-            </div>
-        </header>
+        <?php include 'header.php'; ?>
 
         <div class="form-container-figma">
             <h3 class="form-title-figma"><?= $modo_edicao ? 'EDITAR DADOS DO FORNECEDOR' : 'CADASTRAR NOVO FORNECEDOR' ?></h3>
@@ -108,6 +80,9 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             </form>
         </div>
     </main>
+    <script src="main.js"></script>
+    <script src="notificacoes.js"></script>
+    <script src="notificacoes_fornecedor.js"></script>
 </body>
 
 </html>

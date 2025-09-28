@@ -151,19 +151,19 @@ document.addEventListener('DOMContentLoaded', function () {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: formData
         })
-        .then(res => res.text())
-        .then(res => {
-            if (res === "ok") {
-                fecharModal();
-                carregarEventosDoDia(dataInput.value);
-                const popup = document.getElementById('notification-popup');
-                popup.textContent = "Evento salvo com sucesso!";
-                popup.style.display = 'block';
-                setTimeout(() => popup.style.display = 'none', 4000);
-            } else {
-                alert("Erro ao salvar o evento: " + res);
-            }
-        });
+            .then(res => res.text())
+            .then(res => {
+                if (res === "ok") {
+                    fecharModal();
+                    carregarEventosDoDia(dataInput.value);
+                    const popup = document.getElementById('notification-popup');
+                    popup.textContent = "Evento salvo com sucesso!";
+                    popup.style.display = 'block';
+                    setTimeout(() => popup.style.display = 'none', 4000);
+                } else {
+                    alert("Erro ao salvar o evento: " + res);
+                }
+            });
     };
 
     window.onclick = function (event) {
@@ -171,36 +171,52 @@ document.addEventListener('DOMContentLoaded', function () {
             fecharModal();
         }
     };
-    
-    listaEventosContainer.addEventListener('click', function(e) {
+
+    listaEventosContainer.addEventListener('click', function (e) {
         const target = e.target.closest('button');
         if (!target) return;
 
         const eventoId = target.dataset.id;
 
         if (target.classList.contains('btn-acao-excluir')) {
-            if (confirm('Tem certeza que deseja excluir este evento?')) {
-                // --- ALTERAÇÃO AQUI ---
-                // Mudamos o formato de envio para 'form-urlencoded'
-                fetch('excluir_evento.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams({ 'id': eventoId })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        carregarEventosDoDia(dataInput.value);
-                        const popup = document.getElementById('notification-popup');
-                        popup.textContent = "Evento excluído com sucesso!";
-                        popup.style.display = 'block';
-                        setTimeout(() => popup.style.display = 'none', 4000);
-                    } else {
-                        alert('Erro ao excluir: ' + data.message);
-                    }
-                })
-                .catch(error => console.error('Erro na requisição:', error));
-            }
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "O evento será excluído permanentemente.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Sim',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('excluir_evento.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams({ 'id': eventoId })
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                // Recarrega os eventos do dia sem atualizar a página
+                                carregarEventosDoDia(dataInput.value);
+                                Swal.fire({
+                                    title: 'Excluído!',
+                                    text: 'O evento foi removido.',
+                                    icon: 'success',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                Swal.fire('Erro!', data.message, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro na requisição:', error);
+                            Swal.fire('Erro!', 'Não foi possível se comunicar com o servidor.', 'error');
+                        });
+                }
+            });
         }
 
         if (target.classList.contains('btn-acao-editar')) {
@@ -208,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(res => res.json())
                 .then(data => {
                     if (data.error) {
-                        alert(data.error);
+                        Swal.fire('Erro!', data.error, 'error');
                     } else {
                         abrirModalParaEditar(data);
                     }

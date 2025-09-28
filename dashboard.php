@@ -7,10 +7,13 @@ if (empty($_SESSION['id'])) {
     exit;
 }
 
+// Variáveis da página
+$pagina_ativa = 'dashboard';
+$titulo_header = 'Dashboard';
 $usuario_id = $_SESSION['id'];
 $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 
-// --- QUERIES PARA KPIs E GRÁFICOS (CÓDIGO ORIGINAL RESTAURADO) ---
+// QUERIES PARA KPIs E GRÁFICOS
 $faturamento_mes = $pdo->prepare("SELECT SUM(valor_total) as total FROM vendas WHERE usuario_id = ? AND MONTH(data_venda) = MONTH(CURDATE()) AND YEAR(data_venda) = YEAR(CURDATE()) AND status = 'finalizada'");
 $faturamento_mes->execute([$usuario_id]);
 $faturamento_mes = $faturamento_mes->fetchColumn();
@@ -27,7 +30,6 @@ $sql_faturamento_diario = "SELECT DATE(data_venda) as dia, SUM(valor_total) as t
 $stmt_faturamento_diario = $pdo->prepare($sql_faturamento_diario);
 $stmt_faturamento_diario->execute([$usuario_id]);
 $faturamento_diario = $stmt_faturamento_diario->fetchAll(PDO::FETCH_ASSOC);
-
 $labels_faturamento = [];
 $data_faturamento = [];
 foreach ($faturamento_diario as $row) {
@@ -39,7 +41,6 @@ $sql_vendas_categoria = "SELECT c.nome, COUNT(vi.id) as total_vendas FROM venda_
 $stmt_vendas_categoria = $pdo->prepare($sql_vendas_categoria);
 $stmt_vendas_categoria->execute([$usuario_id]);
 $vendas_categoria = $stmt_vendas_categoria->fetchAll(PDO::FETCH_ASSOC);
-
 $labels_categoria = [];
 $data_categoria = [];
 foreach ($vendas_categoria as $row) {
@@ -52,7 +53,6 @@ $stmt_top_produtos = $pdo->prepare($sql_top_produtos);
 $stmt_top_produtos->execute([$usuario_id]);
 $top_produtos = $stmt_top_produtos->fetchAll(PDO::FETCH_ASSOC);
 
-
 $insight_melhor_dia = $pdo->prepare("SELECT DAYNAME(data_venda) as dia, SUM(valor_total) as total FROM vendas WHERE usuario_id = ? AND data_venda >= CURDATE() - INTERVAL 7 DAY AND status = 'finalizada' GROUP BY DAYNAME(data_venda) ORDER BY total DESC LIMIT 1");
 $insight_melhor_dia->execute([$usuario_id]);
 $melhor_dia = $insight_melhor_dia->fetch(PDO::FETCH_ASSOC);
@@ -63,6 +63,7 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -72,42 +73,13 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
     <link rel="stylesheet" href="css/dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-    <nav class="sidebar">
-        <div class="sidebar-logo">
-            <img class="logo" src="img/relplogo2.png" alt="Relp! Logo" style="width: 100px;">
-        </div>
-        <div class="menu-section">
-            <h6>MENU</h6>
-            <ul class="menu-list">
-                <li><a href="sistema.php"><i class="fas fa-home"></i> Início</a></li>
-                <li><a href="estoque.php"><i class="fas fa-box"></i> Estoque</a></li>
-                <li><a href="agenda.php"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
-                <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
-                <li><a href="vendas.php"><i class="fas fa-chart-bar"></i> Vendas</a></li>
-                <li><a href="caixa.php"><i class="fas fa-cash-register"></i> Caixa</a></li>
-                <li><a href="dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
-                <li><a href="#"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
-            </ul>
-        </div>
-        <div class="menu-section outros">
-            <h6>OUTROS</h6>
-            <ul class="menu-list">
-                <li><a href="#"><i class="fas fa-store"></i> Loja de Planos</a></li>
-                <li><a href="sair.php"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
-            </ul>
-        </div>
-    </nav>
+    <?php include 'sidebar.php'; ?>
 
     <main class="main-content">
-        <header class="main-header">
-            <h2>Dashboard</h2>
-            <div class="user-profile"><span><?= htmlspecialchars($nome_empresa) ?></span>
-                <div class="avatar"><i class="fas fa-user"></i></div>
-            </div>
-        </header>
-        
+        <?php include 'header.php'; ?>
+
         <div class="dashboard-grid">
             <div class="kpi-card">
                 <i class="fas fa-dollar-sign icon"></i>
@@ -163,11 +135,9 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
                     <?php if ($melhor_dia): ?>
                         <li class="insight-item">O dia de maior faturamento nos últimos 7 dias foi <strong><?= htmlspecialchars($melhor_dia['dia']) ?></strong>. Bom trabalho!</li>
                     <?php endif; ?>
-
                     <?php if ($produto_campeao): ?>
                         <li class="insight-item">O produto campeão de vendas é o <strong><?= htmlspecialchars($produto_campeao) ?></strong>. Considere repor o estoque.</li>
                     <?php endif; ?>
-
                     <?php if ($estoque_baixo > 0): ?>
                         <li class="insight-item" style="color: #EF4444;"><strong>Atenção:</strong> Você tem <strong><?= $estoque_baixo ?></strong> produto(s) com nível de estoque baixo ou zerado.</li>
                     <?php else: ?>
@@ -176,7 +146,7 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
                 </ul>
             </div>
         </div>
-        
+
         <div id="chat-launcher">
             <i class="fas fa-robot"></i>
         </div>
@@ -203,8 +173,9 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
             </div>
         </div>
     </main>
-    
+
     <script>
+        // Scripts dos gráficos (não precisam ser alterados)
         const faturamentoCtx = document.getElementById('faturamentoDiarioChart').getContext('2d');
         new Chart(faturamentoCtx, {
             type: 'bar',
@@ -227,7 +198,6 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
                 maintainAspectRatio: false
             }
         });
-        
         const categoriaCtx = document.getElementById('vendasCategoriaChart').getContext('2d');
         new Chart(categoriaCtx, {
             type: 'doughnut',
@@ -245,14 +215,16 @@ $produto_campeao = $insight_produto_campeao->fetchColumn();
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'bottom',
+                        position: 'bottom'
                     }
                 }
             }
         });
     </script>
-
     <script src="dashboard_chat.js"></script>
+    <script src="main.js"></script>
+    <script src="notificacoes.js"></script>
+    <script src="notificacoes_fornecedor.js"></script>
 </body>
 
 </html>

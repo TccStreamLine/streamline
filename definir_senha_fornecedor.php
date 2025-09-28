@@ -36,7 +36,7 @@ if ($token_valido && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $upd->execute([$hash, $fornecedor['id']]);
 
         $_SESSION['msg_login'] = "Senha definida com sucesso! Faça seu login.";
-        header("Location: login_fornecedor.php"); 
+        header("Location: login.php"); 
         exit;
     }
 }

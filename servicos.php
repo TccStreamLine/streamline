@@ -2,6 +2,9 @@
 session_start();
 include_once('config.php');
 
+$pagina_ativa = 'servicos';
+$titulo_header = 'Serviços Prestados';
+
 if (empty($_SESSION['id'])) {
     header('Location: login.php');
     exit;
@@ -27,39 +30,9 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 </head>
 
 <body>
-    <nav class="sidebar">
-        <div class="sidebar-logo">
-            <img class="logo" src="img/relplogo.png" alt="Relp! Logo" style="width: 100px;">
-        </div>
-        <div class="menu-section">
-            <h6>MENU</h6>
-            <ul class="menu-list">
-                <li><a href="sistema.php"><i class="fas fa-home"></i> Início</a></li>
-                <li><a href="estoque.php"><i class="fas fa-box"></i> Estoque</a></li>
-                <li><a href="agenda.php"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
-                <li><a href="fornecedores.php"><i class="fas fa-truck"></i> Fornecimento</a></li>
-                <li><a href="vendas.php"><i class="fas fa-chart-bar"></i> Vendas</a></li>
-                <li><a href="caixa.php"><i class="fas fa-cash-register"></i> Caixa</a></li>
-                <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Nota Fiscal</a></li>
-                <li><a href="servicos.php" class="active"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
-            </ul>
-        </div>
-        <div class="menu-section outros">
-            <h6>OUTROS</h6>
-            <ul class="menu-list">
-                <li><a href="#"><i class="fas fa-store"></i> Loja de Planos</a></li>
-                <li><a href="sair.php"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
-            </ul>
-        </div>
-    </nav>
+    <?php include 'sidebar.php'; ?>
     <main class="main-content">
-        <header class="main-header">
-            <h2>Serviços Prestados</h2>
-            <div class="user-profile"><span><?= htmlspecialchars($nome_empresa) ?></span>
-                <div class="avatar"><i class="fas fa-user"></i></div>
-            </div>
-        </header>
+        <?php include 'header.php'; ?>
 
         <div class="actions-container">
             <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Pesquisar Serviço..."></div>
@@ -70,7 +43,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Nome</th>
                         <th>Valor (R$)</th>
                         <th>Produtos Usados</th>
@@ -81,7 +53,6 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 <tbody>
                     <?php foreach ($lista_servicos as $servico): ?>
                         <tr>
-                            <td><?= htmlspecialchars($servico['id']) ?></td>
                             <td><?= htmlspecialchars($servico['nome_servico']) ?></td>
                             <td><?= number_format($servico['valor_venda'], 2, ',', '.') ?></td>
                             <td><?= htmlspecialchars($servico['produtos_usados']) ?></td>
@@ -94,7 +65,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                     <?php endforeach; ?>
                     <?php if (empty($lista_servicos)): ?>
                         <tr>
-                            <td colspan="6" style="text-align: center;">Nenhum serviço cadastrado.</td>
+                            <td colspan="5" style="text-align: center;">Nenhum serviço cadastrado.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -123,7 +94,68 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 });
             });
         });
+
+        const searchInput = document.querySelector('.search-bar input');
+        const tableBody = document.querySelector('table tbody');
+
+        function formatDate(dateString) {
+            const options = {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return new Date(dateString).toLocaleDateString('pt-BR', options);
+        }
+
+        function formatCurrency(value) {
+            return parseFloat(value).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function renderTable(servicos) {
+            tableBody.innerHTML = '';
+
+            if (servicos.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Nenhum serviço encontrado.</td></tr>';
+                return;
+            }
+
+            servicos.forEach(servico => {
+                const row = `
+                    <tr>
+                        <td>${servico.nome_servico}</td>
+                        <td>${formatCurrency(servico.valor_venda)}</td>
+                        <td>${servico.produtos_usados || ''}</td>
+                        <td>${formatDate(servico.data_prestacao)}</td>
+                        <td class="actions">
+                            <a href="servico_formulario.php?id=${servico.id}" class="btn-action btn-edit"><i class="fas fa-pencil-alt"></i></a>
+                            <a href="excluir_servico.php?id=${servico.id}" class="btn-action btn-delete"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        searchInput.addEventListener('keyup', async () => {
+            const termo = searchInput.value;
+            try {
+                const response = await fetch(`buscar_servicos.php?termo=${encodeURIComponent(termo)}`);
+                const servicos = await response.json();
+                renderTable(servicos);
+            } catch (error) {
+                console.error('Erro ao buscar serviços:', error);
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Erro ao carregar os dados.</td></tr>';
+            }
+        });
     </script>
+    <script src="main.js"></script>
+    <script src="notificacoes.js"></script>
+    <script src="notificacoes_fornecedor.js"></script>
 </body>
 
 </html>

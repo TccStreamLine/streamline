@@ -13,15 +13,40 @@ $acao = $_POST['acao'] ?? '';
 try {
     if ($acao === 'cadastrar') {
         $itens = $_POST['itens'] ?? [];
-        $data_venda = $_POST['data_venda'] ?? date('Y-m-d H:i:s');
-        $descricao = trim($_POST['descricao'] ?? '');
-        $valor_total_venda = 0;
-
         if (empty($itens)) {
             throw new Exception("Nenhum item foi adicionado à venda.");
         }
 
+        $sql_check_produto = "SELECT nome, quantidade_estoque, quantidade_minima FROM produtos WHERE id = ?";
+        $stmt_check_produto = $pdo->prepare($sql_check_produto);
+
+        foreach ($itens as $item) {
+            $produto_id = (int)$item['produto_id'];
+            $quantidade_vendida = (int)$item['quantidade'];
+
+            $stmt_check_produto->execute([$produto_id]);
+            $produto = $stmt_check_produto->fetch(PDO::FETCH_ASSOC);
+
+            if (!$produto) {
+                throw new Exception("Produto com ID $produto_id não encontrado.");
+            }
+
+            $estoque_final = $produto['quantidade_estoque'] - $quantidade_vendida;
+
+            if ($estoque_final < 0) {
+                throw new Exception("Estoque insuficiente para o produto: " . $produto['nome']);
+            }
+            if ($estoque_final < $produto['quantidade_minima']) {
+                $mensagem_erro = "Venda bloqueada para o produto: " . $produto['nome'] . ". A venda deixaria o estoque abaixo do mínimo permitido (" . $produto['quantidade_minima'] . " unidades).";
+                throw new Exception($mensagem_erro);
+            }
+        }
+
         $pdo->beginTransaction();
+
+        $data_venda = $_POST['data_venda'] ?? date('Y-m-d H:i:s');
+        $descricao = trim($_POST['descricao'] ?? '');
+        $valor_total_venda = 0;
 
         foreach ($itens as $item) {
             $valor_unitario = (float)str_replace(',', '.', $item['valor_venda']);
@@ -56,21 +81,6 @@ try {
         exit;
 
     } elseif ($acao === 'editar') {
-        $venda_id = filter_var($_POST['venda_id'], FILTER_VALIDATE_INT);
-        $data_venda = $_POST['data_venda'] ?? date('Y-m-d H:i:s');
-        $descricao = trim($_POST['descricao'] ?? '');
-
-        if (!$venda_id) {
-            throw new Exception("ID da venda inválido para edição.");
-        }
-
-        $sql = "UPDATE vendas SET data_venda = ?, descricao = ? WHERE id = ? AND usuario_id = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$data_venda, $descricao, $venda_id, $usuario_id]);
-
-        $_SESSION['msg_sucesso'] = "Venda atualizada com sucesso!";
-        header('Location: vendas.php');
-        exit;
     }
 
 } catch (Exception $e) {
@@ -78,7 +88,7 @@ try {
         $pdo->rollBack();
     }
     $_SESSION['msg_erro'] = "Falha na operação: " . $e->getMessage();
-    header('Location: venda_formulario.php' . (isset($venda_id) ? '?id='.$venda_id : ''));
+    header('Location: venda_formulario.php' . (isset($_POST['venda_id']) ? '?id='.$_POST['venda_id'] : ''));
     exit;
 }
 ?>
