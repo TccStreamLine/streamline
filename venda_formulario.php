@@ -115,7 +115,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'funcionario') {
         </div>
     </main>
     
-    <script src="js/venda_formulario.js"></script>
+    <script src="venda_formulario.js"></script>
     <script src="main.js"></script>
     <script src="notificacoes.js"></script>
     <script src="notificacoes_fornecedor.js"></script>
