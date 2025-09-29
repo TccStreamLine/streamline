@@ -23,16 +23,13 @@ try {
         foreach ($itens as $item) {
             $produto_id = (int)$item['produto_id'];
             $quantidade_vendida = (int)$item['quantidade'];
-
             $stmt_check_produto->execute([$produto_id]);
             $produto = $stmt_check_produto->fetch(PDO::FETCH_ASSOC);
 
             if (!$produto) {
                 throw new Exception("Produto com ID $produto_id não encontrado.");
             }
-
             $estoque_final = $produto['quantidade_estoque'] - $quantidade_vendida;
-
             if ($estoque_final < 0) {
                 throw new Exception("Estoque insuficiente para o produto: " . $produto['nome']);
             }
@@ -70,7 +67,6 @@ try {
             $quantidade = (int)$item['quantidade'];
             $valor_unitario = (float)str_replace(',', '.', $item['valor_venda']);
             $valor_total_item = $valor_unitario * $quantidade;
-
             $stmt_item->execute([$venda_id, $produto_id, $quantidade, $valor_unitario, $valor_total_item]);
             $stmt_update_estoque->execute([$quantidade, $produto_id]);
         }
@@ -81,6 +77,22 @@ try {
         exit;
 
     } elseif ($acao === 'editar') {
+-
+        $venda_id = filter_input(INPUT_POST, 'venda_id', FILTER_VALIDATE_INT);
+        if (!$venda_id) {
+            throw new Exception("ID da venda inválido.");
+        }
+
+        $data_venda = $_POST['data_venda'] ?? date('Y-m-d H:i:s');
+        $descricao = trim($_POST['descricao'] ?? '');
+
+        $sql = "UPDATE vendas SET data_venda = ?, descricao = ? WHERE id = ? AND usuario_id = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$data_venda, $descricao, $venda_id, $usuario_id]);
+        
+        $_SESSION['msg_sucesso'] = "Venda atualizada com sucesso!";
+        header('Location: vendas.php');
+        exit;
     }
 
 } catch (Exception $e) {
@@ -88,7 +100,8 @@ try {
         $pdo->rollBack();
     }
     $_SESSION['msg_erro'] = "Falha na operação: " . $e->getMessage();
-    header('Location: venda_formulario.php' . (isset($_POST['venda_id']) ? '?id='.$_POST['venda_id'] : ''));
+    $redirect_url = 'venda_formulario.php' . (isset($_POST['venda_id']) ? '?id='.$_POST['venda_id'] : '');
+    header('Location: ' . $redirect_url);
     exit;
 }
 ?>

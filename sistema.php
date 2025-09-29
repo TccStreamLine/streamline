@@ -6,7 +6,7 @@ ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
 session_start();
-include_once('config.php'); // A CORREÇÃO ESTÁ AQUI
+include_once('config.php'); 
 
 if (empty($_SESSION['id'])) {
     session_unset();
@@ -72,7 +72,7 @@ if ($user_role === 'funcionario' || $user_role === 'ceo') {
         <?php include 'header.php'; ?>
 
         <section class="welcome-section">
-            <h1>Olá, <?= htmlspecialchars($nome_saudacao) ?>...</h1>
+            <h1>Olá, <?= htmlspecialchars($nome_saudacao) ?></h1>
             <p>Seja bem-vindo ao seu sistema inteligente de gerenciamento!</p>
         </section>
 
