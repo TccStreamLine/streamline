@@ -52,31 +52,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'funcionario') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/sistema.css">
-    <link rel="stylesheet" href="css/produto_formulario.css">
-    <style>
-        .item-venda {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr auto;
-            gap: 1rem;
-            align-items: flex-end;
-            margin-bottom: 1rem;
-        }
-
-        .btn-remover {
-            background-color: #EF4444;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0 12px;
-            cursor: pointer;
-            height: 54px;
-        }
-
-        .readonly {
-            background-color: #F3F4F6 !important;
-            cursor: not-allowed;
-        }
-    </style>
+    <link rel="stylesheet" href="css/venda_formulario.css">
 </head>
 
 <body>
@@ -92,22 +68,36 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'funcionario') {
                 <input type="hidden" name="venda_id" value="<?= $venda_para_editar['id'] ?? '' ?>">
 
                 <?php if ($modo_edicao): ?>
-                    <p style="text-align: center; margin-bottom: 2rem; color: #6B7280;">A alteração de produtos de uma venda já finalizada não é permitida. Apenas a data e a descrição podem ser modificadas.</p>
+                    <p class="aviso-edicao">A alteração de produtos de uma venda já finalizada não é permitida. Apenas a data e a descrição podem ser modificadas.</p>
                 <?php else: ?>
                     <div id="itens-container">
                         <div class="item-venda">
-                            <div class="form-produto-group"><label>Produto</label><select name="itens[0][produto_id]" class="produto-select" required>
-                                    <option value="">Selecione</option><?php foreach ($produtos as $produto): ?><option value="<?= $produto['id'] ?>" data-valor="<?= $produto['valor_venda'] ?>"><?= htmlspecialchars($produto['nome']) ?> (Estoque: <?= $produto['quantidade_estoque'] ?>)</option><?php endforeach; ?>
-                                </select></div>
-                            <div class="form-produto-group"><label>Quantidade</label><input type="number" name="itens[0][quantidade]" min="1" value="1" class="quantidade-input" required></div>
-                            <div class="form-produto-group"><label>Valor Unitário</label><input type="text" name="itens[0][valor_venda]" class="valor-input" placeholder="0,00" required></div>
-                            <button type="button" class="btn-remover" style="display:none;">X</button>
+                            <div class="form-produto-group">
+                                <label>Produto</label>
+                                <select name="itens[0][produto_id]" class="produto-select" required>
+                                    <option value="">Selecione</option>
+                                    <?php foreach ($produtos as $produto): ?>
+                                        <option value="<?= $produto['id'] ?>" data-valor="<?= $produto['valor_venda'] ?>">
+                                            <?= htmlspecialchars($produto['nome']) ?> (Estoque: <?= $produto['quantidade_estoque'] ?>)
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="form-produto-group">
+                                <label>Quantidade</label>
+                                <input type="number" name="itens[0][quantidade]" min="1" value="1" class="quantidade-input" required>
+                            </div>
+                            <div class="form-produto-group">
+                                <label>Valor Unitário</label>
+                                <input type="text" name="itens[0][valor_venda]" class="valor-input" placeholder="0,00" required>
+                            </div>
+                            <button type="button" class="btn-remover hidden">X</button>
                         </div>
                     </div>
-                    <button type="button" id="btn-adicionar-item" class="btn-secondary" style="margin-bottom: 1.5rem;">Adicionar Outro Produto</button>
+                    <button type="button" id="btn-adicionar-item" class="btn-secondary">Adicionar Outro Produto</button>
                 <?php endif; ?>
 
-                <div class="form-produto-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="form-produto-grid duas-colunas">
                     <div class="form-produto-group">
                         <label for="data_venda">Data da Venda</label>
                         <input type="datetime-local" name="data_venda" value="<?= $modo_edicao ? date('Y-m-d\TH:i', strtotime($venda_para_editar['data_venda'])) : date('Y-m-d\TH:i') ?>" required>
@@ -124,49 +114,8 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'funcionario') {
             </form>
         </div>
     </main>
-    <script>
-        document.addEventListener('click', function(e) {
-            if (e.target && e.target.classList.contains('produto-select')) {
-                e.target.addEventListener('change', preencherValor);
-            }
-            if (e.target && e.target.classList.contains('btn-remover')) {
-                e.target.closest('.item-venda').remove();
-            }
-        });
-
-        function preencherValor(event) {
-            const select = event.target;
-            const selectedOption = select.options[select.selectedIndex];
-            const valor = selectedOption.getAttribute('data-valor');
-            const valorInput = select.closest('.item-venda').querySelector('.valor-input');
-            if (valor) {
-                valorInput.value = valor.replace('.', ',');
-            }
-        }
-
-        const btnAdicionar = document.getElementById('btn-adicionar-item');
-        if (btnAdicionar) {
-            btnAdicionar.addEventListener('click', function() {
-                const container = document.getElementById('itens-container');
-                const index = container.children.length;
-                const novoItem = container.children[0].cloneNode(true);
-                novoItem.querySelector('select').name = `itens[${index}][produto_id]`;
-                novoItem.querySelector('.quantidade-input').name = `itens[${index}][quantidade]`;
-                novoItem.querySelector('.valor-input').name = `itens[${index}][valor_venda]`;
-                novoItem.querySelector('select').value = '';
-                novoItem.querySelector('.quantidade-input').value = '1';
-                novoItem.querySelector('.valor-input').value = '';
-                const btnRemover = novoItem.querySelector('.btn-remover');
-                btnRemover.style.display = 'block';
-                container.appendChild(novoItem);
-            });
-        }
-
-        const firstSelect = document.querySelector('.produto-select');
-        if (firstSelect) {
-            firstSelect.addEventListener('change', preencherValor);
-        }
-    </script>
+    
+    <script src="venda_formulario.js"></script>
     <script src="main.js"></script>
     <script src="notificacoes.js"></script>
     <script src="notificacoes_fornecedor.js"></script>

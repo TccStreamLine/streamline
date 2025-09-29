@@ -16,6 +16,14 @@
     box-sizing: border-box;
 }
 
+/* CORREÇÃO PRIORITÁRIA - REMOVE QUALQUER ANIMAÇÃO DO MENU AGENDA */
+a[href="agenda.php"] {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+    will-change: auto !important;
+}
+
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--primary-bg);
@@ -34,6 +42,8 @@ body {
     flex-direction: column;
     padding: 1.5rem;
     flex-shrink: 0;
+    position: relative;
+    overflow: visible;
 }
 
 .sidebar-logo {
@@ -63,40 +73,63 @@ body {
 
 .menu-list {
     list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-list li {
+    margin: 0;
+    padding: 0;
+    position: relative;
 }
 
 .menu-list a {
-    display: flex;
-    align-items: center;
+    display: block;
     padding: 0.75rem;
     border-radius: 8px;
     text-decoration: none;
     color: var(--text-color);
     font-weight: 500;
     font-size: 0.95rem;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    position: relative;
+    box-sizing: border-box;
+    /* Remove todas as animações e transições */
+    transition: none;
+    animation: none;
+    transform: none;
+    will-change: auto;
 }
 
 .menu-list a i {
+    display: inline-block;
     width: 20px;
     margin-right: 1rem;
     color: var(--text-light);
-    transition: color 0.2s ease;
+    /* Remove todas as animações */
+    transition: none;
+    animation: none;
+    transform: none;
 }
 
 .menu-list a:hover {
-    background-color: #F3F4F6;
+    background-color: #F3F4F6 !important;
 }
 
 .menu-list a.active {
-    background-color: #F3F4F6;
-    color: var(--accent-color);
+    background-color: #F3F4F6 !important;
+    color: var(--accent-color) !important;
     font-weight: 600;
     border-left: 4px solid var(--accent-color);
+    /* Sem transições ou animações */
+    transition: none;
+    animation: none;
 }
 
 .menu-list a.active i {
-    color: var(--accent-color);
+    color: var(--accent-color) !important;
+    /* Sem transições ou animações */
+    transition: none;
+    animation: none;
 }
 
 .sidebar .outros {
@@ -428,17 +461,19 @@ body {
     margin: 0;
     color: #666;
 }
+
 .role-funcionario .action-cards {
     margin-top: 3rem;
 }
 
 .role-funcionario .action-card {
-    padding: 2.5rem 1.5rem; 
+    padding: 2.5rem 1.5rem;
 }
 
 .role-funcionario .action-card h3 {
     font-size: 1.3rem;
 }
+
 .dashboard-funcionario-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -457,7 +492,7 @@ body {
 }
 
 .estoque-baixo-summary h3 .fa-exclamation-triangle {
-    color: #F59E0B; 
+    color: #F59E0B;
 }
 
 .estoque-baixo-summary .list-card {
@@ -490,7 +525,8 @@ body {
 }
 
 .estoque-baixo-summary .produto-qtd strong {
-    color: #EF4444; /* Vermelho para destaque */
+    color: #EF4444;
+    /* Vermelho para destaque */
     font-weight: 700;
 }
 
@@ -499,6 +535,7 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
 /* --- ESTILOS DE CARD PADRÃO (DO DASHBOARD) --- */
 .list-card {
     background-color: #fff;
@@ -530,6 +567,50 @@ body {
     padding: 0.75rem 0;
     border-bottom: 1px solid var(--border-color);
 }
+
 .list-card li:last-child {
     border-bottom: none;
+}
+
+/* CORREÇÃO RADICAL PARA MENU DA AGENDA - FORÇA ESTABILIDADE TOTAL */
+.sidebar * {
+    box-sizing: border-box !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+}
+
+.menu-list a[href="agenda.php"],
+.menu-list a[href="agenda.php"]:hover,
+.menu-list a[href="agenda.php"].active {
+    display: block !important;
+    position: static !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+    will-change: auto !important;
+    backface-visibility: visible !important;
+    -webkit-backface-visibility: visible !important;
+    perspective: none !important;
+    -webkit-perspective: none !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+    -moz-osx-font-smoothing: auto !important;
+    contain: none !important;
+    isolation: auto !important;
+}
+
+.menu-list a[href="agenda.php"]:hover {
+    background-color: #F3F4F6 !important;
+}
+
+.menu-list a[href="agenda.php"].active {
+    background-color: #F3F4F6 !important;
+    color: var(--accent-color) !important;
+    border-left: 4px solid var(--accent-color) !important;
+}
+
+.menu-list a[href="agenda.php"] i {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+    will-change: auto !important;
 }

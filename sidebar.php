@@ -18,7 +18,7 @@ if (isset($_SESSION['role'])) {
             <ul class="menu-list">
                 <li><a href="sistema.php" class="<?= ($pagina_ativa ?? '') == 'inicio' ? 'active' : '' ?>"><i class="fas fa-home"></i> Início</a></li>
                 <li><a href="estoque.php" class="<?= ($pagina_ativa ?? '') == 'estoque' ? 'active' : '' ?>"><i class="fas fa-box"></i> Estoque</a></li>
-                <li><a href="agenda.php" class="<?= ($pagina_ativa ?? '') == 'agenda' ? 'active' : '' ?>"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
+                <li><a href="agenda.php" class="<?= ($pagina_ativa ?? '') == 'agenda' ? 'active' : '' ?>" style="transition: none !important; animation: none !important; transform: none !important;"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
                 <li><a href="fornecedores.php" class="<?= ($pagina_ativa ?? '') == 'fornecedores' ? 'active' : '' ?>"><i class="fas fa-truck"></i> Fornecedores</a></li>
                 <li><a href="vendas.php" class="<?= ($pagina_ativa ?? '') == 'vendas' ? 'active' : '' ?>"><i class="fas fa-chart-bar"></i> Vendas</a></li>
                 <li><a href="caixa.php" class="<?= ($pagina_ativa ?? '') == 'caixa' ? 'active' : '' ?>"><i class="fas fa-cash-register"></i> Caixa</a></li>
@@ -41,7 +41,7 @@ if (isset($_SESSION['role'])) {
             <ul class="menu-list">
                 <li><a href="sistema.php" class="<?= ($pagina_ativa ?? '') == 'inicio' ? 'active' : '' ?>"><i class="fas fa-home"></i> Início</a></li>
                 <li><a href="estoque.php" class="<?= ($pagina_ativa ?? '') == 'estoque' ? 'active' : '' ?>"><i class="fas fa-box"></i> Estoque</a></li>
-                <li><a href="agenda.php" class="<?= ($pagina_ativa ?? '') == 'agenda' ? 'active' : '' ?>"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
+                <li><a href="agenda.php" class="<?= ($pagina_ativa ?? '') == 'agenda' ? 'active' : '' ?>" style="transition: none !important; animation: none !important; transform: none !important;"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
                 <li><a href="vendas.php" class="<?= ($pagina_ativa ?? '') == 'vendas' ? 'active' : '' ?>"><i class="fas fa-chart-bar"></i> Vendas</a></li>
                 <li><a href="caixa.php" class="<?= ($pagina_ativa ?? '') == 'caixa' ? 'active' : '' ?>"><i class="fas fa-cash-register"></i> Caixa</a></li>
                  <li><a href="servicos.php" class="<?= ($pagina_ativa ?? '') == 'servicos' ? 'active' : '' ?>"><i class="fas fa-concierge-bell"></i> Serviços</a></li>
