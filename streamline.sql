@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 28/09/2025 às 21:36
+-- Tempo de geração: 29/09/2025 às 05:26
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -39,6 +39,7 @@ CREATE TABLE `categorias` (
 INSERT INTO `categorias` (`id`, `nome`) VALUES
 (10, 'Alimentos'),
 (11, 'Eletrônicos'),
+(12, 'Limpeza'),
 (9, 'Movéis');
 
 -- --------------------------------------------------------
@@ -62,7 +63,7 @@ CREATE TABLE `eventos` (
 --
 
 INSERT INTO `eventos` (`id`, `titulo`, `inicio`, `horario`, `fim`, `usuario_id`, `descricao`) VALUES
-(32, 'Apresentação TCC', '2025-09-28 14:00:00', '14:00:00', NULL, 22, '');
+(33, 'Apresentação TCC', '2025-09-29 10:20:00', '10:20:00', NULL, 22, 'Apresentação parcial do TCC com Paulo Rogério <3');
 
 -- --------------------------------------------------------
 
@@ -87,7 +88,9 @@ CREATE TABLE `fornecedores` (
 --
 
 INSERT INTO `fornecedores` (`id`, `razao_social`, `cnpj`, `email`, `telefone`, `senha`, `reset_token`, `reset_token_expire`, `status`) VALUES
-(14, 'Arthur', '12345678901234', 'lastzrr@gmail.com', '11947010600', '$2y$10$vFNBShy7rn/3foTFdAx6oO5IMFKzuH/jHUKPSQZ.x2fL.7DnzdOwi', NULL, NULL, 'ativo');
+(16, 'Pichau', '12345678901234', 'lastzrr@gmail.com', '11947010600', '$2y$10$2GBEtxnW4053hdbDl.sZQOEU7evt09mb/9jKVwXuHg5shExGsdFQG', NULL, NULL, 'ativo'),
+(17, 'Extra', '49447734000102', 'leligmascarenhas@gmail.com', '11111111111', NULL, 'd342a18714f0f1d1a2dc531461b795618956871cac5d9bcf42d28a4d92cd74b879dd83a12d669a2a8d9cfd95e7349d17e632', '2025-09-29 18:48:01', 'ativo'),
+(18, 'Americanas', '48451255876001', 'iarafontes@usp.br', '11947766995', NULL, '687995f76389fe1377a1a139229b72c28f1c751a95cfadf7d890f2d466c93d7e4edbc1bceaf82e33e1677535d5cf14c74e7f', '2025-09-29 19:50:19', 'ativo');
 
 -- --------------------------------------------------------
 
@@ -115,9 +118,16 @@ CREATE TABLE `produtos` (
 --
 
 INSERT INTO `produtos` (`id`, `codigo_barras`, `nome`, `especificacao`, `quantidade_estoque`, `quantidade_minima`, `valor_compra`, `valor_venda`, `categoria_id`, `fornecedor_id`, `data_cadastro`, `status`) VALUES
-(11, '1', 'Cadeira de madeira', '', 97, 5, 20.00, 60.00, 9, 6, '2025-09-28 16:47:11', 'ativo'),
-(12, '2', 'Salgadinho Fofura', '', 55, 5, 0.50, 7.50, 10, 14, '2025-09-28 16:47:50', 'ativo'),
-(13, '3', 'Mouse Attack Shark X3', '', 69, 5, 60.00, 150.00, 11, 6, '2025-09-28 16:48:28', 'ativo');
+(14, '1', 'Mouse gamer', 'Mouse gamer preto', 5, 5, 60.00, 100.00, 11, 16, '2025-09-28 21:49:41', 'ativo'),
+(15, '2', 'Teclado gamer', 'Teclado gamer branco', 49, 5, 40.00, 100.00, 11, 16, '2025-09-28 21:50:19', 'ativo'),
+(16, '3', 'Mousepad gamer', 'Mousepad gamer preto e vermelho', 59, 5, 15.00, 50.00, 11, 16, '2025-09-28 21:50:58', 'ativo'),
+(17, '4', 'Cadeira', 'Cadeira de madeira', 45, 5, 75.00, 150.00, 9, 17, '2025-09-28 21:53:04', 'ativo'),
+(18, '5', 'Mesa', 'Mesa de madeira', 59, 5, 100.00, 200.00, 9, 17, '2025-09-28 21:53:56', 'ativo'),
+(19, '6', 'Leite Piracanjuba', 'Leite de 1L Piracanjuba', 86, 5, 2.50, 10.00, 10, 17, '2025-09-28 21:55:13', 'ativo'),
+(20, '7', 'Picanha', '1KG de Picanha da Swift', 98, 5, 40.00, 80.00, 10, 17, '2025-09-28 21:55:48', 'ativo'),
+(21, '8', 'Filé de frango', '1KG de Filé de frango da Sadia', 94, 5, 20.00, 45.00, 10, 17, '2025-09-28 21:56:40', 'ativo'),
+(22, '9', 'Vassoura', 'Vassoura de cerdas macias', 137, 5, 2.50, 10.00, 12, 17, '2025-09-28 21:58:11', 'ativo'),
+(23, '0', 'Veja', 'Veja limpeza pesada original 500ml', 188, 5, 4.50, 15.00, 12, 17, '2025-09-28 21:59:35', 'ativo');
 
 -- --------------------------------------------------------
 
@@ -143,7 +153,7 @@ CREATE TABLE `servicos_prestados` (
 --
 
 INSERT INTO `servicos_prestados` (`id`, `usuario_id`, `nome_servico`, `especificacao`, `horas_gastas`, `data_prestacao`, `gastos`, `valor_venda`, `produtos_usados`, `status`) VALUES
-(4, 22, 'Corte de cabelo', 'Corte padrão', 1.00, '2025-09-28 13:24:00', 2.50, 40.00, '1 gilette e 1 gola alta', 'ativo');
+(5, 22, 'Corte de cabelo', 'Corte padrão', 1.00, '2025-09-28 21:05:00', 2.50, 40.00, '1 gilette e 1 gola alta', 'ativo');
 
 -- --------------------------------------------------------
 
@@ -171,7 +181,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nome_empresa`, `email`, `telefone`, `ramo_atuacao`, `quantidade_funcionarios`, `natureza_juridica`, `cnpj`, `senha`, `senha_funcionarios`, `reset_token`, `reset_token_expire`) VALUES
-(22, 'Adati', 'lastzrr@gmail.com', '11947010600', 'Atacado/Varejo', '15', 'LTDA', '12345678901234', '$2y$10$7734Nf939zA9I8OlEFSwEOBwAg0kDWC9XGNXLWbJn8S88PKOZoGoK', '$2y$10$Qb/sWHk7/WRhQOYm8/qOi.l//MHD6CLzEvdPWPjPg9mFPXpLmQ33a', 'a2dbdcc51ab9359257caa7bf189d6a46aa183c2e34cd363d572407c7639b88003d324326d2f6bdaec931e58354c0452c3205', '2025-09-28 15:46:46');
+(22, 'Adati', 'lastzrr@gmail.com', '11947010600', 'Atacado/Varejo', '20', 'LTDA', '12345678901234', '$2y$10$7734Nf939zA9I8OlEFSwEOBwAg0kDWC9XGNXLWbJn8S88PKOZoGoK', '$2y$10$hqf393iKS2FqDBIGIigWeuNHSdYopuas61UyVMU7seDfggNJtZj0y', 'a2dbdcc51ab9359257caa7bf189d6a46aa183c2e34cd363d572407c7639b88003d324326d2f6bdaec931e58354c0452c3205', '2025-09-28 15:46:46');
 
 -- --------------------------------------------------------
 
@@ -193,12 +203,20 @@ CREATE TABLE `vendas` (
 --
 
 INSERT INTO `vendas` (`id`, `usuario_id`, `valor_total`, `descricao`, `data_venda`, `status`) VALUES
-(32, 22, 40.00, NULL, '2025-09-28 16:24:51', 'finalizada'),
-(33, 22, 120.00, '', '2025-09-27 16:48:00', 'finalizada'),
-(34, 22, 60.00, '', '2025-09-28 16:48:00', 'finalizada'),
-(35, 22, 150.00, '', '2025-09-29 16:48:00', 'finalizada'),
-(36, 22, 150.00, '', '2025-09-30 16:49:00', 'finalizada'),
-(37, 22, 487.50, NULL, '2025-09-28 17:39:06', 'finalizada');
+(38, 22, 160.00, NULL, '2025-09-28 22:00:28', 'finalizada'),
+(39, 22, 130.00, '', '2025-09-28 22:00:00', 'finalizada'),
+(40, 22, 300.00, '', '2025-09-27 22:01:00', 'finalizada'),
+(41, 22, 310.00, '', '2025-09-26 22:01:00', 'finalizada'),
+(42, 22, 350.00, '', '2025-09-25 22:02:00', 'finalizada'),
+(43, 22, 300.00, '', '2025-09-24 22:02:00', 'finalizada'),
+(44, 22, 15.00, '', '2025-09-24 22:03:00', 'finalizada'),
+(45, 22, 180.00, '', '2025-09-29 22:03:00', 'finalizada'),
+(46, 22, 80.00, '', '2025-09-29 22:03:00', 'finalizada'),
+(47, 22, 290.00, '', '2025-09-23 22:07:00', 'finalizada'),
+(48, 22, 200.00, '', '2025-09-22 22:09:00', 'finalizada'),
+(49, 22, 45.00, '', '2025-09-22 22:10:00', 'finalizada'),
+(50, 22, 5.00, 'desconto de 50%', '2025-09-29 00:02:00', 'finalizada'),
+(51, 22, 10.00, NULL, '2025-09-29 00:03:42', 'finalizada');
 
 -- --------------------------------------------------------
 
@@ -220,11 +238,29 @@ CREATE TABLE `venda_itens` (
 --
 
 INSERT INTO `venda_itens` (`id`, `venda_id`, `produto_id`, `quantidade`, `valor_unitario`, `valor_total`) VALUES
-(40, 33, 11, 2, 60.00, 120.00),
-(41, 34, 11, 1, 60.00, 60.00),
-(42, 35, 13, 1, 150.00, 150.00),
-(43, 36, 13, 1, 150.00, 150.00),
-(44, 37, 12, 65, 7.50, 487.50);
+(45, 38, 14, 1, 100.00, 100.00),
+(46, 38, 23, 1, 15.00, 15.00),
+(47, 38, 21, 1, 45.00, 45.00),
+(48, 39, 20, 1, 80.00, 80.00),
+(49, 39, 22, 5, 10.00, 50.00),
+(50, 40, 16, 1, 50.00, 50.00),
+(51, 40, 14, 1, 100.00, 100.00),
+(52, 40, 17, 1, 150.00, 150.00),
+(53, 41, 17, 1, 150.00, 150.00),
+(54, 41, 15, 1, 100.00, 100.00),
+(55, 41, 22, 6, 10.00, 60.00),
+(56, 42, 23, 10, 15.00, 150.00),
+(57, 42, 18, 1, 200.00, 200.00),
+(58, 43, 17, 2, 150.00, 300.00),
+(59, 44, 23, 1, 15.00, 15.00),
+(60, 45, 21, 4, 45.00, 180.00),
+(61, 46, 20, 1, 80.00, 80.00),
+(62, 47, 17, 1, 150.00, 150.00),
+(63, 47, 19, 14, 10.00, 140.00),
+(64, 48, 14, 2, 100.00, 200.00),
+(65, 49, 21, 1, 45.00, 45.00),
+(66, 50, 22, 1, 5.00, 5.00),
+(67, 51, 22, 1, 10.00, 10.00);
 
 -- --------------------------------------------------------
 
@@ -238,13 +274,6 @@ CREATE TABLE `venda_servicos` (
   `servico_id` int(11) NOT NULL,
   `valor` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `venda_servicos`
---
-
-INSERT INTO `venda_servicos` (`id`, `venda_id`, `servico_id`, `valor`) VALUES
-(2, 32, 4, 40.00);
 
 --
 -- Índices para tabelas despejadas
@@ -322,31 +351,31 @@ ALTER TABLE `venda_servicos`
 -- AUTO_INCREMENT de tabela `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de tabela `eventos`
 --
 ALTER TABLE `eventos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de tabela `fornecedores`
 --
 ALTER TABLE `fornecedores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de tabela `produtos`
 --
 ALTER TABLE `produtos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de tabela `servicos_prestados`
 --
 ALTER TABLE `servicos_prestados`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
@@ -358,13 +387,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de tabela `vendas`
 --
 ALTER TABLE `vendas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT de tabela `venda_itens`
 --
 ALTER TABLE `venda_itens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT de tabela `venda_servicos`
