@@ -197,7 +197,7 @@ body {
     color: var(--text-light);
 }
 
-/* --- Action Cards --- */
+
 .action-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -252,6 +252,12 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease; 
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 .plan-card.pro {
@@ -325,7 +331,7 @@ body {
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
     margin-top: 1rem;
-    /* Ajustado para alinhar melhor com o form */
+    text-decoration: none;
 }
 
 .plan-card form {
@@ -614,3 +620,4 @@ body {
     animation: none !important;
     will-change: auto !important;
 }
+

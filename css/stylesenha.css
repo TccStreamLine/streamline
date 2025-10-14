@@ -302,3 +302,18 @@ body {
         font-size: 0.8rem;
     }
 }
+
+.input-email input[type="password"] {
+    padding-right: 50px !important;
+}
+
+
+.input-email .password-toggle-icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8e24aa; 
+    cursor: pointer;
+    z-index: 10;
+}

@@ -8,12 +8,13 @@ if (empty($_SESSION['id']) || $_SESSION['role'] !== 'ceo') {
 }
 
 // Variáveis da página
-$pagina_ativa = 'funcionarios'; 
+$pagina_ativa = 'funcionarios';
 $titulo_header = 'Funcionários > Cadastro de Funcionário';
 $nome_empresa = $_SESSION['nome_empresa'] ?? 'Sua empresa';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,6 +23,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Sua empresa';
     <link rel="stylesheet" href="css/sistema.css">
     <link rel="stylesheet" href="css/funcionario_formulario.css">
 </head>
+
 <body>
     <?php include 'sidebar.php'; ?>
 
@@ -36,10 +38,14 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Sua empresa';
 
             <div class="message-container">
                 <?php if (isset($_SESSION['msg_sucesso_funcionario'])): ?>
-                    <div class="alert alert-success"><?= $_SESSION['msg_sucesso_funcionario']; unset($_SESSION['msg_sucesso_funcionario']); ?></div>
+                    <div class="alert alert-success">
+                        <?= $_SESSION['msg_sucesso_funcionario'];
+                        unset($_SESSION['msg_sucesso_funcionario']); ?></div>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['msg_erro_funcionario'])): ?>
-                    <div class="alert alert-danger"><?= $_SESSION['msg_erro_funcionario']; unset($_SESSION['msg_erro_funcionario']); ?></div>
+                    <div class="alert alert-danger">
+                        <?= $_SESSION['msg_erro_funcionario'];
+                        unset($_SESSION['msg_erro_funcionario']); ?></div>
                 <?php endif; ?>
             </div>
 
@@ -47,7 +53,8 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Sua empresa';
                 <div class="form-grid">
                     <div class="input-group">
                         <i class="fas fa-users"></i>
-                        <input type="number" name="quantidade_funcionarios" placeholder="Quantidade de Funcionários" required min="1">
+                        <input type="number" name="quantidade_funcionarios" placeholder="Quantidade de Funcionários"
+                            required min="1">
                     </div>
                     <div class="input-group">
                         <i class="fas fa-envelope"></i>
@@ -59,7 +66,8 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Sua empresa';
                     </div>
                     <div class="input-group">
                         <i class="fas fa-key"></i>
-                        <input type="password" name="senha_funcionarios" placeholder="Crie a senha dos seus funcionários" required>
+                        <input type="password" name="senha_funcionarios"
+                            placeholder="Crie a senha dos seus funcionários" required>
                     </div>
                 </div>
                 <div class="form-actions">
@@ -67,6 +75,9 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Sua empresa';
                 </div>
             </form>
         </div>
+        <script src="js/form_ux.js"></script>
     </main>
+
 </body>
+
 </html>

@@ -420,3 +420,18 @@ select {
         width: 180px;
     }
 }
+
+.inputBox input[name="senha"] {
+    padding-right: 50px !important;
+}
+
+
+.inputBox .password-toggle-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8e24aa; 
+    cursor: pointer;
+    z-index: 10;
+}

@@ -13,6 +13,20 @@ session_start();
         .hidden-field {
             display: none;
         }
+
+        .input-group .password-toggle-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8e24aa; 
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .input-group input[type="password"] {
+            padding-right: 50px !important;
+        }
     </style>
 </head>
 
@@ -106,7 +120,7 @@ session_start();
                 inputCnpj.required = false;
                 inputEmail.required = true;
                 inputSenha.placeholder = "Senha";
-            } else { // CEO
+            } else { 
                 campoCnpj.classList.remove('hidden-field');
                 campoEmail.classList.add('hidden-field');
                 inputCnpj.required = true;
@@ -116,8 +130,8 @@ session_start();
             }
         }
         tipoAcessoSelect.addEventListener('change', toggleFields);
-        document.addEventListener('DOMContentLoaded', toggleFields);
+       document.addEventListener('DOMContentLoaded', toggleFields);
     </script>
+    <script src="js/form_ux.js"></script>
 </body>
-
 </html>

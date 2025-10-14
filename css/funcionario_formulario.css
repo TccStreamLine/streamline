@@ -313,3 +313,18 @@ input[type="number"] {
 .input-group.invalid i {
     color: #EF4444;
 }
+
+.input-group input[name="senha_funcionarios"] {
+    padding-right: 50px !important;
+}
+
+
+.input-group .password-toggle-icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6D28D9; 
+    cursor: pointer;
+    z-index: 10;
+}

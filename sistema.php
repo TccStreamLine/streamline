@@ -71,6 +71,12 @@ if ($user_role === 'funcionario' || $user_role === 'ceo') {
     <main class="main-content">
         <?php include 'header.php'; ?>
 
+        <div class="message-container">
+            <?php if (isset($_SESSION['msg_sucesso'])): ?>
+                <div class="alert alert-success"><?= $_SESSION['msg_sucesso']; unset($_SESSION['msg_sucesso']); ?></div>
+            <?php endif; ?>
+        </div>
+
         <section class="welcome-section">
             <h1>Olá, <?= htmlspecialchars($nome_saudacao) ?></h1>
             <p>Seja bem-vindo ao seu sistema inteligente de gerenciamento!</p>
@@ -91,34 +97,26 @@ if ($user_role === 'funcionario' || $user_role === 'ceo') {
                     <h3>Verificar o Estoque</h3>
                 </a>
             </section>
+            
             <section class="pricing-plans">
                 <div class="plan-card">
                     <h4>Starter</h4>
                     <p>Acesso á 7 dias de teste gratuito do sistema de gerenciamento de micro e pequenas empresas.</p>
                     <div class="price-free">Gratis</div>
-                    <form action="processa_plano.php" method="POST">
-                        <input type="hidden" name="plano" value="starter">
-                        <button type="submit" class="plan-button primary">Comece Aqui!</button>
-                    </form>
+                    <a href="pagamento_plano.php?plano=starter" class="plan-button primary">Comece Aqui!</a>
                 </div>
                 <div class="plan-card pro">
                     <div class="recommended-badge">Recomendado</div>
                     <h4>Pro</h4>
                     <p>Acesso mensal ao sistema de gerenciamento somente com sua versão web.</p>
                     <div class="price">R$49,90 <span>/ mês</span></div>
-                    <form action="processa_plano.php" method="POST">
-                        <input type="hidden" name="plano" value="pro">
-                        <button type="submit" class="plan-button">Comece Aqui!</button>
-                    </form>
+                    <a href="pagamento_plano.php?plano=pro" class="plan-button">Comece Aqui!</a>
                 </div>
                 <div class="plan-card">
                     <h4>Business+</h4>
                     <p>Acesso ao sistema de gerenciamento web + um aplicativo para CEOs focado na vizualição rápida de informações.</p>
                     <div class="price">R$74,90 <span>/ mês</span></div>
-                    <form action="processa_plano.php" method="POST">
-                        <input type="hidden" name="plano" value="business_plus">
-                        <button type="submit" class="plan-button primary">Comece Aqui!</button>
-                    </form>
+                    <a href="pagamento_plano.php?plano=business_plus" class="plan-button primary">Comece Aqui!</a>
                 </div>
             </section>
 
@@ -174,10 +172,6 @@ if ($user_role === 'funcionario' || $user_role === 'ceo') {
         <?php endif; ?>
 
     </main>
-
-    <script src="main.js"></script>
-    <script src="notificacoes.js"></script>
-    <script src="notificacoes_fornecedor.js"></script>
+    <script src="js/form_ux.js"></script>
 </body>
-
 </html>
