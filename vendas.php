@@ -13,17 +13,44 @@ if (empty($_SESSION['id'])) {
 $usuario_id = $_SESSION['id'];
 $vendas = [];
 
+$filtro = $_GET['filtro'] ?? '';
+$where_clause = "v.usuario_id = ? AND v.status = 'finalizada'";
+$params = [$usuario_id];
+
+if ($filtro === 'hoje') {
+    $where_clause .= " AND DATE(v.data_venda) = CURDATE()";
+    $titulo_header = 'Vendas de Hoje';
+}
+
 try {
-    $sql = "SELECT v.id, v.data_venda, v.valor_total, v.descricao, GROUP_CONCAT(CONCAT(p.nome, ' (', vi.quantidade, 'x)') SEPARATOR ', ') as produtos
+    $sql = "SELECT v.id, v.data_venda, v.valor_total, v.descricao, 
+                   GROUP_CONCAT(DISTINCT CONCAT(p.nome, ' (', vi.quantidade, 'x)') SEPARATOR ', ') as produtos,
+                   GROUP_CONCAT(DISTINCT CONCAT(s.nome_servico, ' (1x)') SEPARATOR ', ') as servicos
             FROM vendas v
             LEFT JOIN venda_itens vi ON v.id = vi.venda_id
             LEFT JOIN produtos p ON vi.produto_id = p.id
-            WHERE v.usuario_id = ? AND v.status = 'finalizada'
+            LEFT JOIN venda_servicos vs ON v.id = vs.venda_id
+            LEFT JOIN servicos_prestados s ON vs.servico_id = s.id
+            WHERE $where_clause
             GROUP BY v.id
             ORDER BY v.data_venda DESC";
+            
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$usuario_id]);
+    $stmt->execute($params);
     $vendas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($vendas as &$venda) {
+        $itens = [];
+        if (!empty($venda['produtos'])) {
+            $itens[] = $venda['produtos'];
+        }
+        if (!empty($venda['servicos'])) {
+            $itens[] = $venda['servicos'];
+        }
+        $venda['itens_descricao'] = !empty($itens) ? implode(', ', $itens) : 'N/A';
+    }
+    unset($venda); 
+
 } catch (PDOException $e) {
     $_SESSION['msg_erro'] = "Erro ao buscar vendas.";
 }
@@ -36,7 +63,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vendas - Sistema de Gerenciamento</title>
+    <title><?= htmlspecialchars($titulo_header) ?> - Sistema de Gerenciamento</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/sistema.css">
@@ -49,10 +76,8 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         <?php include 'header.php'; ?>
 
         <div class="message-container">
-            <?php if (isset($_SESSION['msg_sucesso'])): ?><div class="alert alert-success"><?= $_SESSION['msg_sucesso'];
-                                                                                            unset($_SESSION['msg_sucesso']); ?></div><?php endif; ?>
-            <?php if (isset($_SESSION['msg_erro'])): ?><div class="alert alert-danger"><?= $_SESSION['msg_erro'];
-                                                                                        unset($_SESSION['msg_erro']); ?></div><?php endif; ?>
+            <?php if (isset($_SESSION['msg_sucesso'])): ?><div class="alert alert-success"><?= $_SESSION['msg_sucesso']; unset($_SESSION['msg_sucesso']); ?></div><?php endif; ?>
+            <?php if (isset($_SESSION['msg_erro'])): ?><div class="alert alert-danger"><?= $_SESSION['msg_erro']; unset($_SESSION['msg_erro']); ?></div><?php endif; ?>
         </div>
 
         <div class="actions-container">
@@ -66,7 +91,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                     <tr>
                         <th>Cód. Venda</th>
                         <th>Data</th>
-                        <th>Produtos (Quantidade)</th>
+                        <th>Itens (Quantidade)</th>
                         <th>Descrição</th>
                         <th>Valor Total</th>
                         <th>Ações</th>
@@ -75,15 +100,15 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 <tbody>
                     <?php if (empty($vendas)): ?>
                         <tr>
-                            <td colspan="6" class="text-center">Nenhuma venda registrada.</td>
+                            <td colspan="6" class="text-center">Nenhuma venda <?php echo ($filtro === 'hoje' ? 'registrada hoje.' : 'registrada.'); ?></td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($vendas as $venda): ?>
                             <tr>
                                 <td><?= htmlspecialchars($venda['id']) ?></td>
                                 <td><?= date('d/m/Y H:i', strtotime($venda['data_venda'])) ?></td>
-                                <td><?= htmlspecialchars($venda['produtos'] ?? 'N/A') ?></td>
-                                <td><?= htmlspecialchars($venda['descricao']) ?></td>
+                                <td><?= htmlspecialchars($venda['itens_descricao']) ?></td>
+                                <td><?= htmlspecialchars($venda['descricao'] ?? '') ?></td>
                                 <td>R$ <?= number_format((float)$venda['valor_total'], 2, ',', '.') ?></td>
                                 <td class="actions">
                                     <a href="venda_formulario.php?id=<?= $venda['id'] ?>" class="btn-action btn-edit"><i class="fas fa-pencil-alt"></i></a>

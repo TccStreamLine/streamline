@@ -621,3 +621,7 @@ body {
     will-change: auto !important;
 }
 
+.plan-card a.plan-button {
+    text-decoration: none !important;
+}
+

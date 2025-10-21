@@ -11,18 +11,24 @@ if (empty($_SESSION['id'])) {
 }
 
 $termo_busca = $_GET['termo'] ?? '';
+$filtro = $_GET['filtro'] ?? ''; // Pega o filtro da URL
+
+$where_clause = "status = 'ativo' AND (nome LIKE :termo OR codigo_barras LIKE :termo)";
+$params = [':termo' => '%' . $termo_busca . '%'];
+
+if ($filtro === 'estoque_baixo') {
+    $where_clause .= " AND quantidade_estoque <= quantidade_minima";
+}
 
 try {
-    $stmt_produtos = $pdo->prepare(
-        "SELECT p.*, c.nome as categoria_nome 
-         FROM produtos p 
-         LEFT JOIN categorias c ON p.categoria_id = c.id 
-         WHERE p.status = 'ativo' AND (p.nome LIKE :termo OR p.codigo_barras LIKE :termo)
-         ORDER BY p.nome ASC"
-    );
-    
-    $stmt_produtos->bindValue(':termo', '%' . $termo_busca . '%');
-    $stmt_produtos->execute();
+    $sql = "SELECT p.*, c.nome as categoria_nome 
+            FROM produtos p 
+            LEFT JOIN categorias c ON p.categoria_id = c.id 
+            WHERE $where_clause
+            ORDER BY p.nome ASC";
+
+    $stmt_produtos = $pdo->prepare($sql);
+    $stmt_produtos->execute($params);
     $produtos = $stmt_produtos->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode($produtos);

@@ -2,20 +2,32 @@
 session_start();
 include_once('config.php');
 
+$filtro = $_GET['filtro'] ?? '';
+$where_clause = "p.status = 'ativo'";
+$titulo_header = 'Estoque';
+
+if ($filtro === 'estoque_baixo') {
+    $where_clause .= " AND p.quantidade_estoque <= p.quantidade_minima";
+    $titulo_header = 'Estoque Baixo';
+}
+
 if (empty($_SESSION['id'])) {
     header('Location: login.php');
     exit;
 }
 
-// Variáveis desta página
 $pagina_ativa = 'estoque';
-$titulo_header = 'Estoque';
-
 $produtos = [];
 $erro_busca = null;
 
 try {
-    $stmt_produtos = $pdo->prepare("SELECT p.*, c.nome as categoria_nome FROM produtos p LEFT JOIN categorias c ON p.categoria_id = c.id WHERE p.status = 'ativo' ORDER BY p.nome ASC");
+    $sql = "SELECT p.*, c.nome as categoria_nome 
+            FROM produtos p 
+            LEFT JOIN categorias c ON p.categoria_id = c.id 
+            WHERE $where_clause 
+            ORDER BY p.nome ASC";
+            
+    $stmt_produtos = $pdo->prepare($sql);
     $stmt_produtos->execute();
     $produtos = $stmt_produtos->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -30,7 +42,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estoque - Sistema de Gerenciamento</title>
+    <title><?= htmlspecialchars($titulo_header) ?> - Sistema de Gerenciamento</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -84,7 +96,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                     <?php if ($erro_busca): ?>
                         <tr><td colspan="6" class="text-center"><?= htmlspecialchars($erro_busca) ?></td></tr>
                     <?php elseif (empty($produtos)): ?>
-                        <tr><td colspan="6" class="text-center">Nenhum produto cadastrado ainda.</td></tr>
+                        <tr><td colspan="6" class="text-center">Nenhum produto <?php echo ($filtro === 'estoque_baixo' ? 'com estoque baixo encontrado.' : 'cadastrado ainda.'); ?></td></tr>
                     <?php else: ?>
                         <?php foreach ($produtos as $produto): ?>
                             <tr>
@@ -160,8 +172,9 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
 
         searchInput.addEventListener('keyup', async () => {
             const termo = searchInput.value;
+            const filtroAtual = '<?= $filtro ?>';
             try {
-                const response = await fetch(`buscar_produtos_estoque.php?termo=${encodeURIComponent(termo)}`);
+                const response = await fetch(`buscar_produtos_estoque.php?termo=${encodeURIComponent(termo)}&filtro=${filtroAtual}`);
                 const produtos = await response.json();
                 renderTable(produtos);
             } catch (error) {
@@ -174,7 +187,4 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
     <script src="notificacoes.js"></script>
     <script src="notificacoes_fornecedor.js"></script>
 </body>
-</html>
-</body>
-
 </html>

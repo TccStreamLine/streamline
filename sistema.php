@@ -103,7 +103,7 @@ if ($user_role === 'funcionario' || $user_role === 'ceo') {
                     <h4>Starter</h4>
                     <p>Acesso á 7 dias de teste gratuito do sistema de gerenciamento de micro e pequenas empresas.</p>
                     <div class="price-free">Gratis</div>
-                    <a href="pagamento_plano.php?plano=starter" class="plan-button primary">Comece Aqui!</a>
+                    <a href="loja_planos.php" class="plan-button primary">Comece Aqui!</a>
                 </div>
                 <div class="plan-card pro">
                     <div class="recommended-badge">Recomendado</div>

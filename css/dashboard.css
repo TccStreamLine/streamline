@@ -270,3 +270,32 @@
     0%, 60%, 100% { transform: initial; }
     30% { transform: translateY(-10px); }
 }
+
+
+a.kpi-card.clickable {
+    text-decoration: none;
+    color: inherit; 
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+a.kpi-card.clickable:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.arrow-icon {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    font-size: 1.2rem;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+a.kpi-card.clickable:hover .arrow-icon {
+    opacity: 1;
+    color: var(--accent-color);
+}
