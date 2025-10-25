@@ -34,7 +34,7 @@ try {
             WHERE $where_clause
             GROUP BY v.id
             ORDER BY v.data_venda DESC";
-            
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $vendas = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -49,8 +49,7 @@ try {
         }
         $venda['itens_descricao'] = !empty($itens) ? implode(', ', $itens) : 'N/A';
     }
-    unset($venda); 
-
+    unset($venda);
 } catch (PDOException $e) {
     $_SESSION['msg_erro'] = "Erro ao buscar vendas.";
 }
@@ -76,8 +75,10 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         <?php include 'header.php'; ?>
 
         <div class="message-container">
-            <?php if (isset($_SESSION['msg_sucesso'])): ?><div class="alert alert-success"><?= $_SESSION['msg_sucesso']; unset($_SESSION['msg_sucesso']); ?></div><?php endif; ?>
-            <?php if (isset($_SESSION['msg_erro'])): ?><div class="alert alert-danger"><?= $_SESSION['msg_erro']; unset($_SESSION['msg_erro']); ?></div><?php endif; ?>
+            <?php if (isset($_SESSION['msg_sucesso'])): ?><div class="alert alert-success"><?= $_SESSION['msg_sucesso'];
+                                                                                            unset($_SESSION['msg_sucesso']); ?></div><?php endif; ?>
+            <?php if (isset($_SESSION['msg_erro'])): ?><div class="alert alert-danger"><?= $_SESSION['msg_erro'];
+                                                                                        unset($_SESSION['msg_erro']); ?></div><?php endif; ?>
         </div>
 
         <div class="actions-container">
@@ -110,9 +111,14 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                                 <td><?= htmlspecialchars($venda['itens_descricao']) ?></td>
                                 <td><?= htmlspecialchars($venda['descricao'] ?? '') ?></td>
                                 <td>R$ <?= number_format((float)$venda['valor_total'], 2, ',', '.') ?></td>
+
                                 <td class="actions">
                                     <a href="venda_formulario.php?id=<?= $venda['id'] ?>" class="btn-action btn-edit"><i class="fas fa-pencil-alt"></i></a>
                                     <a href="excluir_venda.php?id=<?= $venda['id'] ?>" class="btn-action btn-delete"><i class="fas fa-trash-alt"></i></a>
+
+                                    <a href="gerar_xml_nfe.php?id=<?= $venda['id'] ?>" class="btn-action" title="Gerar XML da NF-e" target="_blank">
+                                        <i class="fas fa-file-code"></i>
+                                    </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

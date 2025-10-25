@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 29/09/2025 às 05:26
+-- Tempo de geração: 26/10/2025 às 01:12
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -63,7 +63,8 @@ CREATE TABLE `eventos` (
 --
 
 INSERT INTO `eventos` (`id`, `titulo`, `inicio`, `horario`, `fim`, `usuario_id`, `descricao`) VALUES
-(33, 'Apresentação TCC', '2025-09-29 10:20:00', '10:20:00', NULL, 22, 'Apresentação parcial do TCC com Paulo Rogério <3');
+(33, 'Apresentação TCC', '2025-09-29 10:20:00', '10:20:00', NULL, 22, 'Apresentação parcial do TCC com Paulo Rogério <3'),
+(36, 'Apresentação TCC', '2025-09-29 11:00:00', '11:00:00', NULL, 22, 'Apresentação de TCC com o Paulo Rogério <3');
 
 -- --------------------------------------------------------
 
@@ -80,17 +81,18 @@ CREATE TABLE `fornecedores` (
   `senha` varchar(255) DEFAULT NULL,
   `reset_token` varchar(255) DEFAULT NULL,
   `reset_token_expire` datetime DEFAULT NULL,
-  `status` varchar(20) NOT NULL DEFAULT 'ativo'
+  `status` varchar(20) NOT NULL DEFAULT 'ativo',
+  `profile_pic` varchar(255) DEFAULT NULL COMMENT 'Caminho para a imagem de perfil do fornecedor'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Despejando dados para a tabela `fornecedores`
 --
 
-INSERT INTO `fornecedores` (`id`, `razao_social`, `cnpj`, `email`, `telefone`, `senha`, `reset_token`, `reset_token_expire`, `status`) VALUES
-(16, 'Pichau', '12345678901234', 'lastzrr@gmail.com', '11947010600', '$2y$10$2GBEtxnW4053hdbDl.sZQOEU7evt09mb/9jKVwXuHg5shExGsdFQG', NULL, NULL, 'ativo'),
-(17, 'Extra', '49447734000102', 'leligmascarenhas@gmail.com', '11111111111', NULL, 'd342a18714f0f1d1a2dc531461b795618956871cac5d9bcf42d28a4d92cd74b879dd83a12d669a2a8d9cfd95e7349d17e632', '2025-09-29 18:48:01', 'ativo'),
-(18, 'Americanas', '48451255876001', 'iarafontes@usp.br', '11947766995', NULL, '687995f76389fe1377a1a139229b72c28f1c751a95cfadf7d890f2d466c93d7e4edbc1bceaf82e33e1677535d5cf14c74e7f', '2025-09-29 19:50:19', 'ativo');
+INSERT INTO `fornecedores` (`id`, `razao_social`, `cnpj`, `email`, `telefone`, `senha`, `reset_token`, `reset_token_expire`, `status`, `profile_pic`) VALUES
+(16, 'Pichau', '12345678901234', 'lastzrr@gmail.com', '11947010600', '$2y$10$2GBEtxnW4053hdbDl.sZQOEU7evt09mb/9jKVwXuHg5shExGsdFQG', NULL, NULL, 'ativo', NULL),
+(17, 'Extra', '49447734000102', 'leligmascarenhas@gmail.com', '11111111111', NULL, 'd342a18714f0f1d1a2dc531461b795618956871cac5d9bcf42d28a4d92cd74b879dd83a12d669a2a8d9cfd95e7349d17e632', '2025-09-29 18:48:01', 'ativo', NULL),
+(18, 'Americanas', '48451255876001', 'iarafontes@usp.br', '11947766995', NULL, '687995f76389fe1377a1a139229b72c28f1c751a95cfadf7d890f2d466c93d7e4edbc1bceaf82e33e1677535d5cf14c74e7f', '2025-09-29 19:50:19', 'ativo', NULL);
 
 -- --------------------------------------------------------
 
@@ -153,7 +155,8 @@ CREATE TABLE `servicos_prestados` (
 --
 
 INSERT INTO `servicos_prestados` (`id`, `usuario_id`, `nome_servico`, `especificacao`, `horas_gastas`, `data_prestacao`, `gastos`, `valor_venda`, `produtos_usados`, `status`) VALUES
-(5, 22, 'Corte de cabelo', 'Corte padrão', 1.00, '2025-09-28 21:05:00', 2.50, 40.00, '1 gilette e 1 gola alta', 'ativo');
+(5, 22, 'Corte de cabelo', 'Corte padrão', 1.00, '2025-09-28 21:05:00', 2.50, 40.00, '1 gilette e 1 gola alta', 'ativo'),
+(6, 22, 'Corte de cabelo', 'Corte padrão', 1.00, '2025-10-25 18:01:00', 5.00, 45.00, '1 gilette e 1 gola alta', 'inativo');
 
 -- --------------------------------------------------------
 
@@ -173,15 +176,16 @@ CREATE TABLE `usuarios` (
   `senha` varchar(255) NOT NULL,
   `senha_funcionarios` varchar(255) DEFAULT NULL,
   `reset_token` varchar(255) DEFAULT NULL,
-  `reset_token_expire` datetime DEFAULT NULL
+  `reset_token_expire` datetime DEFAULT NULL,
+  `profile_pic` varchar(255) DEFAULT NULL COMMENT 'Caminho para a imagem de perfil do usuário/empresa'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Despejando dados para a tabela `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nome_empresa`, `email`, `telefone`, `ramo_atuacao`, `quantidade_funcionarios`, `natureza_juridica`, `cnpj`, `senha`, `senha_funcionarios`, `reset_token`, `reset_token_expire`) VALUES
-(22, 'Adati', 'lastzrr@gmail.com', '11947010600', 'Atacado/Varejo', '20', 'LTDA', '12345678901234', '$2y$10$7734Nf939zA9I8OlEFSwEOBwAg0kDWC9XGNXLWbJn8S88PKOZoGoK', '$2y$10$hqf393iKS2FqDBIGIigWeuNHSdYopuas61UyVMU7seDfggNJtZj0y', 'a2dbdcc51ab9359257caa7bf189d6a46aa183c2e34cd363d572407c7639b88003d324326d2f6bdaec931e58354c0452c3205', '2025-09-28 15:46:46');
+INSERT INTO `usuarios` (`id`, `nome_empresa`, `email`, `telefone`, `ramo_atuacao`, `quantidade_funcionarios`, `natureza_juridica`, `cnpj`, `senha`, `senha_funcionarios`, `reset_token`, `reset_token_expire`, `profile_pic`) VALUES
+(22, 'Adati', 'lastzrr@gmail.com', '11947010600', 'Atacado/Varejo', '20', 'LTDA', '12345678901234', '$2y$10$7734Nf939zA9I8OlEFSwEOBwAg0kDWC9XGNXLWbJn8S88PKOZoGoK', '$2y$10$hqf393iKS2FqDBIGIigWeuNHSdYopuas61UyVMU7seDfggNJtZj0y', 'a2dbdcc51ab9359257caa7bf189d6a46aa183c2e34cd363d572407c7639b88003d324326d2f6bdaec931e58354c0452c3205', '2025-09-28 15:46:46', 'uploads/profile_pics/empresa_22_68fd56749c3fa7.41449558.jpg');
 
 -- --------------------------------------------------------
 
@@ -216,7 +220,9 @@ INSERT INTO `vendas` (`id`, `usuario_id`, `valor_total`, `descricao`, `data_vend
 (48, 22, 200.00, '', '2025-09-22 22:09:00', 'finalizada'),
 (49, 22, 45.00, '', '2025-09-22 22:10:00', 'finalizada'),
 (50, 22, 5.00, 'desconto de 50%', '2025-09-29 00:02:00', 'finalizada'),
-(51, 22, 10.00, NULL, '2025-09-29 00:03:42', 'finalizada');
+(51, 22, 10.00, NULL, '2025-09-29 00:03:42', 'finalizada'),
+(52, 22, 40.00, NULL, '2025-10-25 20:59:36', 'finalizada'),
+(53, 22, 40.00, '', '2025-10-25 21:23:00', 'finalizada');
 
 -- --------------------------------------------------------
 
@@ -274,6 +280,14 @@ CREATE TABLE `venda_servicos` (
   `servico_id` int(11) NOT NULL,
   `valor` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `venda_servicos`
+--
+
+INSERT INTO `venda_servicos` (`id`, `venda_id`, `servico_id`, `valor`) VALUES
+(3, 52, 5, 40.00),
+(4, 53, 5, 40.00);
 
 --
 -- Índices para tabelas despejadas
@@ -357,7 +371,7 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT de tabela `eventos`
 --
 ALTER TABLE `eventos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de tabela `fornecedores`
@@ -375,7 +389,7 @@ ALTER TABLE `produtos`
 -- AUTO_INCREMENT de tabela `servicos_prestados`
 --
 ALTER TABLE `servicos_prestados`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
@@ -387,7 +401,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de tabela `vendas`
 --
 ALTER TABLE `vendas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT de tabela `venda_itens`
@@ -399,7 +413,7 @@ ALTER TABLE `venda_itens`
 -- AUTO_INCREMENT de tabela `venda_servicos`
 --
 ALTER TABLE `venda_servicos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restrições para tabelas despejadas

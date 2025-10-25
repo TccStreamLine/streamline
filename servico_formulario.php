@@ -39,7 +39,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
         <?php include 'header.php'; ?>
 
         <div class="form-produto-container">
-            <h3 class="form-produto-title"><?= $modo_edicao ? 'EDITAR SERVIÇO' : 'CADASTRE SEU SERVIÇO MANUALMENTE' ?></h3>
+            <h3 class="form-produto-title"><?= $modo_edicao ? 'EDITAR SERVIÇO' : 'CADASTRE SEU SERVIÇO' ?></h3>
             <form action="processa_servico.php" method="POST">
                 <input type="hidden" name="acao" value="<?= $modo_edicao ? 'editar' : 'cadastrar' ?>">
                 <input type="hidden" name="id" value="<?= $servico['id'] ?? '' ?>">

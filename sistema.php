@@ -173,5 +173,8 @@ if ($user_role === 'funcionario' || $user_role === 'ceo') {
 
     </main>
     <script src="js/form_ux.js"></script>
+    <script src="main.js"></script> 
+    <script src="notificacoes.js"></script>
+    <script src="notificacoes_fornecedor.js"></script>
 </body>
 </html>

@@ -36,6 +36,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 $titulo_header = $modo_edicao ? 'Vendas > Editar Venda' : 'Vendas > Cadastrar Venda Manual';
 
 $produtos = $pdo->query("SELECT id, nome, valor_venda, quantidade_estoque FROM produtos WHERE status = 'ativo' ORDER BY nome")->fetchAll(PDO::FETCH_ASSOC);
+$servicos = $pdo->query("SELECT id, nome_servico, valor_venda FROM servicos_prestados WHERE usuario_id = {$_SESSION['id']} AND status = 'ativo' ORDER BY nome_servico")->fetchAll(PDO::FETCH_ASSOC);
 
 if (isset($_SESSION['role']) && $_SESSION['role'] === 'funcionario') {
     $nome_exibicao = $_SESSION['funcionario_nome'];
@@ -71,30 +72,34 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'funcionario') {
                     <p class="aviso-edicao">A alteração de produtos de uma venda já finalizada não é permitida. Apenas a data e a descrição podem ser modificadas.</p>
                 <?php else: ?>
                     <div id="itens-container">
-                        <div class="item-venda">
-                            <div class="form-produto-group">
-                                <label>Produto</label>
-                                <select name="itens[0][produto_id]" class="produto-select" required>
-                                    <option value="">Selecione</option>
-                                    <?php foreach ($produtos as $produto): ?>
-                                        <option value="<?= $produto['id'] ?>" data-valor="<?= $produto['valor_venda'] ?>">
-                                            <?= htmlspecialchars($produto['nome']) ?> (Estoque: <?= $produto['quantidade_estoque'] ?>)
-                                        </option>
-                                    <?php endforeach; ?>
+                        <div class="item-venda" data-index="0">
+                            <div class="form-produto-group tipo-item-group" style="grid-column: span 1;">
+                                <label>Tipo</label>
+                                <select name="itens[0][tipo]" class="tipo-item-select" required>
+                                    <option value="produto" selected>Produto</option>
+                                    <option value="servico">Serviço</option>
                                 </select>
                             </div>
-                            <div class="form-produto-group">
+                            <div class="form-produto-group item-select-group" style="grid-column: span 3;">
+                                <label>Item</label>
+                                <select name="itens[0][item_id]" class="item-id-select" required>
+                                    <option value="">Selecione o tipo primeiro</option>
+                                </select>
+                            </div>
+                            <div class="form-produto-group quantidade-group" style="grid-column: span 1;">
                                 <label>Quantidade</label>
                                 <input type="number" name="itens[0][quantidade]" min="1" value="1" class="quantidade-input" required>
                             </div>
-                            <div class="form-produto-group">
+                            <div class="form-produto-group valor-group" style="grid-column: span 1;">
                                 <label>Valor Unitário</label>
                                 <input type="text" name="itens[0][valor_venda]" class="valor-input" placeholder="0,00" required>
                             </div>
-                            <button type="button" class="btn-remover hidden">X</button>
+                            <div style="grid-column: span 2; display: flex; align-items: flex-end; justify-content: flex-end;">
+                                <button type="button" class="btn-remover hidden" style="height: 54px; align-self: flex-end;">X</button>
+                            </div>
                         </div>
                     </div>
-                    <button type="button" id="btn-adicionar-item" class="btn-secondary">Adicionar Outro Produto</button>
+                    <button type="button" id="btn-adicionar-item" class="btn-secondary"><i class="fas fa-plus"></i> Adicionar Item</button>
                 <?php endif; ?>
 
                 <div class="form-produto-grid duas-colunas">
@@ -114,11 +119,15 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'funcionario') {
             </form>
         </div>
     </main>
-    
-    <script src="venda_formulario.js"></script>
-    <script src="main.js"></script>
-    <script src="notificacoes.js"></script>
-    <script src="notificacoes_fornecedor.js"></script>
+    <script>
+        const produtosData = <?= json_encode($produtos) ?>;
+        const servicosData = <?= json_encode($servicos) ?>;
+    </script>
+</html>
+<script src="venda_formulario.js"></script>
+<script src="main.js"></script>
+<script src="notificacoes.js"></script>
+<script src="notificacoes_fornecedor.js"></script>
 </body>
 
 </html>

@@ -2,6 +2,15 @@
 session_start();
 include_once('config.php');
 
+// Funções de validação de item (exemplo básico)
+function is_valid_item($item) {
+    return isset($item['tipo'], $item['item_id'], $item['valor_venda'], $item['quantidade']) &&
+           ($item['tipo'] === 'produto' || $item['tipo'] === 'servico') &&
+           is_numeric($item['item_id']) && (int)$item['item_id'] > 0 &&
+           is_numeric(str_replace(',', '.', $item['valor_venda'])) &&
+           is_numeric($item['quantidade']) && (int)$item['quantidade'] >= 0; // Permite quantidade 0 se necessário, mas valida tipo
+}
+
 if (empty($_SESSION['id']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: login.php');
     exit;
@@ -17,85 +26,173 @@ try {
             throw new Exception("Nenhum item foi adicionado à venda.");
         }
 
-        $sql_check_produto = "SELECT nome, quantidade_estoque, quantidade_minima FROM produtos WHERE id = ?";
+        // --- VALIDAÇÃO INICIAL DOS ITENS E ESTOQUE (ANTES DA TRANSAÇÃO) ---
+        $sql_check_produto = "SELECT nome, quantidade_estoque, quantidade_minima FROM produtos WHERE id = ? AND status = 'ativo'"; // Adicionado status = 'ativo'
         $stmt_check_produto = $pdo->prepare($sql_check_produto);
+        $valor_total_venda = 0;
 
-        foreach ($itens as $item) {
-            $produto_id = (int)$item['produto_id'];
-            $quantidade_vendida = (int)$item['quantidade'];
-            $stmt_check_produto->execute([$produto_id]);
-            $produto = $stmt_check_produto->fetch(PDO::FETCH_ASSOC);
+        foreach ($itens as $index => $item) {
+            // Validação básica da estrutura do item recebido
+             if (!is_valid_item($item)) {
+                 throw new Exception("Dados inválidos para o item #" . ($index + 1) . ". Verifique se todos os campos estão preenchidos corretamente.");
+             }
 
-            if (!$produto) {
-                throw new Exception("Produto com ID $produto_id não encontrado.");
+            $item_tipo = $item['tipo'];
+            $item_id = (int)$item['item_id'];
+            $item_valor_venda = $item['valor_venda'];
+            $item_quantidade = $item['quantidade'];
+            $valor_unitario = (float)str_replace(',', '.', $item_valor_venda);
+            $quantidade = ($item_tipo === 'produto') ? (int)$item_quantidade : 1;
+
+            if ($quantidade <= 0 && $item_tipo === 'produto') {
+                 throw new Exception("A quantidade para o produto no item #" . ($index + 1) . " deve ser maior que zero.");
             }
-            $estoque_final = $produto['quantidade_estoque'] - $quantidade_vendida;
-            if ($estoque_final < 0) {
-                throw new Exception("Estoque insuficiente para o produto: " . $produto['nome']);
+             if ($valor_unitario < 0) {
+                 throw new Exception("O valor unitário para o item #" . ($index + 1) . " não pode ser negativo.");
             }
-            if ($estoque_final < $produto['quantidade_minima']) {
-                $mensagem_erro = "Venda bloqueada para o produto: " . $produto['nome'] . ". A venda deixaria o estoque abaixo do mínimo permitido (" . $produto['quantidade_minima'] . " unidades).";
-                throw new Exception($mensagem_erro);
+
+            // Soma ao total geral
+            $valor_total_venda += $valor_unitario * $quantidade;
+
+            // Verifica estoque apenas para produtos
+            if ($item_tipo === 'produto') {
+                $stmt_check_produto->execute([$item_id]);
+                $produto = $stmt_check_produto->fetch(PDO::FETCH_ASSOC);
+
+                if (!$produto) {
+                    throw new Exception("Produto com ID $item_id (item #" . ($index + 1) . ") não encontrado ou inativo.");
+                }
+                $estoque_final = $produto['quantidade_estoque'] - $quantidade;
+                if ($estoque_final < 0) {
+                    throw new Exception("Estoque insuficiente para o produto: " . htmlspecialchars($produto['nome']) . " (item #" . ($index + 1) . "). Disponível: " . $produto['quantidade_estoque']);
+                }
+                 // Mantendo a validação de estoque mínimo que você tinha
+                 if ($estoque_final < $produto['quantidade_minima']) {
+                     $mensagem_erro = "Venda bloqueada para o produto: " . htmlspecialchars($produto['nome']) . " (item #" . ($index + 1) . "). A venda deixaria o estoque abaixo do mínimo permitido (" . $produto['quantidade_minima'] . " unidades).";
+                     throw new Exception($mensagem_erro);
+                 }
+            } elseif ($item_tipo === 'servico') {
+                 // Poderia adicionar uma verificação se o serviço existe, se necessário
+                 $stmt_check_servico = $pdo->prepare("SELECT id FROM servicos_prestados WHERE id = ? AND status = 'ativo' AND usuario_id = ?");
+                 $stmt_check_servico->execute([$item_id, $usuario_id]);
+                 if (!$stmt_check_servico->fetch()) {
+                     throw new Exception("Serviço com ID $item_id (item #" . ($index + 1) . ") não encontrado, inativo ou não pertence a este usuário.");
+                 }
             }
         }
+        // --- FIM DA VALIDAÇÃO INICIAL ---
 
+
+        // --- INÍCIO DA TRANSAÇÃO ---
         $pdo->beginTransaction();
 
         $data_venda = $_POST['data_venda'] ?? date('Y-m-d H:i:s');
         $descricao = trim($_POST['descricao'] ?? '');
-        $valor_total_venda = 0;
 
-        foreach ($itens as $item) {
-            $valor_unitario = (float)str_replace(',', '.', $item['valor_venda']);
-            $quantidade = (int)$item['quantidade'];
-            $valor_total_venda += $valor_unitario * $quantidade;
-        }
-
+        // 1. INSERE A VENDA PRINCIPAL
         $sql_venda = "INSERT INTO vendas (usuario_id, valor_total, descricao, data_venda, status) VALUES (?, ?, ?, ?, 'finalizada')";
         $stmt_venda = $pdo->prepare($sql_venda);
-        $stmt_venda->execute([$usuario_id, $valor_total_venda, $descricao, $data_venda]);
-        $venda_id = $pdo->lastInsertId();
+        $venda_exec_result = $stmt_venda->execute([$usuario_id, $valor_total_venda, $descricao, $data_venda]);
 
-        $sql_item = "INSERT INTO venda_itens (venda_id, produto_id, quantidade, valor_unitario, valor_total) VALUES (?, ?, ?, ?, ?)";
-        $stmt_item = $pdo->prepare($sql_item);
-        
+        if (!$venda_exec_result) {
+            $pdo->rollBack();
+            throw new Exception("Falha crítica ao inserir o registro principal da venda na tabela 'vendas'.");
+        }
+
+        // 2. OBTÉM O ID DA VENDA RECÉM-CRIADA
+        $venda_id = $pdo->lastInsertId();
+        if (empty($venda_id) || !is_numeric($venda_id) || $venda_id <= 0) {
+            $pdo->rollBack();
+            throw new Exception("Falha ao obter um ID válido para a venda recém-criada após a inserção.");
+        }
+
+        // 3. PREPARA STATEMENTS PARA INSERIR ITENS E ATUALIZAR ESTOQUE
+        $sql_item_produto = "INSERT INTO venda_itens (venda_id, produto_id, quantidade, valor_unitario, valor_total) VALUES (?, ?, ?, ?, ?)";
+        $stmt_item_produto = $pdo->prepare($sql_item_produto);
+
         $sql_update_estoque = "UPDATE produtos SET quantidade_estoque = quantidade_estoque - ? WHERE id = ?";
         $stmt_update_estoque = $pdo->prepare($sql_update_estoque);
 
-        foreach ($itens as $item) {
-            $produto_id = (int)$item['produto_id'];
-            $quantidade = (int)$item['quantidade'];
-            $valor_unitario = (float)str_replace(',', '.', $item['valor_venda']);
-            $valor_total_item = $valor_unitario * $quantidade;
-            $stmt_item->execute([$venda_id, $produto_id, $quantidade, $valor_unitario, $valor_total_item]);
-            $stmt_update_estoque->execute([$quantidade, $produto_id]);
-        }
+        $sql_item_servico = "INSERT INTO venda_servicos (venda_id, servico_id, valor) VALUES (?, ?, ?)";
+        $stmt_item_servico = $pdo->prepare($sql_item_servico);
 
+        // 4. INSERE OS ITENS E ATUALIZA ESTOQUE (AGORA COM O $venda_id VÁLIDO)
+        foreach ($itens as $item) {
+            // Re-valida dados básicos aqui por segurança extra, embora já validados antes
+             if (!is_valid_item($item)) continue;
+
+            $item_tipo = $item['tipo'];
+            $item_id = (int)$item['item_id'];
+            $item_valor_venda = $item['valor_venda'];
+            $item_quantidade = $item['quantidade'];
+            $valor_unitario = (float)str_replace(',', '.', $item_valor_venda);
+
+            if ($item_tipo === 'produto') {
+                $quantidade = (int)$item_quantidade;
+                if ($quantidade <= 0) continue;
+                $valor_total_item = $valor_unitario * $quantidade;
+
+                // Tenta inserir o item
+                if (!$stmt_item_produto->execute([$venda_id, $item_id, $quantidade, $valor_unitario, $valor_total_item])) {
+                    $pdo->rollBack();
+                     throw new Exception("Falha ao inserir o produto ID $item_id na tabela 'venda_itens'.");
+                }
+                // Tenta atualizar o estoque
+                if (!$stmt_update_estoque->execute([$quantidade, $item_id])) {
+                     $pdo->rollBack();
+                     throw new Exception("Falha ao atualizar o estoque para o produto ID $item_id.");
+                }
+
+            } elseif ($item_tipo === 'servico') {
+                 // Tenta inserir o serviço
+                 if (!$stmt_item_servico->execute([$venda_id, $item_id, $valor_unitario])) {
+                     $pdo->rollBack();
+                     throw new Exception("Falha ao inserir o serviço ID $item_id na tabela 'venda_servicos'.");
+                 }
+            }
+        } // Fim do loop foreach itens
+
+        // 5. SE CHEGOU AQUI, TUDO CERTO, EFETIVA A TRANSAÇÃO
         $pdo->commit();
         $_SESSION['msg_sucesso'] = "Venda manual cadastrada com sucesso!";
         header('Location: vendas.php');
         exit;
 
+    // --- FIM DO if ($acao === 'cadastrar') ---
+
     } elseif ($acao === 'editar') {
--
+        // Bloco de edição permanece o mesmo
         $venda_id = filter_input(INPUT_POST, 'venda_id', FILTER_VALIDATE_INT);
         if (!$venda_id) {
-            throw new Exception("ID da venda inválido.");
+            throw new Exception("ID da venda inválido para edição.");
         }
 
         $data_venda = $_POST['data_venda'] ?? date('Y-m-d H:i:s');
         $descricao = trim($_POST['descricao'] ?? '');
 
+        // Apenas atualiza data e descrição, conforme regra definida
         $sql = "UPDATE vendas SET data_venda = ?, descricao = ? WHERE id = ? AND usuario_id = ?";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$data_venda, $descricao, $venda_id, $usuario_id]);
-        
+        if (!$stmt->execute([$data_venda, $descricao, $venda_id, $usuario_id])) {
+             throw new Exception("Falha ao atualizar os dados da venda ID $venda_id.");
+        }
+
         $_SESSION['msg_sucesso'] = "Venda atualizada com sucesso!";
         header('Location: vendas.php');
         exit;
-    }
+    } // Fim do elseif ($acao === 'editar')
 
-} catch (Exception $e) {
+} catch (PDOException $e) { // Captura erros específicos do PDO
+     if ($pdo->inTransaction()) {
+         $pdo->rollBack();
+     }
+     // Mostra um erro mais técnico para depuração, mas poderia ser genérico para o usuário
+     $_SESSION['msg_erro'] = "Erro de Banco de Dados: " . $e->getMessage() . " (Código: " . $e->getCode() . ")";
+     $redirect_url = 'venda_formulario.php' . (isset($_POST['venda_id']) ? '?id='.$_POST['venda_id'] : '');
+     header('Location: ' . $redirect_url);
+     exit;
+
+} catch (Exception $e) { // Captura outras exceções gerais
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
