@@ -44,9 +44,16 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             <?php endif; ?>
         </div>
         <div class="actions-container">
-            <div class="search-bar"><i class="fas fa-search"></i><input type="text"
-                    placeholder="Pesquisar Fornecedor..."></div>
-            <a href="fornecedor_formulario.php" class="btn-primary"><i class="fas fa-plus"></i> Cadastrar Fornecedor</a>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Pesquisar Fornecedor...">
+            </div>
+
+            <div class="actions-buttons">
+                <a href="historico_pedidos.php" class="btn-secondary"><i class="fas fa-history"></i> Histórico de Pedidos</a>
+
+                <a href="fornecedor_formulario.php" class="btn-primary"><i class="fas fa-plus"></i> Cadastrar Fornecedor</a>
+            </div>
         </div>
         <div class="table-container">
             <table>
@@ -62,7 +69,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 <tbody>
                     <?php if (empty($fornecedores)): ?>
                         <tr>
-                            <td colspan="6" class="text-center">Nenhum fornecedor cadastrado.</td>
+                            <td colspan="5" class="text-center">Nenhum fornecedor cadastrado.</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($fornecedores as $fornecedor): ?>
@@ -72,9 +79,15 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                                 <td><?= htmlspecialchars($fornecedor['email']) ?></td>
                                 <td><?= htmlspecialchars($fornecedor['telefone']) ?></td>
                                 <td class="actions">
-                                    <a href="fornecedor_formulario.php?id=<?= $fornecedor['id'] ?>" class="btn-action btn-edit">
+                                    <a href="pedido_formulario.php?fornecedor_id=<?= $fornecedor['id'] ?>" class="btn-action btn-pedido" title="Realizar Pedido">
+                                        <i class="fas fa-cart-plus"></i>
+                                    </a>
+                                    <a href="editar_pedidos.php?fornecedor_id=<?= $fornecedor['id'] ?>" class="btn-action btn-edit-pedido" title="Editar Pedidos">
+                                        <i class="fas fa-tasks"></i>
+                                    </a>
+                                    <a href="fornecedor_formulario.php?id=<?= $fornecedor['id'] ?>" class="btn-action btn-edit" title="Editar Fornecedor">
                                         <i class="fas fa-pencil-alt"></i> </a>
-                                    <a href="excluir_fornecedor.php?id=<?= $fornecedor['id'] ?>" class="btn-action btn-delete">
+                                    <a href="excluir_fornecedor.php?id=<?= $fornecedor['id'] ?>" class="btn-action btn-delete" title="Excluir Fornecedor">
                                         <i class="fas fa-trash-alt"></i> </a>
                                 </td>
                             </tr>
@@ -114,7 +127,7 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
             tableBody.innerHTML = '';
 
             if (fornecedores.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Nenhum fornecedor encontrado.</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Nenhum fornecedor encontrado.</td></tr>';
                 return;
             }
 
@@ -126,10 +139,16 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                         <td>${fornecedor.email || ''}</td>
                         <td>${fornecedor.telefone || ''}</td>
                         <td class="actions">
-                            <a href="fornecedor_formulario.php?id=${fornecedor.id}" class="btn-action btn-edit">
+                            <a href="pedido_formulario.php?fornecedor_id=${fornecedor.id}" class="btn-action btn-pedido" title="Realizar Pedido">
+                                <i class="fas fa-cart-plus"></i>
+                            </a>
+                            <a href="editar_pedidos.php?fornecedor_id=${fornecedor.id}" class="btn-action btn-edit-pedido" title="Editar Pedidos Pendentes">
+                                <i class="fas fa-tasks"></i>
+                            </a>
+                            <a href="fornecedor_formulario.php?id=${fornecedor.id}" class="btn-action btn-edit" title="Editar Fornecedor">
                                 <i class="fas fa-pencil-alt"></i>
                             </a>
-                            <a href="excluir_fornecedor.php?id=${fornecedor.id}" class="btn-action btn-delete">
+                            <a href="excluir_fornecedor.php?id=${fornecedor.id}" class="btn-action btn-delete" title="Excluir Fornecedor">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                         </td>
@@ -147,12 +166,13 @@ $nome_empresa = $_SESSION['nome_empresa'] ?? 'Empresa';
                 renderTable(fornecedores);
             } catch (error) {
                 console.error('Erro ao buscar fornecedores:', error);
-                tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Erro ao carregar os dados.</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Erro ao carregar os dados.</td></tr>';
             }
         });
     </script>
     <script src="main.js"></script>
     <script src="notificacoes.js"></script>
-    <script src="notificacoes_fornecedor.js"></script> 
+    <script src="notificacoes_fornecedor.js"></script>
 </body>
+
 </html>
