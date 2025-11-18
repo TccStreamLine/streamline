@@ -9,13 +9,29 @@
     position: relative;
     width: 300px;
 }
+
 .main-content .search-bar input {
-    width: 100%;
-    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 0.95rem;
+    width: 300px;
+    /* ajustar para o mesmo visual dos inputs de formulário (ex: código de barras) */
+    padding: 16px 12px 16px 40px;
+    /* espaço para ícone à esquerda */
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: #F3F4F6;
+    font-size: 1rem;
+    color: var(--text-color);
+    outline: none;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
 }
+
+.main-content .search-bar input:focus {
+    background: #fff;
+    border-color: #6D28D9;
+    /* roxo ao focar, igual ao código de barras */
+    box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.2);
+}
+
 .main-content .search-bar i {
     position: absolute;
     left: 1rem;
@@ -23,6 +39,7 @@
     transform: translateY(-50%);
     color: var(--text-light);
 }
+
 .main-content .btn-primary {
     background-color: var(--accent-color);
     color: white;
@@ -33,32 +50,43 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    transition: background-color 0.2s ease;
+    /* transições para cor, transformação e sombra (hover) */
+    transition: background-color 200ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
+
 .main-content .btn-primary:hover {
     background-color: var(--accent-color-dark);
+    /* mesmo efeito de hover do .btn-primary na agenda: leve escala e sombra */
+    transform: scale(1.03);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
+
 .main-content .table-container {
     background-color: var(--sidebar-bg);
     border-radius: 12px;
     padding: 2rem;
     box-shadow: var(--card-shadow);
 }
+
 .main-content table {
     width: 100%;
     border-collapse: collapse;
 }
-.main-content th, .main-content td {
+
+.main-content th,
+.main-content td {
     padding: 1rem;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
 }
+
 .main-content th {
     font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
     color: var(--text-light);
 }
+
 .main-content td.text-center {
     text-align: center;
 }
@@ -67,17 +95,22 @@
 .main-content .message-container {
     margin-bottom: 1.5rem;
 }
+
 .main-content .alert {
     padding: 1rem;
     border-radius: 8px;
     color: white;
     font-weight: 500;
 }
+
 .main-content .alert-success {
-    background-color: #10B981; /* Verde */
+    background-color: #10B981;
+    /* Verde */
 }
+
 .main-content .alert-danger {
-    background-color: #EF4444; /* Vermelho */
+    background-color: #EF4444;
+    /* Vermelho */
 }
 
 /* Coluna de Ações na Tabela */
@@ -85,25 +118,37 @@
     display: flex;
     gap: 0.5rem;
 }
+
 .main-content .btn-action {
     color: var(--text-light);
     padding: 0.5rem;
     border-radius: 4px;
 }
+
 .main-content .btn-action:hover {
     background-color: #F3F4F6;
 }
-.main-content .btn-edit:hover { color: #3B82F6; /* Azul */ }
-.main-content .btn-delete:hover { color: #EF4444; /* Vermelho */ }
+
+.main-content .btn-edit:hover {
+    color: #3B82F6;
+    /* Azul */
+}
+
+.main-content .btn-delete:hover {
+    color: #EF4444;
+    /* Vermelho */
+}
 
 .actions-buttons {
     display: flex;
-    gap: 1rem; /* Espaçamento entre os botões */
+    gap: 1rem;
+    /* Espaçamento entre os botões */
 }
 
 /* Estilo para o botão secundário (ex: Cadastrar Categoria) */
 .btn-secondary {
-    background-color: #F3F4F6; /* Cinza claro */
+    background-color: #F3F4F6;
+    /* Cinza claro */
     color: var(--text-color);
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
@@ -117,5 +162,6 @@
 }
 
 .btn-secondary:hover {
-    background-color: #E5E7EB; /* Cinza um pouco mais escuro */
+    background-color: #E5E7EB;
+    /* Cinza um pouco mais escuro */
 }

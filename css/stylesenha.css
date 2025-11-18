@@ -1,35 +1,30 @@
-/* Importar Poppins do Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
 
-/* Fonte global */
 body {
     font-family: 'Poppins', 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* Adicionado para evitar problemas de dimensionamento */
+    box-sizing: border-box;
 }
 
-/* Layout de duas colunas */
 .main-container {
     display: flex;
     height: 100vh;
     width: 100%;
 }
 
-/* Painel esquerdo */
 .left-panel {
     width: 50%;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centraliza o conteúdo horizontalmente */
-    justify-content: center; /* Centraliza o conteúdo verticalmente */
+    align-items: center;
+    justify-content: center;
     padding: 0 5%;
     background: #fff;
-    text-align: center; /* Centraliza o texto */
+    text-align: center;
 }
 
-/* Painel direito */
 .right-panel {
     width: 50%;
     position: relative;
@@ -37,11 +32,10 @@ body {
     overflow: hidden;
 }
 
-/* Navegação */
 .nav-links {
     display: flex;
     gap: 30px;
-    margin-top: 20px; /* Margem ajustada */
+    margin-top: 20px;
 }
 
 .nav-link {
@@ -54,33 +48,32 @@ body {
     transition: all 0.3s ease;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
     border-bottom-color: #4a0f81;
 }
 
-/* Cabeçalho e Títulos */
 .header-logo {
-    margin-bottom: 40px; /* Espaço entre a logo e o texto */
+    margin-bottom: 40px;
 }
 
 .recsenha {
     font-size: 2.5rem;
     color: #4a0f81;
     font-weight: 700;
-    margin-bottom: 20px; /* Espaço para o parágrafo */
-    margin-top: 0; /* Removido margem fixa */
+    margin-bottom: 20px;
+    margin-top: 0;
     margin-left: 40px;
 }
 
 .textbox {
     color: #888;
     font-size: 1.1rem;
-    margin-bottom: 40px; /* Espaço para o campo de input */
+    margin-bottom: 40px;
     max-width: 400px;
     margin-left: 20px;
 }
 
-/* Botão enviar */
 .inputSubmit {
     background: linear-gradient(to right, #6a1b9a, #4a148c);
     color: #fff;
@@ -95,7 +88,7 @@ body {
     transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(74, 20, 140, 0.3);
     text-align: center;
-    margin-top: 40px; /* Espaço do input */
+    margin-top: 40px;
     margin-left: 30px;
 }
 
@@ -105,7 +98,6 @@ body {
     background: linear-gradient(to right, #7b1fa2, #5e35b1);
 }
 
-/* Campo de input unificado */
 .input-email {
     position: relative;
     width: 100%;
@@ -114,7 +106,7 @@ body {
 
 .input-email input {
     width: 100%;
-    padding: 15px 15px 15px 50px; /* espaço pro ícone */
+    padding: 15px 15px 15px 50px;
     background: #f3e8ff;
     border: none;
     border-radius: 10px;
@@ -139,9 +131,8 @@ body {
     color: #b85cff;
 }
 
-/* Ícone dentro do input */
 .input-email::before {
-    content: "\f0e0"; /* envelope */
+    content: "\f0e0";
     font-family: "Font Awesome 6 Free";
     font-weight: 900;
     position: absolute;
@@ -153,23 +144,20 @@ body {
     pointer-events: none;
 }
 
-/* Logo */
 .logo {
     width: 500px;
     margin-bottom: -260px;
     margin-left: 100px;
 }
 
-/* Imagem do Painel Direito */
 .right-panel img {
     position: absolute;
     width: 890px;
     right: 0;
-    z-index: 1; /* Garante que a imagem fique sobre o fundo */
+    z-index: 1;
     margin-top: -60px;
 }
 
-/* Link "Voltar para o login" */
 .forgot {
     color: #4a0f81;
     text-decoration: none;
@@ -192,21 +180,19 @@ body {
 .error-message {
     color: #888;
     font-size: 1.1rem;
-    margin-bottom: 40px; /* Espaço para o campo de input */
+    margin-bottom: 40px;
     max-width: 400px;
     margin-left: 20px;
 }
 
-/* --- Media Queries para Responsividade --- */
-
-/* Telas até 768px (tablets e celulares grandes) */
 @media (max-width: 768px) {
     .main-container {
         flex-direction: column;
         height: auto;
     }
 
-    .left-panel, .right-panel {
+    .left-panel,
+    .right-panel {
         width: 100%;
         height: auto;
     }
@@ -269,7 +255,6 @@ body {
     }
 }
 
-/* Telas até 576px (celulares pequenos) */
 @media (max-width: 576px) {
     .logo {
         width: 250px;
@@ -307,13 +292,12 @@ body {
     padding-right: 50px !important;
 }
 
-
 .input-email .password-toggle-icon {
     position: absolute;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    color: #8e24aa; 
+    color: #8e24aa;
     cursor: pointer;
     z-index: 10;
 }

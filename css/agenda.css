@@ -1,8 +1,6 @@
-/* --- ESTRUTURA PRINCIPAL --- */
-body {
-    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
 
-    color: #333;
+body {
+      color: #333;
     margin: 0;
     display: flex;
     height: 100vh;
@@ -16,7 +14,7 @@ body {
     position: relative;
 }
 
-/* --- CONTAINER PRINCIPAL DA AGENDA --- */
+
 .agenda-container {
     background: #ffffff;
     border-radius: 16px;
@@ -27,7 +25,7 @@ body {
     box-sizing: border-box;
 }
 
-/* --- CABEÇALHO PRINCIPAL (MODIFICADO) --- */
+
 .main-header {
     display: flex;
     justify-content: space-between;
@@ -57,7 +55,7 @@ body {
     justify-content: flex-end;
 }
 
-/* --- BOTÕES --- */
+
 .btn {
     border: 2px solid #e0e0e0;
     background-color: #fff;
@@ -72,13 +70,13 @@ body {
 
 .btn:hover {
     background-color: #f8f9fa;
-    border-color: #4a148c;
+    border-color: var(--accent-color);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary {
-    background: linear-gradient(to right, #6a1b9a, #4a148c);
+    background-color: var(--accent-color);
     color: white;
     border: none;
     padding: 12px 20px;
@@ -91,9 +89,30 @@ body {
 }
 
 .btn-primary:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(74, 20, 140, 0.5);
-    background: linear-gradient(to right, #7b1fa2, #5e35b1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    background-color: var(--accent-color-dark);
+}
+
+
+.main-header .header-right .btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 200ms ease, transform 150ms ease, box-shadow 150ms ease;
+    transform: none !important;
+}
+
+.main-header .header-right .btn-primary:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    background-color: var(--accent-color-dark) !important;
 }
 
 .btn-icon {
@@ -101,7 +120,6 @@ body {
     line-height: 1;
 }
 
-/* --- ESTILO DO CARROSSEL DE MÊS --- */
 .navigation-buttons {
     flex: 0 1 auto;
     display: flex;
@@ -127,7 +145,7 @@ body {
 .navigation-buttons .btn-icon {
     background-color: #fff;
     border: none;
-    color: #7732b8;
+    color: var(--accent-color);
     border-radius: 50%;
     width: 32px;
     height: 32px;
@@ -148,7 +166,6 @@ body {
 }
 
 
-/* --- CONTAINER DO CALENDÁRIO E EVENTOS --- */
 #calendar-container {
     background-color: transparent;
     padding: 0;
@@ -157,7 +174,6 @@ body {
     box-shadow: none;
 }
 
-/* --- GRID DO CALENDÁRIO --- */
 .calendario-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -289,7 +305,7 @@ body {
     border-left-color: #6c757d;
 }
 
-/* --- LISTA DE EVENTOS DO DIA (NOVO ESTILO) --- */
+
 #eventos-dia-container {
     margin-top: 30px;
     border-top: 1px solid #E1E1E1;
@@ -395,8 +411,6 @@ body {
     border: 1px dashed #E1E1E1;
 }
 
-/* --- NOVA ESTILIZAÇÃO DO MODAL --- */
-
 .modal {
     display: none;
     position: fixed;
@@ -471,7 +485,7 @@ body {
     font-weight: 600;
     color: #6a1b9a;
     margin-bottom: -6px;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
     width: 100%;
     max-width: 400px;
     text-align: left;
@@ -486,7 +500,7 @@ body {
     border: 2px solid #e8e8e8;
     border-radius: 8px;
     font-size: 15px;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
     box-sizing: border-box;
     transition: all 0.3s ease;
     background-color: #fafafa;
@@ -510,9 +524,8 @@ body {
     margin-top: 16px;
 }
 
-/* --- BOTÕES DO MODAL --- */
 #form-evento button[type="submit"] {
-    background: linear-gradient(to right, #6a1b9a, #4a148c);
+    background-color: var(--accent-color);
     color: white;
     border: none;
     padding: 10px 20px;
@@ -521,13 +534,13 @@ body {
     font-size: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 #form-evento button[type="submit"]:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(74, 20, 140, 0.4);
-    background: linear-gradient(to right, #7b1fa2, #5e35b1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+    background-color: var(--accent-color-dark);
 }
 
 #form-evento button[type="button"] {
@@ -540,13 +553,13 @@ body {
     font-size: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 #form-evento button[type="button"]:hover {
     background: #e9ecef;
-    border-color: #6a1b9a;
-    color: #6a1b9a;
+    border-color: var(--accent-color);
+    color: var(--accent-color);
     transform: translateY(-1px);
 }
 
@@ -715,4 +728,3 @@ body {
         font-size: 14px;
     }
 }
-

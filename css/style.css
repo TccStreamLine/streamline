@@ -20,6 +20,7 @@
     .form-row {
         flex-direction: column;
     }
+
     .form-group {
         width: 100%;
         min-width: auto;
@@ -27,3 +28,95 @@
 }
 
 
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 240px;
+    padding: 1rem;
+    background: var(--sidebar-bg, #1f2937);
+    color: var(--sidebar-text, #ffffff);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.sidebar-logo .logo {
+    max-width: 140px;
+    height: auto;
+    display: block;
+}
+
+.menu-section h6 {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0.6rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-list li {
+    margin: 0.2rem 0;
+}
+
+.menu-list a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0.6rem;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 120ms ease, color 120ms ease;
+}
+
+.menu-list a i {
+    width: 20px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.menu-list a:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.menu-list a.active {
+    background: var(--sidebar-accent, #2aa79b);
+    color: #ffffff;
+}
+
+.menu-section.outros {
+    margin-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    padding-top: 0.75rem;
+}
+
+
+@media (max-width: 900px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 0.75rem 0.6rem;
+    }
+
+
+}
+
+.sidebar a:focus {
+    outline: 3px solid rgba(255, 255, 255, 0.12);
+    outline-offset: 2px;
+}

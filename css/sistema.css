@@ -16,13 +16,8 @@
     box-sizing: border-box;
 }
 
-/* CORREÇÃO PRIORITÁRIA - REMOVE QUALQUER ANIMAÇÃO DO MENU AGENDA */
-a[href="agenda.php"] {
-    transition: none !important;
-    animation: none !important;
-    transform: none !important;
-    will-change: auto !important;
-}
+/* Observação: regras específicas para a agenda foram removidas para evitar redundância.
+   A estabilização do menu é tratada de forma mais consistente abaixo. */
 
 body {
     font-family: 'Inter', sans-serif;
@@ -55,7 +50,7 @@ body {
 
 .sidebar-logo img {
     width: 50px;
-    /* Ajuste o tamanho da sua logo */
+
 }
 
 .menu-section {
@@ -84,31 +79,31 @@ body {
 }
 
 .menu-list a {
-    display: block;
-    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0.9rem;
     border-radius: 8px;
     text-decoration: none;
     color: var(--text-color);
-    font-weight: 500;
+    font-weight: 600;
     font-size: 0.95rem;
     position: relative;
     box-sizing: border-box;
-    /* Remove todas as animações e transições */
-    transition: none;
-    animation: none;
-    transform: none;
-    will-change: auto;
+    font-family: 'Inter', sans-serif !important;
+    border-left: 4px solid transparent;
+    transition: background-color 150ms ease, color 150ms ease;
 }
 
 .menu-list a i {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 20px;
-    margin-right: 1rem;
+    min-width: 20px;
     color: var(--text-light);
-    /* Remove todas as animações */
-    transition: none;
-    animation: none;
-    transform: none;
+    font-size: 1rem;
+    transition: color 150ms ease;
 }
 
 .menu-list a:hover {
@@ -118,18 +113,26 @@ body {
 .menu-list a.active {
     background-color: #F3F4F6 !important;
     color: var(--accent-color) !important;
-    font-weight: 600;
+    font-weight: 700;
     border-left: 4px solid var(--accent-color);
-    /* Sem transições ou animações */
-    transition: none;
-    animation: none;
 }
 
 .menu-list a.active i {
     color: var(--accent-color) !important;
-    /* Sem transições ou animações */
-    transition: none;
-    animation: none;
+}
+
+/* Acessibilidade: foco visível e consistente */
+.sidebar .menu-list a:focus {
+    outline: 3px solid rgba(0, 0, 0, 0.06);
+    outline-offset: 2px;
+}
+
+/* Corrigir comportamento específico do link da Agenda caso outras regras causem transform/animation */
+.menu-list a[href="agenda.php"],
+.menu-list a[href="agenda.php"] i {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
 }
 
 .sidebar .outros {
@@ -252,7 +255,7 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
-    transition: transform 0.2s ease, box-shadow 0.2s ease; 
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .plan-card:hover {
@@ -329,7 +332,8 @@ body {
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    /* adicionar transições suaves para hover (cor, sombra e movimento) */
+    transition: background-color 200ms ease, color 200ms ease, transform 150ms ease, box-shadow 150ms ease, border-color 200ms ease;
     margin-top: 1rem;
     text-decoration: none;
 }
@@ -347,6 +351,8 @@ body {
 .plan-button.primary:hover {
     background-color: var(--accent-color-dark);
     border-color: var(--accent-color-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(16, 24, 40, 0.12);
 }
 
 .plan-card.pro .plan-button {
@@ -356,7 +362,10 @@ body {
 }
 
 .plan-card.pro .plan-button:hover {
+    /* leve elevação e deslocamento para botões dentro do card pro */
     background-color: #F3F4F6;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(16, 24, 40, 0.08);
 }
 
 /* --- ESTILOS DO SINO DE NOTIFICAÇÃO --- */
@@ -578,50 +587,43 @@ body {
     border-bottom: none;
 }
 
-/* CORREÇÃO RADICAL PARA MENU DA AGENDA - FORÇA ESTABILIDADE TOTAL */
-.sidebar * {
-    box-sizing: border-box !important;
-    backface-visibility: hidden !important;
-    -webkit-backface-visibility: hidden !important;
-}
-
-.menu-list a[href="agenda.php"],
-.menu-list a[href="agenda.php"]:hover,
-.menu-list a[href="agenda.php"].active {
-    display: block !important;
-    position: static !important;
-    transform: none !important;
-    transition: none !important;
-    animation: none !important;
-    will-change: auto !important;
-    backface-visibility: visible !important;
-    -webkit-backface-visibility: visible !important;
-    perspective: none !important;
-    -webkit-perspective: none !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-    -moz-osx-font-smoothing: auto !important;
-    contain: none !important;
-    isolation: auto !important;
-}
-
-.menu-list a[href="agenda.php"]:hover {
-    background-color: #F3F4F6 !important;
-}
-
-.menu-list a[href="agenda.php"].active {
-    background-color: #F3F4F6 !important;
-    color: var(--accent-color) !important;
-    border-left: 4px solid var(--accent-color) !important;
-}
-
-.menu-list a[href="agenda.php"] i {
-    transform: none !important;
-    transition: none !important;
-    animation: none !important;
-    will-change: auto !important;
-}
 
 .plan-card a.plan-button {
     text-decoration: none !important;
 }
 
+
+@media (max-width: 900px) {
+
+    body {
+        display: block;
+        height: auto;
+        overflow: visible;
+    }
+
+    .sidebar {
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        padding: 1rem 0.75rem !important;
+        border-right: none !important;
+        flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+        margin-bottom: 0.75rem;
+    }
+
+    .main-content {
+        display: block;
+        padding: 1rem !important;
+        overflow: visible;
+        height: auto;
+    }
+
+    .welcome-section,
+    .action-cards,
+    .pricing-plans {
+        margin-top: 0.5rem;
+    }
+}

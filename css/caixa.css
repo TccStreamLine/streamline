@@ -3,101 +3,31 @@
     gap: 2rem;
 }
 
-/* Estilos movidos do HTML */
-.tipo-item-select {
-    width: 100%;
-    padding: 1rem;
-    border: none;
-    border-radius: 8px;
-    background-color: #EFE6FD;
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    color: #4C1D95;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234C1D95' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1rem;
-}
-
-.tipo-item-select:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
-}
-
-.btn-remover-item {
-    background: none;
-    border: none;
-    color: #EF4444;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-.alert-success {
-    background-color: #10B981;
-    color: white;
-    padding: 1rem;
-    border-radius: 8px;
-}
-
-/* Fim dos estilos movidos */
-
-.caixa-painel-venda {
-    flex-basis: 40%;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.caixa-painel-lista {
-    flex-basis: 60%;
-    background-color: #fff;
-    border-radius: 16px;
-    box-shadow: var(--card-shadow);
-    display: flex;
-    flex-direction: column;
-}
-
-.caixa-logo {
-    width: 120px;
-    margin: 0 auto 1rem auto;
-}
 
 .form-group-caixa input,
 .info-box {
     width: 100%;
     padding: 1rem;
     border-radius: 8px;
-    border: none;
+    border: 1px solid var(--border-color);
     font-size: 1rem;
     font-family: 'Inter', sans-serif;
-    background-color: #EFE6FD;
-    color: #4C1D95;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background-color: #fff;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    box-shadow: var(--card-shadow);
 }
 
 .form-group-caixa input:focus {
     outline: none;
     background-color: #ffffff;
-    box-shadow: 0 0 0 2px #8B5CF6, 0 4px 8px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
+    box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.08);
+    transform: translateY(-1px);
 }
 
 .form-group-caixa input::placeholder {
-    color: #A78BFA;
+    color: var(--text-light);
     font-weight: 400;
-    transition: all 0.3s ease;
-}
-
-.form-group-caixa input:focus::placeholder {
-    color: #8B5CF6;
-    transform: translateY(-1px);
 }
 
 .info-group-caixa {
@@ -111,55 +41,100 @@
     justify-content: center;
     align-items: center;
     padding: 0.75rem;
+    background: var(--sidebar-bg);
 }
 
 .info-box label {
     font-size: 0.8rem;
     font-weight: 500;
-    color: #6D28D9;
+    color: var(--accent-color);
 }
 
 .info-box span {
     font-size: 1.2rem;
     font-weight: 700;
+    color: var(--text-color);
 }
+
+
+.caixa-painel-venda {
+    flex-basis: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.caixa-painel-lista {
+    flex-basis: 60%;
+    background-color: var(--sidebar-bg);
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+}
+
+.caixa-logo {
+    width: 120px;
+    margin: 0 auto 1rem auto;
+    display: block;
+    transform: translateY(12px) scale(1.6);
+    transform-origin: center;
+    will-change: transform;
+    transition: transform 160ms ease;
+}
+
 
 .btn-caixa {
     width: 100%;
-    padding: 16px;
+    padding: 12px 16px;
     border: none;
-    border-radius: 12px;
-    font-size: 1.1rem;
+    border-radius: 8px;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
+    transition: background-color 200ms ease, transform 150ms ease, box-shadow 150ms ease;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 10px rgba(74, 20, 140, 0.3);
+    gap: 0.5rem;
 }
 
-.btn-lancamento {
-    background: linear-gradient(to right, #6a1b9a, #4a148c);
+.btn-lancamento,
+.btn-finalizar {
+    background-color: var(--accent-color);
     color: white;
 }
 
-.btn-lancamento:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(74, 20, 140, 0.5);
-    background: linear-gradient(to right, #7b1fa2, #5e35b1);
+.btn-lancamento:hover,
+.btn-finalizar:hover {
+    background-color: var(--accent-color-dark);
+    transform: scale(1.03);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
 .btn-finalizar {
-    background: linear-gradient(to right, #6a1b9a, #4a148c);
-    color: white;
+    background-color: var(--accent-color) !important;
+    color: #ffffff !important;
 }
 
 .btn-finalizar:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(74, 20, 140, 0.5);
-    background: linear-gradient(to right, #7b1fa2, #5e35b1);
+    background-color: var(--accent-color-dark) !important;
+}
+
+.btn-caixa.btn-lancamento,
+.btn-caixa.btn-finalizar {
+    background: #6d28d9;
+    color: #ffffff;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 4px 16px rgba(76, 29, 149, 0.12);
+}
+
+.btn-caixa.btn-lancamento:hover,
+.btn-caixa.btn-finalizar:hover {
+    transform: scale(1.04);
+    box-shadow: 0 8px 24px rgba(76, 29, 149, 0.18);
 }
 
 .caixa-acoes-secundarias {
@@ -170,15 +145,15 @@
 }
 
 .btn-secundario {
-    background-color: #fff;
-    color: #6a1b9a;
-    border: 2px solid #6a1b9a;
+    background-color: #F3F4F6;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
     font-size: 1rem;
     font-weight: 600;
     padding: 12px;
-    border-radius: 12px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -186,21 +161,19 @@
 }
 
 .btn-secundario:hover {
-    background: linear-gradient(to right, #6a1b9a, #4a148c);
-    color: white;
+    background-color: #E5E7EB;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(106, 27, 154, 0.3);
 }
 
 .lista-header {
-    background-color: #4C1D95;
+    background-color: var(--accent-color);
     color: white;
     padding: 1rem 1.5rem;
     border-radius: 16px 16px 0 0;
 }
 
 .lista-header h4 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 600;
     text-transform: uppercase;
 }
@@ -224,13 +197,13 @@
 .caixa-totais div {
     display: flex;
     justify-content: space-between;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     margin-bottom: 0.8rem;
     color: var(--text-light);
 }
 
 .caixa-totais .total-geral span {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: 700;
     color: var(--text-color);
 }
@@ -244,11 +217,11 @@
 .lista-produtos-venda td {
     padding: 0.8rem 0.5rem;
     text-align: left;
-    border-bottom: 1px solid #F3F4F6;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .lista-produtos-venda th {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
     color: var(--text-light);
@@ -263,17 +236,31 @@
     text-align: right;
 }
 
+
 .tipo-item-select {
     width: 100%;
-    padding: 1rem;
-    border: none;
+    padding: 0.9rem;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    background-color: #EFE6FD;
+    background-color: #fff;
     font-family: 'Inter', sans-serif;
     font-weight: 500;
-    color: #4C1D95;
+    color: var(--text-color);
     font-size: 1rem;
     margin-bottom: 1rem;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236D28D9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+}
+
+.tipo-item-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.08);
 }
 
 .btn-remover-item {
@@ -282,4 +269,65 @@
     color: #EF4444;
     cursor: pointer;
     font-size: 1rem;
+}
+
+.alert-success {
+    background-color: #10B981;
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+
+@media (max-width: 900px) {
+
+   
+    .caixa-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .caixa-painel-venda,
+    .caixa-painel-lista {
+        flex-basis: auto;
+        width: 100%;
+    }
+
+   
+    .caixa-logo {
+        transform: translateY(8px) scale(1.25) !important;
+        margin-bottom: 0.75rem;
+    }
+
+
+    .form-group-caixa input,
+    .tipo-item-select,
+    .btn-caixa {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+   
+    .caixa-acoes-secundarias {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+        margin: 0.5rem 0;
+    }
+
+    .lista-produtos-venda {
+        padding: 0.5rem;
+        overflow-x: auto;
+    }
+
+    .lista-produtos-venda table {
+        width: 100%;
+        min-width: 600px;
+        border-collapse: collapse;
+    }
+
+    .main-content {
+        padding: 1rem !important;
+    }
 }

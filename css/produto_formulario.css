@@ -1,16 +1,15 @@
-
 .form-produto-container {
-    background: #FFFFFF; /* Fundo branco como no protótipo */
+    background: #FFFFFF;
     border-radius: 16px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     padding: 40px 48px;
     max-width: 950px;
     margin: 2.5rem auto;
-    border: 1px solid #E5E7EB; /* Borda sutil */
+    border: 1px solid #E5E7EB;
 }
 
 .form-produto-title {
-    color: #1F2937; /* Cor de texto padrão mais escura */
+    color: #1F2937;
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 2.5rem;
@@ -19,11 +18,10 @@
     text-transform: uppercase;
 }
 
-/* A CORREÇÃO PRINCIPAL ESTÁ AQUI */
 .form-produto-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Cria as duas colunas */
-    gap: 1.5rem 2rem; /* Espaçamento entre os campos */
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2rem;
     width: 100%;
 }
 
@@ -33,7 +31,7 @@
 }
 
 .form-produto-group label {
-    color: #6B7280; /* Cinza para o label */
+    color: #6B7280;
     font-size: 0.9rem;
     font-weight: 500;
     margin-bottom: 8px;
@@ -43,8 +41,8 @@
 .form-produto-group select {
     padding: 16px;
     border-radius: 10px;
-    border: 1px solid transparent; /* Borda transparente inicial */
-    background: #F3F4F6; /* Cinza clarinho dos campos */
+    border: 1px solid transparent;
+    background: #F3F4F6;
     font-size: 1rem;
     color: #1F2937;
     outline: none;
@@ -55,7 +53,7 @@
 .form-produto-group input:focus,
 .form-produto-group select:focus {
     background: #fff;
-    border-color: #6D28D9; /* Borda roxa ao focar */
+    border-color: #6D28D9;
     box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.2);
 }
 
@@ -69,7 +67,7 @@
 }
 
 .btn-produto-primary {
-    background: #6D28D9; /* Cor roxa sólida do protótipo */
+    background: #6D28D9;
     color: #fff;
     font-weight: 600;
     font-size: 1rem;
@@ -87,11 +85,11 @@
 .btn-produto-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(109, 40, 217, 0.4);
-    background: #5B21B6; /* Roxo um pouco mais escuro */
+    background: #5B21B6;
 }
 
 @media (max-width: 900px) {
     .form-produto-grid {
-        grid-template-columns: 1fr; /* Em telas menores, volta para uma coluna */
+        grid-template-columns: 1fr;
     }
 }
