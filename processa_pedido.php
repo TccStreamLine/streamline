@@ -2,77 +2,103 @@
 session_start();
 include_once('config.php');
 
-if (empty($_SESSION['id_fornecedor']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+// DEBUG: Descomente as linhas abaixo se o erro persistir para ver o que está na sessão
+// var_dump($_SESSION); exit;
+
+// VERIFICAÇÃO DE SEGURANÇA CORRIGIDA
+// Aceita 'ceo' OU 'empresa' como permissão válida
+if (empty($_SESSION['id']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $_SESSION['msg_erro'] = "Acesso inválido.";
     header('Location: login.php');
     exit;
 }
 
-$fornecedor_id = $_SESSION['id_fornecedor'];
-$produto_id = filter_input(INPUT_POST, 'produto_id', FILTER_VALIDATE_INT);
-$quantidade_entregue = filter_input(INPUT_POST, 'quantidade_entregue', FILTER_VALIDATE_INT);
-$data_entrega = $_POST['data_entrega'] ?? date('Y-m-d H:i:s');
-$valor_compra_unitario = 0;
-$path_da_nota_fiscal = NULL;
+// Verifica se o usuário tem permissão (se não for 'ceo' E não for 'empresa', bloqueia)
+$role = $_SESSION['role'] ?? '';
+if ($role !== 'ceo' && $role !== 'empresa') {
+    $_SESSION['msg_erro'] = "Permissão negada. Você precisa ser uma Empresa para realizar pedidos.";
+    header('Location: login.php');
+    exit;
+}
 
-if (!$produto_id || !$quantidade_entregue || $quantidade_entregue <= 0) {
-    $_SESSION['msg_erro'] = "Dados inválidos para registrar a entrega.";
-    header('Location: gerenciar_fornecimento.php');
+$usuario_id = $_SESSION['id'];
+$fornecedor_id = filter_input(INPUT_POST, 'fornecedor_id', FILTER_VALIDATE_INT);
+$itens = $_POST['itens'] ?? [];
+
+// Validação básica dos dados recebidos
+if (!$fornecedor_id || empty($itens)) {
+    $_SESSION['msg_erro'] = "Dados do pedido inválidos ou nenhum item selecionado.";
+    // Tenta voltar para a página do fornecedor se possível
+    header('Location: fornecedores.php');
     exit;
 }
 
 try {
     $pdo->beginTransaction();
 
-    // 1. Buscar o valor de compra atual do produto
-    $stmt_prod = $pdo->prepare("SELECT valor_compra FROM produtos WHERE id = ?");
-    $stmt_prod->execute([$produto_id]);
-    $produto = $stmt_prod->fetch(PDO::FETCH_ASSOC);
-    if ($produto) {
-        $valor_compra_unitario = $produto['valor_compra'];
-    }
+    // 1. Calcular o valor total e preparar os dados
+    $valor_total_pedido = 0;
+    $itens_para_inserir = [];
 
-    // 2. Adiciona a quantidade entregue ao estoque atual
-    $sql_update_estoque = "UPDATE produtos SET quantidade_estoque = quantidade_estoque + ? WHERE id = ? AND fornecedor_id = ?";
-    $stmt_estoque = $pdo->prepare($sql_update_estoque);
-    $stmt_estoque->execute([$quantidade_entregue, $produto_id, $fornecedor_id]);
-
-    // 3. Lógica para upload de arquivo
-    if (isset($_FILES['nota_fiscal_entrega']) && $_FILES['nota_fiscal_entrega']['error'] == 0) {
-        $target_dir = "uploads/notas_fiscais/";
-        if (!is_dir($target_dir)) {
-            mkdir($target_dir, 0777, true);
-        }
-        // Garante um nome de arquivo único
-        $file_extension = strtolower(pathinfo($_FILES["nota_fiscal_entrega"]["name"], PATHINFO_EXTENSION));
-        $target_file = $target_dir . uniqid('nf_', true) . '.' . $file_extension;
+    foreach ($itens as $item) {
+        // Garante que os dados venham limpos
+        $produto_id = filter_var($item['produto_id'], FILTER_VALIDATE_INT);
+        $quantidade = filter_var($item['quantidade'], FILTER_VALIDATE_INT);
         
-        if (move_uploaded_file($_FILES["nota_fiscal_entrega"]["tmp_name"], $target_file)) {
-            $path_da_nota_fiscal = $target_file;
+        // Tratamento de valor monetário (remove R$, espaços e converte vírgula)
+        $valor_compra_str = preg_replace('/[^\d,]/', '', $item['valor_compra']); 
+        $valor_compra = (float)str_replace(',', '.', $valor_compra_str);
+
+        if ($produto_id && $quantidade > 0) {
+            $valor_total_pedido += ($valor_compra * $quantidade);
+            $itens_para_inserir[] = [
+                'produto_id' => $produto_id,
+                'quantidade' => $quantidade,
+                'valor_unitario' => $valor_compra
+            ];
         }
     }
 
-    // 4. Insere o registro no histórico de entregas
-    $sql_historico = "INSERT INTO historico_entregas 
-                        (produto_id, fornecedor_id, quantidade_entregue, data_entrega, valor_compra_unitario, nota_fiscal_path) 
-                      VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt_historico = $pdo->prepare($sql_historico);
-    $stmt_historico->execute([
-        $produto_id,
-        $fornecedor_id,
-        $quantidade_entregue,
-        $data_entrega,
-        $valor_compra_unitario,
-        $path_da_nota_fiscal
-    ]);
+    if (empty($itens_para_inserir)) {
+        throw new Exception("Nenhum item válido identificado no pedido.");
+    }
+
+    // 2. Inserir o PEDIDO (Capa) na tabela `pedidos_fornecedor`
+    // Status inicial definido como 'Pendente' para aparecer na tela do fornecedor
+    $sql_pedido = "INSERT INTO pedidos_fornecedor (usuario_id, fornecedor_id, valor_total_pedido, status_pedido, data_pedido) 
+                   VALUES (?, ?, ?, 'Pendente', NOW())";
+    $stmt_pedido = $pdo->prepare($sql_pedido);
+    $stmt_pedido->execute([$usuario_id, $fornecedor_id, $valor_total_pedido]);
+    
+    $pedido_id = $pdo->lastInsertId();
+
+    // 3. Inserir os ITENS na tabela `pedido_fornecedor_itens`
+    $sql_item = "INSERT INTO pedido_fornecedor_itens (pedido_id, produto_id, quantidade_pedida, valor_unitario_pago) 
+                 VALUES (?, ?, ?, ?)";
+    $stmt_item = $pdo->prepare($sql_item);
+
+    foreach ($itens_para_inserir as $item) {
+        $stmt_item->execute([
+            $pedido_id,
+            $item['produto_id'],
+            $item['quantidade'],
+            $item['valor_unitario']
+        ]);
+    }
+    
 
     $pdo->commit();
-    $_SESSION['msg_sucesso'] = "Entrega registrada e estoque atualizado com sucesso!";
+    
+    $_SESSION['msg_sucesso'] = "Pedido de compra #$pedido_id enviado ao fornecedor com sucesso!";
+    header('Location: fornecedores.php'); 
+    exit;
 
-} catch (PDOException $e) {
-    $pdo->rollBack();
-    $_SESSION['msg_erro'] = "Erro ao registrar entrega: " . $e->getMessage();
+} catch (Exception $e) {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    $_SESSION['msg_erro'] = "Erro ao processar o pedido: " . $e->getMessage();
+    header('Location: pedido_formulario.php?fornecedor_id=' . $fornecedor_id);
+    exit;
 }
-
-header('Location: gerenciar_fornecimento.php');
-exit;
 ?>

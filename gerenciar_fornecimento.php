@@ -2,34 +2,30 @@
 session_start();
 include_once('config.php');
 
-// Proteção: Apenas fornecedores logados podem acessar
 if (empty($_SESSION['id_fornecedor'])) {
     header('Location: login.php');
     exit;
 }
 
-$fornecedor_id = $_SESSION['id_fornecedor'];
-$nome_fornecedor = $_SESSION['nome_fornecedor'] ?? 'Fornecedor';
-
-// **CORREÇÃO 1: Definindo a variável para o menu ativo**
 $pagina_ativa = 'fornecimento';
-$titulo_header = 'Gerenciar Fornecimento';
+$titulo_header = 'Fornecimento > Gerenciar Fornecimento';
+$fornecedor_id = $_SESSION['id_fornecedor'];
 
-// Lógica para buscar produtos com estoque baixo associados a este fornecedor
-$produtos_a_repor = [];
-try {
-    $stmt = $pdo->prepare(
-        "SELECT p.*, c.nome as categoria_nome 
-         FROM produtos p
-         LEFT JOIN categorias c ON p.categoria_id = c.id
-         WHERE p.fornecedor_id = ? AND p.quantidade_estoque <= p.quantidade_minima AND p.status = 'ativo'
-         ORDER BY p.nome ASC"
-    );
-    $stmt->execute([$fornecedor_id]);
-    $produtos_a_repor = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    // Tratar erro, se necessário
-}
+$sql_pedidos = "SELECT 
+                    pf.id, 
+                    pf.data_pedido, 
+                    pf.valor_total_pedido, 
+                    pf.status_pedido,
+                    u.nome_empresa,
+                    (SELECT COUNT(*) FROM pedido_fornecedor_itens WHERE pedido_id = pf.id) as total_itens
+                FROM pedidos_fornecedor pf
+                JOIN usuarios u ON pf.usuario_id = u.id
+                WHERE pf.fornecedor_id = ? AND pf.status_pedido = 'Pendente'
+                ORDER BY pf.data_pedido ASC";
+$stmt_pedidos = $pdo->prepare($sql_pedidos);
+$stmt_pedidos->execute([$fornecedor_id]);
+$pedidos_recebidos = $stmt_pedidos->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -40,46 +36,83 @@ try {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/sistema.css">
     <link rel="stylesheet" href="css/estoque.css">
+    <style>
+        .section-title {
+            font-size: 1.2rem;
+            color: #333;
+            margin: 2rem 0 1rem 0;
+            border-left: 5px solid #6D28D9;
+            padding-left: 10px;
+            font-weight: bold;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .status-pendente { background-color: #FEF3C7; color: #D97706; }
+        .btn-ver-pedido {
+            background-color: #6D28D9;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-ver-pedido:hover { background-color: #5B21B6; }
+    </style>
 </head>
 <body>
     <?php include 'sidebar.php'; ?>
-
+    
     <main class="main-content">
-        <?php 
-            // Para o header do fornecedor, usamos o nome dele, não o da empresa
-            $nome_empresa = $nome_fornecedor;
-            include 'header.php'; 
-        ?>
-        
-        <div class="actions-container">
-            <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Pesquisar Produto para entregar..."></div>
+        <?php include 'header.php'; ?>
+
+        <div class="message-container">
+            <?php if (isset($_SESSION['msg_sucesso'])): ?>
+                <div class="alert alert-success"><?= $_SESSION['msg_sucesso']; unset($_SESSION['msg_sucesso']); ?></div>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['msg_erro'])): ?>
+                <div class="alert alert-danger"><?= $_SESSION['msg_erro']; unset($_SESSION['msg_erro']); ?></div>
+            <?php endif; ?>
         </div>
 
+        <h3 class="section-title">PEDIDOS RECEBIDOS DO CEO</h3>
         <div class="table-container">
             <table>
                 <thead>
                     <tr>
-                        <th>Produto</th>
-                        <th>Estoque Atual</th>
-                        <th>Estoque Mínimo</th>
-                        <th>Valor de Compra (R$)</th>
+                        <th>ID Pedido</th>
+                        <th>Data</th>
+                        <th>Solicitante</th>
+                        <th>Qtd. Itens</th>
+                        <th>Valor Total</th>
+                        <th>Status</th>
                         <th>Ação</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (empty($produtos_a_repor)): ?>
-                        <tr><td colspan="5" class="text-center">Nenhum produto precisando de reposição no momento.</td></tr>
+                    <?php if (empty($pedidos_recebidos)): ?>
+                        <tr><td colspan="7" class="text-center">Você não possui novos pedidos pendentes.</td></tr>
                     <?php else: ?>
-                        <?php foreach ($produtos_a_repor as $produto): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($produto['nome']) ?></td>
-                                <td><?= htmlspecialchars($produto['quantidade_estoque']) ?></td>
-                                <td><?= htmlspecialchars($produto['quantidade_minima']) ?></td>
-                                <td><?= number_format((float)$produto['valor_compra'], 2, ',', '.') ?></td>
-                                <td>
-                                    <a href="entregar_produto.php?id=<?= $produto['id'] ?>" class="btn-primary" style="padding: 0.5rem 1rem; text-decoration: none;">Entregar</a>
-                                </td>
-                            </tr>
+                        <?php foreach ($pedidos_recebidos as $pedido): ?>
+                        <tr>
+                            <td>#<?= str_pad($pedido['id'], 4, '0', STR_PAD_LEFT) ?></td>
+                            <td><?= date('d/m/Y', strtotime($pedido['data_pedido'])) ?></td>
+                            <td><?= htmlspecialchars($pedido['nome_empresa']) ?></td>
+                            <td><?= $pedido['total_itens'] ?> produto(s)</td>
+                            <td>R$ <?= number_format($pedido['valor_total_pedido'], 2, ',', '.') ?></td>
+                            <td><span class="status-badge status-pendente">Pendente</span></td>
+                            <td>
+                                <a href="detalhes_pedido.php?id=<?= $pedido['id'] ?>" class="btn-ver-pedido">
+                                    <i class="fas fa-box-open"></i> Processar Entrega
+                                </a>
+                            </td>
+                        </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
@@ -87,7 +120,5 @@ try {
         </div>
     </main>
     <script src="main.js"></script>
-    <script src="notificacoes.js"></script>
-    <script src="notificacoes_fornecedor.js"></script>
 </body>
 </html>
