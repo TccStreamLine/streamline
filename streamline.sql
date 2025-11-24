@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 26/10/2025 às 01:12
+-- Tempo de geração: 24/11/2025 às 13:30
 -- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.2.12
+-- Versão do PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -93,6 +93,51 @@ INSERT INTO `fornecedores` (`id`, `razao_social`, `cnpj`, `email`, `telefone`, `
 (16, 'Pichau', '12345678901234', 'lastzrr@gmail.com', '11947010600', '$2y$10$2GBEtxnW4053hdbDl.sZQOEU7evt09mb/9jKVwXuHg5shExGsdFQG', NULL, NULL, 'ativo', NULL),
 (17, 'Extra', '49447734000102', 'leligmascarenhas@gmail.com', '11111111111', NULL, 'd342a18714f0f1d1a2dc531461b795618956871cac5d9bcf42d28a4d92cd74b879dd83a12d669a2a8d9cfd95e7349d17e632', '2025-09-29 18:48:01', 'ativo', NULL),
 (18, 'Americanas', '48451255876001', 'iarafontes@usp.br', '11947766995', NULL, '687995f76389fe1377a1a139229b72c28f1c751a95cfadf7d890f2d466c93d7e4edbc1bceaf82e33e1677535d5cf14c74e7f', '2025-09-29 19:50:19', 'ativo', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `historico_entregas`
+--
+
+CREATE TABLE `historico_entregas` (
+  `id` int(11) NOT NULL,
+  `produto_id` int(11) NOT NULL,
+  `fornecedor_id` int(11) NOT NULL,
+  `quantidade_entregue` int(11) NOT NULL,
+  `data_entrega` datetime NOT NULL DEFAULT current_timestamp(),
+  `valor_compra_unitario` decimal(10,2) NOT NULL,
+  `nota_fiscal_path` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `pedidos_fornecedor`
+--
+
+CREATE TABLE `pedidos_fornecedor` (
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL COMMENT 'O CEO que fez o pedido',
+  `fornecedor_id` int(11) NOT NULL,
+  `data_pedido` timestamp NOT NULL DEFAULT current_timestamp(),
+  `valor_total_pedido` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `status_pedido` varchar(50) NOT NULL DEFAULT 'Pendente' COMMENT 'Pendente, Entregue, Cancelado'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `pedido_fornecedor_itens`
+--
+
+CREATE TABLE `pedido_fornecedor_itens` (
+  `id` int(11) NOT NULL,
+  `pedido_id` int(11) NOT NULL,
+  `produto_id` int(11) NOT NULL,
+  `quantidade_pedida` int(11) NOT NULL,
+  `valor_unitario_pago` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -315,6 +360,30 @@ ALTER TABLE `fornecedores`
   ADD UNIQUE KEY `email_unico` (`email`);
 
 --
+-- Índices de tabela `historico_entregas`
+--
+ALTER TABLE `historico_entregas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_hist_produto` (`produto_id`),
+  ADD KEY `fk_hist_fornecedor` (`fornecedor_id`);
+
+--
+-- Índices de tabela `pedidos_fornecedor`
+--
+ALTER TABLE `pedidos_fornecedor`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_ped_usuario` (`usuario_id`),
+  ADD KEY `fk_ped_fornecedor` (`fornecedor_id`);
+
+--
+-- Índices de tabela `pedido_fornecedor_itens`
+--
+ALTER TABLE `pedido_fornecedor_itens`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_item_pedido` (`pedido_id`),
+  ADD KEY `fk_item_produto` (`produto_id`);
+
+--
 -- Índices de tabela `produtos`
 --
 ALTER TABLE `produtos`
@@ -380,6 +449,24 @@ ALTER TABLE `fornecedores`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
+-- AUTO_INCREMENT de tabela `historico_entregas`
+--
+ALTER TABLE `historico_entregas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `pedidos_fornecedor`
+--
+ALTER TABLE `pedidos_fornecedor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `pedido_fornecedor_itens`
+--
+ALTER TABLE `pedido_fornecedor_itens`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de tabela `produtos`
 --
 ALTER TABLE `produtos`
@@ -418,6 +505,27 @@ ALTER TABLE `venda_servicos`
 --
 -- Restrições para tabelas despejadas
 --
+
+--
+-- Restrições para tabelas `historico_entregas`
+--
+ALTER TABLE `historico_entregas`
+  ADD CONSTRAINT `fk_hist_fornecedor` FOREIGN KEY (`fornecedor_id`) REFERENCES `fornecedores` (`id`),
+  ADD CONSTRAINT `fk_hist_produto` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`);
+
+--
+-- Restrições para tabelas `pedidos_fornecedor`
+--
+ALTER TABLE `pedidos_fornecedor`
+  ADD CONSTRAINT `fk_ped_fornecedor` FOREIGN KEY (`fornecedor_id`) REFERENCES `fornecedores` (`id`),
+  ADD CONSTRAINT `fk_ped_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+
+--
+-- Restrições para tabelas `pedido_fornecedor_itens`
+--
+ALTER TABLE `pedido_fornecedor_itens`
+  ADD CONSTRAINT `fk_item_pedido` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos_fornecedor` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_item_produto` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`);
 
 --
 -- Restrições para tabelas `servicos_prestados`
